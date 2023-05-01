@@ -1,0 +1,367 @@
+
+  <div class="container-fluid pt-3">
+    <div class="row removable">
+      <div class="col-lg-12">
+        <button
+          type="button"
+          class="btn btn-primary"
+          data-toggle="modal"
+          data-target="#exampleModal"
+        >
+          New Contract
+        </button>
+        <div
+          class="modal fade"
+          id="exampleModal"
+          tabindex="-1"
+          aria-labelledby="exampleModalLabel"
+          style="display: none"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <form action="add-contract" method="POST">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">
+                  Add Contract
+                </h5>
+                <button
+                  type="button"
+                  class="close"
+                  data-dismiss="modal"
+                  aria-label="Close"
+                >
+                  <span aria-hidden="true">�</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                
+                  <div class="mb-3">
+                    <label for="vendor" class="form-label">Vendor</label>
+                    <select class="form-select" id="vendor" name="vendor">
+                      <option value="vendor1">Vendor 1</option>
+                      <option value="vendor2">Vendor 2</option>
+                      <option value="vendor3">Vendor 3</option>
+                      <option value="vendor4">Vendor 4</option>
+                      <option value="vendor5">Vendor 5</option>
+                    </select>
+                  </div>
+                  <div class="mb-3">
+                    <label for="contract_description" class="form-label"
+                      >Contract Description</label
+                    >
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="contract_description"
+                      name="contract_description"
+                    />
+                  </div>
+                  <div class="mb-3">
+                    <label for="department" class="form-label"
+                      >Department</label
+                    >
+                    <select
+                      class="form-select"
+                      id="department"
+                      name="department"
+                    >
+                    <option value="">Select a department</option>
+                    <option value="ppwe">PPWE</option>
+                    <option value="pmu">PMU</option>
+                    <option value="icts">ICTS</option>
+                    <option value="research-quality">Institutional Research and Quality Management</option>
+                    <option value="cont_education">Centre for Continuing Education</option>
+                    <option value="comms_marketing">Communication and Marketing</option>
+                    <option value="engineering">Faculty of Engineering</option>
+                    <option value="applied_sciences">Faculty of Applied Science</option>
+                    <option value="medicine">Faculty of Medicine</option>
+                    <option value="built_environment">Faculty of Built Environment</option>
+                    <option value="commerce">Faculty of Commerce</option>
+                    <option value="information_science">Faculty of Communication and Information Science</option>
+                    <option value="science_technology">Faculty of Science and Technology Education</option>
+                    <option value="research_inter">Research and Internationalisation</option>
+                    <option value="affiliate">Affiliate Institutions</option>
+                    <option value="innovation">Innovation</option>
+                    <option value="business_development">Business Development</option>
+                    <option value="human_resources">Human Resources</option>
+                    <option value="academic">Academic/Admissions</option>
+                    <option value="legal">Legal</option>
+                    <option value="centrak_services">Central Services</option>
+                    <option value="student-affairs">Student Affairs </option>
+                    <option value="commercial_catering">Commercial Catering Unit </option>
+                    <option value="bursar">Bursar</option>
+                    <option value="library">Library</option>
+                    </select>
+                  </div>
+                  <div class="mb-3">
+                    <label for="start_date" class="form-label"
+                      >Start Date</label
+                    >
+                    <input
+                      type="date"
+                      class="form-control"
+                      id="start_date"
+                      name="start_date"
+                    />
+                  </div>
+                  <div class="mb-3">
+                    <label for="end_date" class="form-label">End Date</label>
+                    <input
+                      type="date"
+                      class="form-control"
+                      id="end_date"
+                      name="end_date"
+                    />
+                  </div>
+                  <div class="mb-3">
+                    <label for="payment_terms" class="form-label"
+                      >Payment Terms</label
+                    >
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="payment_terms"
+                      name="payment_terms"
+                    />
+                  </div>
+                  <div class="mb-3">
+                    <label for="contract_name" class="form-label"
+                      >Contract Name</label
+                    >
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="contract_name"
+                      name="contract_name"
+                    />
+                  </div>
+                  <div class="mb-3">
+                    <label for="contract_value" class="form-label"
+                      >Contract Value</label
+                    >
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="contract_value"
+                      name="contract_value"
+                    />
+                  </div>
+                  <div class="mb-3">
+                    <label for="signed_status" class="form-label"
+                      >Signed Status</label
+                    >
+                    <select
+                      class="form-select"
+                      id="signed_status"
+                      name="signed_status"
+                    >
+                      <option value="signed">Signed</option>
+                      <option value="unsigned">Unsigned</option>
+                    </select>
+                  </div>
+                  <div class="mb-3">
+                    <label for="payment_cycle" class="form-label"
+                      >Payment Cycle</label
+                    >
+                    <select
+                      class="form-select"
+                      id="signedStatus1"
+                      name="signedStatus1"
+                    >
+                      <option value="once-off">Once Off</option>
+                      <option value="Quarterly">Quarterly</option>
+                      <option value="Quarterly">Bi-Annually</option>
+                      <option value="Quarterly">Annually</option>
+                    </select>
+                  </div>
+                  <div class="mb-3">
+                    <label for="attachment" class="form-label"
+                      >Attachment</label
+                    >
+                    <input
+                      type="file"
+                      class="form-control"
+                      id="attachment"
+                      name="attachment"
+                    />
+                    <div class="form-text">
+                      Please attach a file if applicable.
+                    </div>
+                  </div>
+                  <div class="mb-3">
+                    <label for="description" class="form-label"
+                      >Notes</label
+                    >
+                    <textarea
+                      class="form-control"
+                      id="description1"
+                      name="description1"
+                      rows="3"
+                    ></textarea>
+                  </div>
+               
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  data-dismiss="modal"
+                >
+                  Close
+                </button>
+                <button type="submit" class="btn btn-primary">
+                  Add Contract
+                </button>
+              </div>
+            </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <br /><br />
+    </div>
+    <div class="row removable">
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-header border-0">
+            <div class="row align-items-center">
+              <div class="col">
+                <div class="form-group mb-0">
+                  <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text"
+                        ><i class="fas fa-search"></i
+                      ></span>
+                    </div>
+                    <input
+                      class="form-control"
+                      placeholder="Search"
+                      type="text"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div class="col text-right">
+                <a href="#!" class="btn btn-sm btn-primary">Export</a>
+                <a href="#!" class="btn btn-sm btn-primary">See all</a>
+              </div>
+            </div>
+          </div>
+          <div class="table-responsive">
+            <table class="table align-items-center table-flush">
+              <thead class="thead-light">
+                <tr>
+                  <th scope="col">
+                    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Vendor
+                  </th>
+                  <th scope="col">Status</th>
+                  <th scope="col">Contract Description</th>
+                  <th scope="col">Contract Name</th>
+                  <th scope="col">Department</th>
+                  <th scope="col">Contract Value</th>
+                  <th scope="col">Payment Cycle</th>
+                  <th scope="col">Payment Terms</th>
+                  <th scope="col">Start Date</th>
+                  <th scope="col">End Date</th>
+                  <th scope="col"></th>
+                </tr>
+              </thead>
+              <tbody>
+                <% if (data.length > 0) { %>
+                  <% for (let dat of data) { %>
+                <tr>
+                  <th scope="row">
+                    <div class="d-flex align-items-center">
+                      <div class="custom-control custom-checkbox">
+                        <input
+                          class="custom-control-input"
+                          id="table-check-1"
+                          type="checkbox"
+                        />
+                        <label
+                          class="custom-control-label"
+                          for="table-check-1"
+                        ></label>
+                      </div>
+                      <span><%= dat.vendor %></span>
+                    </div>
+                  </th>
+                  <td>
+                    <span class="badge badge-pill badge-success"><%= dat.status %></span>
+                  </td>
+                  <td>
+                    <span><%= dat.description %></span>
+                  </td>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <span class="ml-2"><%= dat.name %></span>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <span class="ml-2"><%= dat.department %></span>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <span class="ml-2">$<%= dat.contract_value %></span>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <span class="ml-2"><%= dat.payment_cycle %></span>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <span class="ml-2"><%= dat.payment_terms %></span>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <span class="ml-2"><%= moment(dat.start_date).format('Do MMMM, YYYY') %></span>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <span class="ml-2"><%= moment(dat.end_date).format('Do MMMM, YYYY') %></span>
+                    </div>
+                  </td>
+                </tr>
+                <% } %>
+            <% } %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <nav aria-label="..." class="">
+          <ul class="pagination">
+            <li class="page-item">
+              <a class="page-link" href="#" tabindex="-1">
+                <i class="fa fa-angle-left"></i>
+                <span class="sr-only">Previous</span>
+              </a>
+            </li>
+            <li class="page-item active">
+              <a class="page-link" href="#">1</a>
+            </li>
+            <li class="page-item">
+              <a class="page-link" href="#"
+                >2 <span class="sr-only">(current)</span></a
+              >
+            </li>
+            <li class="page-item">
+              <a class="page-link" href="#">3</a>
+            </li>
+            <li class="page-item">
+              <a class="page-link" href="#">
+                <i class="fa fa-angle-right"></i>
+                <span class="sr-only">Next</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </div>

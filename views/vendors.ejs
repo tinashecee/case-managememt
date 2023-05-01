@@ -1,0 +1,184 @@
+
+    <div class="container-fluid pt-3">
+        <div class="row removable">
+            <div class="col-lg-12">
+                <div class="row removable">
+                    <div class="col-lg-4">
+                        <div class="">
+                        </div><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                            New Vendor
+                        </button>
+                        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" style="display: none;" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <form action="add-vendor" method="POST">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">New Vendor</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">X</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        
+                                            <div class="mb-3">
+                                                <label for="vendorName" class="form-label">Vendor Name</label>
+                                                <input type="text" class="form-control" id="vendorName" name="vendorName">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="address" class="form-label">Address</label>
+                                                <input type="text" class="form-control" id="address" name="address">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="vatNumber" class="form-label">VAT Number</label>
+                                                <input type="text" class="form-control" id="vatNumber" name="vatNumber">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="contactPerson" class="form-label">Contact Person</label>
+                                                <input type="text" class="form-control" id="contactPerson" name="contactPerson">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="phoneNumber" class="form-label">Phone Number</label>
+                                                <input type="tel" class="form-control" id="phoneNumber" name="phoneNumber">
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="email" class="form-label">Email address</label>
+                                                <input type="email" class="form-control" id="email" name="email">
+                                            </div>&gt;
+                                        
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-primary">Save changes</button>
+                                    </div>
+                                </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4"></div>
+                    <div class="col-lg-4"></div>
+                </div>
+            </div>
+        </div>
+        <div class="row removable">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-header border-0">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <div class="form-group mb-0">
+                                    <div class="input-group">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text"><i class="fas fa-search"></i></span>
+                                        </div>
+                                        <input class="form-control" placeholder="Search" type="text">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col text-right">
+                                <a href="#!" class="btn btn-sm btn-primary">See all</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table align-items-center table-flush">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th scope="col">&nbsp; &nbsp; &nbsp; &nbsp; #&nbsp;</th>
+                                    <th scope="col">Company</th>
+                                    <th scope="col">Primary contact</th>
+                                    <th scope="col">Primary email</th>
+                                    <th scope="col">Phone</th>
+                                    <th scope="col">Date Created</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% if (data.length > 0) { %>
+                                    <% for (let dat of data) { %>
+                                <tr>
+                                    <th scope="row">
+                                        <div class="d-flex align-items-center">
+                                            <div class="custom-control custom-checkbox">
+                                                <input class="custom-control-input" id="table-check-1" type="checkbox">
+                                                <label class="custom-control-label" for="table-check-1"></label>
+                                            </div>
+                                            <span><%= dat.vendor_id %></span>
+                                        </div>
+                                    </th>
+                                                                        <td>
+                                        <span><%= dat.vendor_id %></span>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <span class="ml-2"><%= dat.company_name %></span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <span class="ml-2"><%= dat.email %></span>
+                                        </div>
+                                    </td>
+                                    <td><%= dat.phone_number %></td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <span class="ml-2"><%= moment(dat.date_created).format('Do MMMM, YYYY') %></span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <span class="badge badge-pill badge-success"><%= dat.status %></span>
+                                    </td>
+                                    
+                                    <td>
+                                        <div class="dropdown">
+                                            <a class="btn btn-sm btn-icon-only text-light" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                                                <i class="fas fa-ellipsis-v"></i>
+                                            </a>
+                                            <div class="dropdown-menu dropdown-menu-right dropdown-menu-arrow" style="">
+                                                <a class="dropdown-item" href="#">Action</a>
+                                                <a class="dropdown-item" href="#">Another action</a>
+                                                <a class="dropdown-item" href="#">Something else here</a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                <% } %>
+                                <% } %>
+                               
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="row removable">
+                    <div class="col-lg-4"></div>
+                    <div class="col-lg-4"></div>
+                    <div class="col-lg-4">
+                        <nav aria-label="..." class="">
+                            <ul class="pagination">
+                                <li class="page-item">
+                                    <a class="page-link" href="#" tabindex="-1">
+                                        <i class="fa fa-angle-left"></i>
+                                        <span class="sr-only">Previous</span>
+                                    </a>
+                                </li>
+                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                <li class="page-item">
+                                    <a class="page-link" href="#">2 <span class="sr-only">(current)</span></a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" href="#">3</a></li>
+                                <li class="page-item">
+                                    <a class="page-link" href="#">
+                                        <i class="fa fa-angle-right"></i>
+                                        <span class="sr-only">Next</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    

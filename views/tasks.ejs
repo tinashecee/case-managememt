@@ -1,0 +1,459 @@
+
+  <div class="container-fluid pt-3">
+    <div class="row removable">
+      <div class="col-lg-4"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+        New Task
+     </button>
+     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+         <div class="modal-dialog modal-dialog-centered" role="document">
+             <div class="modal-content">
+                 <div class="modal-header">
+                     <h5 class="modal-title" id="exampleModalLabel">Add task</h5>
+                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                         <span aria-hidden="true">X</span>
+                     </button>
+                 </div>
+                 <div class="modal-body">
+                  <form>
+                    <div class="mb-3">
+                      <label for="taskName" class="form-label">Task Name</label>
+                      <input type="text" class="form-control" id="taskName" name="taskName" required>
+                    </div>
+                    <div class="row mb-3">
+                      <div class="col-md-6">
+                        <label for="startDate" class="form-label">Start Date</label>
+                        <input type="date" class="form-control" id="startDate" name="startDate" required>
+                      </div>
+                      <div class="col-md-6">
+                        <label for="dueDate" class="form-label">Due Date</label>
+                        <input type="date" class="form-control" id="dueDate" name="dueDate" required>
+                      </div>
+                    </div>
+                    <div class="mb-3">
+                      <label for="priority" class="form-label">Priority</label>
+                      <select class="form-select" id="priority" name="priority" required>
+                        <option value="" disabled selected>Select Priority</option>
+                        <option value="high">High</option>
+                        <option value="medium">Medium</option>
+                        <option value="low">Low</option>
+                      </select>
+                    </div>
+                    <div class="mb-3">
+                      <label for="frequency" class="form-label">Frequency</label>
+                      <select class="form-select" id="frequency" name="frequency" required>
+                        <option value="" disabled selected>Select Frequency</option>
+                        <option value="weekly">Weekly</option>
+                        <option value="biweekly">2 Weeks</option>
+                        <option value="monthly">1 Month</option>
+                        <option value="bimonthly">2 Months</option>
+                        <option value="quarterly">3 Months</option>
+                        <option value="halfyearly">6 Months</option>
+                        <option value="yearly">1 Year</option>
+                        <option value="custom">Custom</option>
+                      </select>
+                    </div>
+                    <div class="mb-3">
+                      <label for="assignees" class="form-label">Assignees</label>
+                      <select class="form-select" id="frequency" name="assiigness" required>
+                        <option value="john">John</option>
+                        <option value="mary">Mary</option>
+                        <option value="jack">Jack</option>
+                      </select>
+                    </div>
+                    <div class="mb-3">
+                      <label for="taskDescription" class="form-label">Task Description</label>
+                      <textarea class="form-control" id="taskDescription" name="taskDescription" rows="3"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                  </form>
+                  
+                 </div>
+                 <div class="modal-footer">
+                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                     <button type="button" class="btn btn-primary">Submit</button>
+                 </div>
+             </div>
+         </div>
+     </div>
+ </div>
+</div>
+      <div class="col-lg-8"></div>
+    </div>
+    <div class="row mt-3 mb-4 mx-0 removable">
+      <div class="card-group w-100">
+        <div class="card border shadow-none">
+          <div class="card-body">
+            <div class="row">
+              <div class="col d-flex align-items-center">
+                <h5 class="card-title text-uppercase text-muted mb-0">
+                  <font style="vertical-align: inherit">
+                    <font style="vertical-align: inherit">not started</font>
+                  </font>
+                </h5>
+                <span
+                  class="badge badge-secondary border ml-2 text-md font-weight-bold mb-0"
+                >
+                  <font style="vertical-align: inherit">
+                    <font style="vertical-align: inherit">
+                      <font style="vertical-align: inherit">
+                        <font style="vertical-align: inherit">+ 11</font>
+                      </font>
+                    </font>
+                  </font>
+                </span>
+              </div>
+            </div>
+            <p class="mt-2 text-dark font-weight-700 display-3 mb-0">
+              <font style="vertical-align: inherit">
+                <font style="vertical-align: inherit"> 11 </font>
+              </font>
+            </p>
+          </div>
+        </div>
+        <div class="card border shadow-none">
+          <div class="card-body">
+            <div class="row">
+              <div class="col d-flex align-items-center">
+                <h5 class="card-title text-uppercase text-muted mb-0">
+                  <font style="vertical-align: inherit">
+                    <font style="vertical-align: inherit">in progress</font>
+                  </font>
+                </h5>
+                <span
+                  class="badge badge-secondary border ml-2 text-md font-weight-bold mb-0"
+                >
+                  <font style="vertical-align: inherit">
+                    <font style="vertical-align: inherit">
+                      <font style="vertical-align: inherit">
+                        <font style="vertical-align: inherit">+ 4</font>
+                      </font>
+                    </font>
+                  </font>
+                </span>
+              </div>
+            </div>
+            <p class="mt-2 text-dark font-weight-700 display-3 mb-0">
+              <font style="vertical-align: inherit">
+                <font style="vertical-align: inherit">
+                  <font style="vertical-align: inherit">
+                    <font style="vertical-align: inherit">6</font>
+                  </font>
+                </font>
+              </font>
+            </p>
+          </div>
+        </div>
+        <div class="card border shadow-none">
+          <div class="card-body">
+            <div class="row">
+              <div class="col d-flex align-items-center">
+                <h5 class="card-title text-uppercase text-muted mb-0">
+                  <font style="vertical-align: inherit">
+                    <font style="vertical-align: inherit">testing</font>
+                  </font>
+                </h5>
+                <span
+                  class="badge badge-secondary border ml-2 text-md font-weight-bold mb-0"
+                >
+                  <font style="vertical-align: inherit">
+                    <font style="vertical-align: inherit">
+                      <font style="vertical-align: inherit">
+                        <font style="vertical-align: inherit">+ 2</font>
+                      </font>
+                    </font>
+                  </font>
+                </span>
+              </div>
+            </div>
+            <p class="mt-2 text-dark font-weight-700 display-3 mb-0">
+              <font style="vertical-align: inherit">
+                <font style="vertical-align: inherit"> 4 </font>
+              </font>
+            </p>
+          </div>
+        </div>
+        <div class="card border shadow-none">
+          <div class="card-body">
+            <div class="row">
+              <div class="col d-flex align-items-center">
+                <h5 class="card-title text-uppercase text-muted mb-0">
+                  <font style="vertical-align: inherit">
+                    <font style="vertical-align: inherit"
+                      >awaiting feedback</font
+                    >
+                  </font>
+                </h5>
+                <span
+                  class="badge badge-secondary border ml-2 text-md font-weight-bold mb-0"
+                >
+                  <font style="vertical-align: inherit">
+                    <font style="vertical-align: inherit">
+                      <font style="vertical-align: inherit">
+                        <font style="vertical-align: inherit">+ 1</font>
+                      </font>
+                    </font>
+                  </font>
+                </span>
+              </div>
+            </div>
+            <p class="mt-2 text-dark font-weight-700 display-3 mb-0">
+              <font style="vertical-align: inherit">
+                <font style="vertical-align: inherit"> 2 </font>
+              </font>
+            </p>
+          </div>
+        </div>
+        <div class="card border shadow-none">
+          <div class="card-body">
+            <div class="row">
+              <div class="col d-flex align-items-center">
+                <h5 class="card-title text-uppercase text-muted mb-0">
+                  <font style="vertical-align: inherit">
+                    <font style="vertical-align: inherit">complete</font>
+                  </font>
+                </h5>
+                <span
+                  class="badge badge-secondary border ml-2 text-md font-weight-bold mb-0"
+                >
+                  <font style="vertical-align: inherit">
+                    <font style="vertical-align: inherit">
+                      <font style="vertical-align: inherit">
+                        <font style="vertical-align: inherit">
+                          <font style="vertical-align: inherit">
+                            <font style="vertical-align: inherit">+ 1</font>
+                          </font>
+                        </font>
+                      </font>
+                    </font>
+                  </font>
+                </span>
+              </div>
+            </div>
+            <p class="mt-2 text-dark font-weight-700 display-3 mb-0"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row removable">
+      <div class="col-lg-3">
+        <div class="">
+          <div class="nav-wrapper">
+            <ul
+              class="nav nav-pills nav-fill flex-column flex-md-row"
+              id="tabs-icons-text"
+              role="tablist"
+            >
+              <li class="nav-item">
+                <a
+                  class="nav-link mb-sm-3 mb-md-0 active"
+                  id="tabs-icons-text-1-tab"
+                  data-toggle="tab"
+                  href="#tabs-icons-text-1"
+                  role="tab"
+                  aria-controls="tabs-icons-text-1"
+                  aria-selected="true"
+                  ><i class="fa fa-home mr-2"></i>
+                  <font style="vertical-align: inherit">
+                    <font style="vertical-align: inherit">
+                      <font style="vertical-align: inherit">
+                        <font style="vertical-align: inherit">25</font>
+                      </font>
+                    </font>
+                  </font>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a
+                  class="nav-link mb-sm-3 mb-md-0"
+                  id="tabs-icons-text-2-tab"
+                  data-toggle="tab"
+                  href="#tabs-icons-text-2"
+                  role="tab"
+                  aria-controls="tabs-icons-text-2"
+                  aria-selected="false"
+                  ><i class="fa fa-bell mr-2"></i>
+                  <font style="vertical-align: inherit">
+                    <font style="vertical-align: inherit">Export</font>
+                  </font>
+                </a>
+              </li>
+              <li class="nav-item"></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-3"></div>
+      <div class="col-lg-3"></div>
+      <div class="col-lg-3"></div>
+    </div>
+    <div class="card">
+      <div class="card-header border-0">
+        <div class="row align-items-center">
+          <div class="col">
+            <div class="form-group mb-0">
+              <div class="input-group">
+                <div class="input-group-prepend">
+                  <span class="input-group-text"
+                    ><i class="fas fa-search"></i
+                  ></span>
+                </div>
+                <input
+                  class="form-control"
+                  placeholder="Search"
+                  type="text"
+                />
+              </div>
+            </div>
+          </div>
+          <div class="col text-right">
+            <a href="#!" class="btn btn-sm btn-primary">
+              <font style="vertical-align: inherit">
+                <font style="vertical-align: inherit">See all</font>
+              </font>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="table-responsive">
+        <table class="table align-items-center table-flush">
+          <thead class="thead-light">
+            <tr>
+              <th scope="col">
+                <font style="vertical-align: inherit">
+                  <font style="vertical-align: inherit">Name</font>
+                </font>
+              </th>
+              <th scope="col">
+                <font style="vertical-align: inherit">
+                  <font style="vertical-align: inherit">Status</font>
+                </font>
+              </th>
+              <th scope="col">
+                <font style="vertical-align: inherit">
+                  <font style="vertical-align: inherit">Start Date</font>
+                </font>
+              </th>
+              <th scope="col">
+                <font style="vertical-align: inherit">
+                  <font style="vertical-align: inherit">Due Date</font>
+                </font>
+              </th>
+              <th scope="col">
+                <font style="vertical-align: inherit">
+                  <font style="vertical-align: inherit">Assigned To</font>
+                </font>
+              </th>
+              <th scope="col">
+                <font style="vertical-align: inherit">
+                  <font style="vertical-align: inherit">Priority</font>
+                </font>
+              </th>
+              <th scope="col"></th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">
+                <div class="d-flex align-items-center">
+                  <div class="custom-control custom-checkbox">
+                    <input
+                      class="custom-control-input"
+                      id="table-check-1"
+                      type="checkbox"
+                    />
+                    <label
+                      class="custom-control-label"
+                      for="table-check-1"
+                    ></label>
+                  </div>
+                  <span>
+                    <font style="vertical-align: inherit">
+                      <font style="vertical-align: inherit"
+                        >Filing Summons John's Case</font
+                      >
+                    </font>
+                  </span>
+                </div>
+              </th>
+              <td>
+                <span class="badge badge-pill badge-success">
+                  <font style="vertical-align: inherit">
+                    <font style="vertical-align: inherit">Active</font>
+                  </font>
+                </span>
+              </td>
+              <td>
+                <span>
+                  <font style="vertical-align: inherit">
+                    <font style="vertical-align: inherit">30 Mar, 2021</font>
+                  </font>
+                </span>
+              </td>
+              <td>
+                <div class="d-flex align-items-center">
+                  <span class="ml-2">
+                    <font style="vertical-align: inherit">
+                      <font style="vertical-align: inherit">10 Apr,2021</font>
+                    </font>
+                  </span>
+                </div>
+              </td>
+              <td>
+                <div class="d-flex align-items-center">
+                  <span class="ml-2">
+                    <font style="vertical-align: inherit">
+                      <font style="vertical-align: inherit">John Test</font>
+                    </font>
+                  </span>
+                </div>
+              </td>
+              <td> 
+                <select class="form-select" id="status" name="Priority" required="">
+                    <option value="Pending">High</option>
+                    <option value="In Progress">Low</option>
+                    <option value="Completed">Medium</option>
+                </select>
+            </div></td>
+              <td>
+                <div class="dropdown">
+                  <a
+                    class="btn btn-sm btn-icon-only text-light"
+                    href="#"
+                    role="button"
+                    data-toggle="dropdown"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                  >
+                    <i class="fas fa-ellipsis-v"></i>
+                  </a>
+                  <div
+                    class="dropdown-menu dropdown-menu-right dropdown-menu-arrow"
+                    style=""
+                  >
+                    <a class="dropdown-item" href="#">
+                      <font style="vertical-align: inherit">
+                        <font style="vertical-align: inherit">Action</font>
+                      </font>
+                    </a>
+                    <a class="dropdown-item" href="#">
+                      <font style="vertical-align: inherit">
+                        <font style="vertical-align: inherit"
+                          >Another action</font
+                        >
+                      </font>
+                    </a>
+                    <a class="dropdown-item" href="#">
+                      <font style="vertical-align: inherit">
+                        <font style="vertical-align: inherit"
+                          >Something else here</font
+                        >
+                      </font>
+                    </a>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
