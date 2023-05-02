@@ -111,6 +111,7 @@
                                 <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                     <div class="modal-dialog modal-dialog-centered" role="document">
                                         <div class="modal-content">
+                                            <form action="add-case" method="POST">
                                             <div class="modal-header">
                                                 <h5 class="modal-title" id="exampleModalLabel">Add Case</h5>
                                                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -118,15 +119,15 @@
                                                 </button>
                                             </div>
                                             <div class="modal-body">
-                                               <form>
+                                              
                             <div class="row mb-3">
                                 <div class="col-md-6">
                                     <label for="case-name" class="form-label">Case Name</label>
-                                    <input type="text" class="form-control" id="case-name" name="case-name" required="">
+                                    <input type="text" class="form-control" id="case_name" name="case_name" required="">
                                 </div>
                                 <div class="col-md-6">
                                     <label for="law-firm" class="form-label">Law Firm</label>
-                                    <input type="text" class="form-control" id="law-firm" name="law-firm" required="">
+                                    <input type="text" class="form-control" id="law_firm" name="law_firm" required="">
                                 </div>
                             </div>
                             <div class="row mb-3">
@@ -174,15 +175,11 @@
                             <div class="row mb-3">
                                 <div class="col-md-4">
                                     <label for="start-date" class="form-label">Start Date</label>
-                                    <input type="date" class="form-control" id="start-date" name="start-date" required="">
+                                    <input type="date" class="form-control" id="start_date" name="start_date" required="">
                                 </div>
                                 <div class="col-md-4">
                                     <label for="deadline" class="form-label">Deadline</label>
                                     <input type="date" class="form-control" id="deadline" name="deadline" required="">
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="estimated-hours" class="form-label">Estimated Hours</label>
-                                    <input type="number" class="form-control" id="estimated-hours" name="estimated-hours" required="">
                                 </div>
                             </div>
                             <div class="col-md-3">
@@ -198,12 +195,13 @@
                                 <label for="comments" class="form-label">Comments</label>
                                 <textarea class="form-control" id="comments" name="comments"></textarea>
                             </div>
-                                                        </form>  
+                                                         
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                                <button type="button" class="btn btn-primary">Submit</button>
+                                                <button type="submit" class="btn btn-primary">Submit</button>
                                             </div>
+                                        </form> 
                                         </div>
                                     </div>
                                 </div>
@@ -224,203 +222,35 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                <% if (data.length > 0) { %>
+                                    <% for (let dat of data) { %>
                                 <tr>
                                     <th scope="row">
-                                        1
+                                        <%= dat.case_id %>
                                     </th>
-                                    <td>Test Case</td>
-                                    <td>In House&nbsp;</td>
+                                    <td><%= dat.case_name %></td>
+                                    <td><%= dat.law_firm %></td>
                                     <td>
-                                        Litigation</td>
+                                        <%= dat.tags %></td>
                                     <td>
-                                        21/02/2023</td>
+                                        <%= moment(dat.start_date).format('Do MMMM, YYYY') %></td>
                                     <td>
-                                        31/03/2023</td>
+                                        <%= moment(dat.end_date).format('Do MMMM, YYYY') %></td>
                                     <td>
-                                        John, Mary</td>
+                                        <%= dat.staff_members %></td>
                                     <td>
                                         <div class="d-flex align-items-center">
-                                            <span class="mr-2">60%</span>
+                                            <span class="mr-2"><%= dat.progress %></span>
                                             <div>
                                                 <div class="progress">
-                                                    <div class="progress-bar bg-gradient-danger" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;"></div>
+                                                    <div class="progress-bar bg-gradient-danger" role="progressbar" aria-valuenow="<%= dat.progress %>" aria-valuemin="0" aria-valuemax="100" style="width: 60%;"></div>
                                                 </div>
                                             </div>
                                         </div>
                                     </td>
                                 </tr>
-                                <tr>
-                                    <th scope="row">2</th>
-                                    <td>Test Case</td>
-                                    <td>In House&nbsp;</td>
-                                    <td>
-                                        Litigation</td>
-                                    <td>
-                                        21/02/2023</td>
-                                    <td>
-                                        31/03/2023</td>
-                                    <td>
-                                        Mary</td>
-                                    <td>
-                                        <div class="d-flex align-items-center">
-                                            <span class="mr-2">60%</span>
-                                            <div>
-                                                <div class="progress">
-                                                    <div class="progress-bar bg-gradient-danger" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;"></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">3</th>
-                                    <td>Test Case</td>
-                                    <td>In House&nbsp;</td>
-                                    <td>
-                                        Litigation</td>
-                                    <td>
-                                        21/02/2023</td>
-                                    <td>
-                                        31/03/2023</td>
-                                    <td>
-                                        John</td>
-                                    <td>
-                                        <div class="d-flex align-items-center">
-                                            <span class="mr-2">60%</span>
-                                            <div>
-                                                <div class="progress">
-                                                    <div class="progress-bar bg-gradient-danger" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;"></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">
-                                        4
-                                    </th>
-                                    <td>Test Case</td>
-                                    <td>In House&nbsp;</td>
-                                    <td>
-                                        Litigation</td>
-                                    <td>
-                                        21/02/2023</td>
-                                    <td>
-                                        31/03/2023</td>
-                                    <td>
-                                        John, Mary</td>
-                                    <td>
-                                        <div class="d-flex align-items-center">
-                                            <span class="mr-2">80%</span>
-                                            <div>
-                                                <div class="progress">
-                                                    <div class="progress-bar bg-gradient-danger" role="progressbar" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100" style="width: 60%;"></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">
-                                        5
-                                    </th>
-                                    <td>Test Case</td>
-                                    <td>In House&nbsp;</td>
-                                    <td>
-                                        Litigation</td>
-                                    <td>
-                                        21/02/2023</td>
-                                    <td>
-                                        31/03/2023</td>
-                                    <td>
-                                        Mary</td>
-                                    <td>
-                                        <div class="d-flex align-items-center">
-                                            <span class="mr-2">10%</span>
-                                            <div>
-                                                <div class="progress">
-                                                    <div class="progress-bar bg-gradient-danger" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;"></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">
-                                        6
-                                    </th>
-                                    <td>Test Case</td>
-                                    <td>In House&nbsp;</td>
-                                    <td>
-                                        Litigation</td>
-                                    <td>
-                                        21/02/2023</td>
-                                    <td>
-                                        31/03/2023</td>
-                                    <td>
-                                        John</td>
-                                    <td>
-                                        <div class="d-flex align-items-center">
-                                            <span class="mr-2">85%</span>
-                                            <div>
-                                                <div class="progress">
-                                                    <div class="progress-bar bg-gradient-danger" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;"></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">
-                                        7
-                                    </th>
-                                    <td>Test Case</td>
-                                    <td>In House&nbsp;</td>
-                                    <td>
-                                        Litigation</td>
-                                    <td>
-                                        21/02/2023</td>
-                                    <td>
-                                        31/03/2023</td>
-                                    <td>
-                                        Mary,John</td>
-                                    <td>
-                                        <div class="d-flex align-items-center">
-                                            <span class="mr-2">95%</span>
-                                            <div>
-                                                <div class="progress">
-                                                    <div class="progress-bar bg-gradient-danger" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;"></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">
-                                        8
-                                    </th>
-                                    <td>Test Case</td>
-                                    <td>In House&nbsp;</td>
-                                    <td>
-                                        Litigation</td>
-                                    <td>
-                                        21/02/2023</td>
-                                    <td>
-                                        31/03/2023</td>
-                                    <td>
-                                        John, Jack,Mary</td>
-                                    <td>
-                                        <div class="d-flex align-items-center">
-                                            <span class="mr-2">65%</span>
-                                            <div>
-                                                <div class="progress">
-                                                    <div class="progress-bar bg-gradient-danger" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width: 60%;"></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-
+                                <% } %>
+                                <% } %>
                             </tbody>
                         </table>
                     </div>

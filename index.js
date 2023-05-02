@@ -35,6 +35,7 @@ let authed = false;
 let array = []
 let array1 = []
 let array2 = []
+let array3 = []
 app.get('', (req, res) => {
     
     res.render('index',{layout:'./layouts/index-layout'})
@@ -52,8 +53,24 @@ app.get('/calender', (req, res) => {
     res.render('calender',{layout:'./layouts/calender-layout'})
 });
 app.get('/cases', (req, res) => {
-    
-    res.render('cases',{layout:'./layouts/cases-layout'})
+    pool.query(
+        `SELECT * FROM cases`,
+        [],
+        (err, results) => {
+            if(err){
+                console.log(err)
+                throw err;
+                
+            }
+            console.log(results.rows);
+            if(results.rows.length >0){
+             array3 = results.rows
+           }else{
+           }
+        }
+    )
+    console.log(array3)
+    res.render('cases',{layout:'./layouts/lawfirms-layout',data:array3})
 });
 app.get('/compliance', (req, res) => {
     
@@ -204,6 +221,33 @@ app.post('/add-lawfirm', (req, res)=>{
             }
             req.flash('success_msg','You have successfully added a law firm');
             res.redirect('/lawfirms');
+        }
+    )
+});
+app.post('/add-case', (req, res)=>{
+    console.log(req.body)
+    let department = req.body.department
+    let description = req.body.description
+    let start_date = req.body.start_date
+    let end_date = req.body.deadline
+    let notes = req.body.comments
+    let case_name = req.body.case_name
+    let law_firm = req.body.law_firm
+    let tag = req.body.tag
+    let staff_members = req.body.status
+    let progress = req.body.progress
+    let yourDate = new Date()
+    date_created = formatDate(yourDate)
+    pool.query(
+        `INSERT INTO cases (description, start_date, end_date, notes, department, case_name, law_firm, tag, staff_members, progress)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
+        [description, start_date, end_date, notes, department, case_name, law_firm, tag, staff_members, progress], 
+        (err, results) => {
+            if(err){
+                throw err;
+            }
+            req.flash('success_msg','You have successfully added a law firm');
+            res.redirect('/cases');
         }
     )
 });
