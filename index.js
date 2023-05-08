@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const bcrypt = require('bcryptjs');
 const { pool } = require("./dbConfig");
-const session = require('cookie-session');
+const session = require('express-session');
 const flash = require('connect-flash');
 const passport = require('passport');
 const cookieParser = require('cookie-parser');
@@ -464,7 +464,7 @@ app.post('/users/register', async (req,res) => {
                console.log(results.rows);
                if(results.rows.length >0){
                 errors.push({message: `Email: ${email} is already registered`});
-                res.render("register",{errors});
+                res.render("login",{layout:'./layouts/login-layout',authed:authed,user:nam, errors:errors});
               }else{
                   pool.query(
                       `INSERT INTO users (name, email, password, role)
