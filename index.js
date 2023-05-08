@@ -3,14 +3,16 @@ const express = require('express');
 const expressLayouts = require('express-ejs-layouts')
 const bodyParser = require('body-parser');
 const path = require('path');
-const alert = require('alert'); 
 const bcrypt = require('bcrypt');
 const { pool } = require("./dbConfig");
 const session = require('express-session');
-const flash = require('express-flash');
+const flash = require('connect-flash');
 const passport = require('passport');
+const cookieParser = require('cookie-parser');
+const initializePassport = require('./passportConfig');
 const moment = require("moment");
 const app = express();
+initializePassport(passport);
 const PORT = process.env.PORT || 8080
 app.set('views', path.join(__dirname, 'views'));
 app.use(expressLayouts)
@@ -19,40 +21,58 @@ app.set('view engine', 'ejs');
 app.use(express.static('./public'));
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json())
-app.use(flash());
+app.use(cookieParser('NotSoSecret'));
 app.use(
     session({
         secret:'secret',
+        cookie: { maxAge: 60000 },
         resave:false,
         saveUninitialized:false
     })
 );
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(flash());
 app.use((req, res, next)=>{
     res.locals.moment = moment;
     next();
   });
+app.use(function(req, res, next){
+    res.locals.message = req.flash();
+    next();
+});
 let authed = false;
+let nam = '';
 let array = []
 let array1 = []
 let array2 = []
 let array3 = []
-app.get('', (req, res) => {
+let errors =[];
+app.get('/a', (req, res) => {
+    req.flash('success', 'Welcome!!');
+    res.redirect('/display-message');
+  });
     
-    res.render('index',{layout:'./layouts/index-layout'})
+  app.get('/display-message', (req, res) => {
+      res.render("display-message",{layout:'./layouts/index-layout'});
+  });
+app.get('', checkNotAuthenticated, async (req,res) => {
+    
+    res.render('index',{layout:'./layouts/index-layout',authed:authed,user:nam,})
 });
-app.get('/assistant', (req, res) => {
+app.get('/assistant',checkNotAuthenticated, async (req,res) => {
     
     res.render('assistant',{layout:'./layouts/assistant-layout'})
 });
-app.get('/budget', (req, res) => {
+app.get('/budget', checkNotAuthenticated, async (req,res) => {
     
     res.render('budget',{layout:'./layouts/budget-layout'})
 });
-app.get('/calender', (req, res) => {
+app.get('/calender', checkNotAuthenticated, async (req,res) => {
     
     res.render('calender',{layout:'./layouts/calender-layout'})
 });
-app.get('/cases', (req, res) => {
+app.get('/cases', checkNotAuthenticated, async (req,res) => {
     pool.query(
         `SELECT * FROM cases`,
         [],
@@ -62,21 +82,17 @@ app.get('/cases', (req, res) => {
                 throw err;
                 
             }
-            console.log(results.rows);
-            if(results.rows.length >0){
              array3 = results.rows
-           }else{
-           }
+             res.render('cases',{layout:'./layouts/lawfirms-layout',data:array3})
         }
     )
-    console.log(array3)
-    res.render('cases',{layout:'./layouts/lawfirms-layout',data:array3})
+   
 });
-app.get('/compliance', (req, res) => {
+app.get('/compliance', checkNotAuthenticated, async (req,res) => {
     
     res.render('compliance',{layout:'./layouts/compliance-layout'})
 });
-app.get('/contracts', (req, res) => {
+app.get('/contracts', checkNotAuthenticated, async (req,res) => {
     pool.query(
         `SELECT * FROM contracts`,
         [],
@@ -86,38 +102,39 @@ app.get('/contracts', (req, res) => {
                 throw err;
                 
             }
-            console.log(results.rows);
-            if(results.rows.length >0){
+            let dollarUS = Intl.NumberFormat("en-US", {
+                style: "currency",
+                currency: "USD",
+            });
+           // dollarUS.format(currentUser.account_balance)
              array2 = results.rows
-           }else{
-           }
+             res.render('contracts',{layout:'./layouts/contracts-layout',data:array2,dollarUS:dollarUS})
         }
     )
-    console.log(array2)
-    res.render('contracts',{layout:'./layouts/contracts-layout',data:array2})
+    
 });
-app.get('/lawfir_cases', (req, res) => {
+app.get('/lawfir_cases', checkNotAuthenticated, async (req,res) => {
     
     res.render('lawfir_cases',{layout:'./layouts/lawfir-cases-layout'})
 });
-app.get('/lawfirm_contracts', (req, res) => {
+app.get('/lawfirm_contracts', checkNotAuthenticated, async (req,res) => {
     
     res.render('lawfirm_contracts',{layout:'./layouts/lawfirm-contracts-layout'})
 });
-app.get('/lawfirm_tasks', (req, res) => {
+app.get('/lawfirm_tasks', checkNotAuthenticated, async (req,res) => {
     
     res.render('lawfirm_tasks',{layout:'./layouts/lawfirm-tasks-layout'})
 });
-app.get('/lawfirmcontacts', (req, res) => {
+app.get('/lawfirmcontacts', checkNotAuthenticated, async (req,res) => {
     
     res.render('lawfirmcontacts',{layout:'./layouts/lawfirmcontacts-layout'})
 });
-app.get('/lawfirmnotes', (req, res) => {
+app.get('/lawfirmnotes', checkNotAuthenticated, async (req,res) => {
     
     res.render('lawfirmnotes',{layout:'./layouts/lawfirmnotes-layout'})
 });
 
-app.get('/lawfirms', (req, res) => {
+app.get('/lawfirms', checkNotAuthenticated, async (req,res) => {
     
     pool.query(
         `SELECT * FROM law_firms`,
@@ -127,38 +144,64 @@ app.get('/lawfirms', (req, res) => {
                 console.log(err)
                 throw err;
                 
-            }
-            console.log(results.rows);
-            if(results.rows.length >0){
+            }else{
              array = results.rows
-           }else{
-           }
+             let active = 0
+             let not_active = 0
+             array.forEach(e=>{
+                if(e.status== 'true' || e.status == true){
+                   active += 1
+                }else{
+                    not_active += 1
+                }
+             })
+             console.log(array)
+             res.render('lawfirms',{layout:'./layouts/lawfirms-layout',data:array, active:active, not_active:not_active})
+            }
         }
     )
-    console.log(array)
-    res.render('lawfirms',{layout:'./layouts/lawfirms-layout',data:array})
+   
+   
 });
-app.get('/lawfirmstatement', (req, res) => {
+app.get('/lawfirmstatement', checkNotAuthenticated, async (req,res) => {
     
     res.render('lawfirmstatement',{layout:'./layouts/lawfirmstatement-layout'})
 });
-app.get('/lawfirmview', (req, res) => {
+app.get('/lawfirmview', checkNotAuthenticated, async (req,res) => {
     
     res.render('lawfirmview',{layout:'./layouts/lawfirmview-layout'})
 });
-app.get('/learn', (req, res) => {
+app.get('/learn', checkNotAuthenticated, async (req,res) => {
     
     res.render('learn',{layout:'./layouts/learn-layout'})
 });
-app.get('/resources', (req, res) => {
+app.get('/resources', checkNotAuthenticated, async (req,res) => {
     
     res.render('resources',{layout:'./layouts/resources-layout'})
 });
-app.get('/tasks', (req, res) => {
+
+app.get('/tasks', checkNotAuthenticated, async (req,res) => {
+    pool.query(
+        `SELECT * FROM tasks`,
+        [],
+        (err, results) => {
+            if(err){
+                console.log(err)
+                throw err;
+                
+            }
+           
+            
+             array1 = results.rows
+             console.log(results.rows)
+             res.render('tasks',{layout:'./layouts/tasks-layout',data:results.rows})
+          
+        }
+    )
+ 
     
-    res.render('tasks',{layout:'./layouts/tasks-layout'})
 });
-app.get('/vendors', (req, res) => {
+app.get('/vendors', checkNotAuthenticated, async (req,res) => {
     pool.query(
         `SELECT * FROM vendors`,
         [],
@@ -168,23 +211,31 @@ app.get('/vendors', (req, res) => {
                 throw err;
                 
             }
-            console.log(results.rows);
-            if(results.rows.length >0){
+            
              array1 = results.rows
-           }else{
-           }
+             res.render('vendors',{layout:'./layouts/vendors-layout',data:array1})
+          
         }
     )
-    console.log(array1)
-    res.render('vendors',{layout:'./layouts/vendors-layout',data:array1})
+    
 });
+
 function checkNotAuthenticated(req,res,next){
     if(req.isAuthenticated()){
         authed=true;
         return next();
     }
     authed=false;
-    res.redirect("/users/login");
+    res.redirect("/login");
+}
+function checkAuthenticated(req,res,next){
+    if(req.isAuthenticated()){
+        authed=true;
+        return res.redirect(" ");
+    }
+    next();
+    
+    
 }
 function formatDate(date) {
     var d = new Date(date),
@@ -214,12 +265,32 @@ app.post('/add-lawfirm', (req, res)=>{
     pool.query(
         `INSERT INTO law_firms (name, address, phone_number, contact_person, status, groups, date_created, email, vat_number, website)
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
-        [law_firm, address, phone_number, contact_person, 'false', groups, date_created, email, vat_number, website], 
+        [law_firm, address, phone_number, contact_person, true, groups, date_created, email, vat_number, website], 
         (err, results) => {
             if(err){
                 throw err;
             }
             req.flash('success_msg','You have successfully added a law firm');
+            res.redirect('/lawfirms');
+        }
+    )
+});
+app.post('/change-lawfirm-status', (req, res)=>{
+    console.log(req.body)
+    let active_status = req.body.active_status
+    let law_firm_id = req.body.law_firm_id
+    console.log(active_status,law_firm_id)
+    let yourDate = new Date()
+    date_created = formatDate(yourDate)
+    pool.query(
+         'UPDATE law_firms SET status = $1 WHERE law_firm_id = $2',
+        [active_status,law_firm_id], 
+        (err, results) => {
+            if(err){
+                throw err;
+            }
+            console.log(results)
+            req.flash('success_msg','You have successfully updated status of law firm');
             res.redirect('/lawfirms');
         }
     )
@@ -306,4 +377,116 @@ app.post('/add-vendor', (req, res)=>{
         }
     )
 });
+app.post('/add-tasks', (req, res)=>{
+    console.log(req.body)
+    let task_name = req.body.taskName
+    let start_date = req.body.startDate
+    let due_date = req.body.dueDate
+    let priority = req.body.priority
+    let frequency = req.body.frequency
+    let assigness = req.body.assiigness
+    let task_description = req.body.taskDescription
+    let yourDate = new Date()
+    date_created = formatDate(yourDate)
+    pool.query(
+        `INSERT INTO tasks (name, start_date, due_date, priority, frequency, assigned_to, description, date_created, status)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+        [task_name, start_date, due_date, priority, frequency, assigness, task_description, date_created, 'ACTIVE'], 
+        (err, results) => {
+            if(err){
+                throw err;
+            }
+            req.flash('success_msg','You have successfully added a task');
+            res.redirect('/tasks');
+        }
+    )
+});
+app.get('/users/logout', (req,res) => {
+    req.logout(function(err) {
+        if (err) { return next(err); }
+        authed =false;
+    usrId=''
+    nam=''
+    req.flash('success', 'Your logged out');
+    res.redirect('/login');
+      });
+    
+});
+app.get('/login',checkAuthenticated, (req,res) => {
+   
+    res.render('login',{layout:'./layouts/login-layout',authed:authed,user:nam, errors:errors});
+});
+app.get('/users/logout', (req,res) => {
+    req.logOut();
+    authed =false;
+    usrId=''
+    nam=''
+    req.flash('success_msg', 'You logged out');
+    res.redirect('/login');
+});
+app.post('/users/register', async (req,res) => {
+    errors = []
+    let { name, email, password,  password2 } = req.body;
+    console.log({name, email, password, password2 });
+
+    
+    if(!name || !email ||  !password || !password2){
+         errors.push({message: "Please enter all fields"});
+    }
+    if(password.length<6){
+        errors.push({message: "Password must be at least 6 characters long"});
+   }
+   if(password != password2 ){
+    errors.push({message: "Passwords do not match"});
+   }
+   
+   if(errors.length >0 ){
+       console.log(errors)
+    res.render("login",{layout:'./layouts/login-layout',authed:authed,user:nam,errors:errors});
+   }else{ 
+       let hashedPassword = await bcrypt.hash(password, 10);
+
+       pool.query(
+           `SELECT * FROM users
+           WHERE email = $1`,
+           [email],
+           (err, results) => {
+               if(err){
+                   throw err;
+               }
+               console.log(results.rows);
+               if(results.rows.length >0){
+                errors.push({message: `Email: ${email} is already registered`});
+                res.render("register",{errors});
+              }else{
+                  pool.query(
+                      `INSERT INTO users (name, email, password, role)
+                      VALUES ($1, $2, $3, $4)
+                      RETURNING id, password`,
+                      [name, email, hashedPassword, 'ADMIN'], 
+                      (err, results) => {
+                          if(err){
+                              throw err;
+                          }
+                          console.log(results.row);
+                          req.flash('success_msg','You are now registered. Please log in');
+                          res.render('login',{layout:'./layouts/login-layout',authed:authed,user:nam, errors:errors});
+                      }
+                  )
+              }
+           }
+       )
+   }
+});
+app.post("/users/login", passport.authenticate('local', {
+        
+    //successRedirect: '/',
+    failureRedirect:'/login',
+    failureFlash: true
+}),(req,res) => {
+    usrId = req.user.id;
+    nam = (req.user.name).charAt(0).toUpperCase() + (req.user.name).slice(1)
+    authed = true
+    res.render('index',{layout:'./layouts/index-layout',authed:true,user:nam})}
+);
 app.listen(PORT, console.log(`Server running on port ${PORT}`));

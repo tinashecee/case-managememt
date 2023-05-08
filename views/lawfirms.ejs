@@ -12,11 +12,11 @@
                 </h5>
                 <span
                   class="badge badge-secondary border ml-2 text-md font-weight-bold mb-0"
-                  >+ 11</span
+                  >+ <%= data.length %></span
                 >
               </div>
             </div>
-            <p class="mt-2 text-dark font-weight-700 display-3 mb-0">11</p>
+            <p class="mt-2 text-dark font-weight-700 display-3 mb-0"><%= data.length %></p>
           </div>
         </div>
         <div class="card border shadow-none">
@@ -28,11 +28,11 @@
                 </h5>
                 <span
                   class="badge badge-secondary border ml-2 text-md font-weight-bold mb-0"
-                  >+ 4</span
+                  ><%= active %></span
                 >
               </div>
             </div>
-            <p class="mt-2 text-dark font-weight-700 display-3 mb-0">6</p>
+            <p class="mt-2 text-dark font-weight-700 display-3 mb-0"><%= active %></p>
           </div>
         </div>
         <div class="card border shadow-none">
@@ -44,11 +44,11 @@
                 </h5>
                 <span
                   class="badge badge-secondary border ml-2 text-md font-weight-bold mb-0"
-                  >+ 2</span
+                  >+ <%= not_active %></span
                 >
               </div>
             </div>
-            <p class="mt-2 text-dark font-weight-700 display-3 mb-0">4</p>
+            <p class="mt-2 text-dark font-weight-700 display-3 mb-0"><%= not_active %></p>
           </div>
         </div>
         <div class="card border shadow-none">
@@ -321,8 +321,13 @@
               </td>
               <td>
                 <label class="custom-toggle">
-                  <input type="checkbox" checked="" />
-                  <span
+                  <% if(dat.status == true) { %>
+                   <input onchange="dut( '<%= dat.law_firm_id %>','<%= dat.status %>' ) " id="active_checkboxq" type="checkbox" checked="" value=" <%= dat.name %>" name="active" />
+                  <% } %>
+                  <% if(dat.status == false) { %>
+                    <input onchange="dut( '<%= dat.law_firm_id %>','<%= dat.status %>' ) " id="active_checkboxq" type="checkbox"  value=" <%= dat.name %>" name="active" />
+                   <% } %>
+                   <span 
                     class="custom-toggle-slider rounded-circle"
                     data-label-off="No"
                     data-label-on="Yes"
