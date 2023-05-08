@@ -10,7 +10,7 @@ const flash = require('connect-flash');
 const passport = require('passport');
 const cookieParser = require('cookie-parser');
 const initializePassport = require('./passportConfig');
-import genFunc from 'connect-pg-simple';
+const genFunc = require('connect-pg-simple');
 
 const PostgresqlStore = genFunc(session);
 const sessionStore = new PostgresqlStore({
