@@ -5,11 +5,17 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const bcrypt = require('bcryptjs');
 const { pool } = require("./dbConfig");
-const session = require('express-session');
+const session = require('cookie-session');
 const flash = require('connect-flash');
 const passport = require('passport');
 const cookieParser = require('cookie-parser');
 const initializePassport = require('./passportConfig');
+import genFunc from 'connect-pg-simple';
+
+const PostgresqlStore = genFunc(session);
+const sessionStore = new PostgresqlStore({
+  conString: 'postgres://ctcheuka:jXsapD5U8blt@ep-rapid-lake-643093.us-east-2.aws.neon.tech/neondb',
+});
 const moment = require("moment");
 const app = express();
 initializePassport(passport);
@@ -25,9 +31,10 @@ app.use(cookieParser('NotSoSecret'));
 app.use(
     session({
         secret:'secret',
-        cookie: { maxAge: 60000 },
+        cookie: {secure: true, maxAge: 60000 },
         resave:false,
-        saveUninitialized:false
+        saveUninitialized:false,
+        store: sessionStore
     })
 );
 app.use(passport.initialize());
