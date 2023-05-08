@@ -12,7 +12,7 @@ const cookieParser = require('cookie-parser');
 const initializePassport = require('./passportConfig');
 //const genFunc = require('connect-pg-simple');
 
-const PostgresqlStore = genFunc(session);
+//const PostgresqlStore = genFunc(session);
 /*const sessionStore = new PostgresqlStore({
   conString: 'postgres://ctcheuka:jXsapD5U8blt@ep-rapid-lake-643093.us-east-2.aws.neon.tech/neondb',
 });*/
