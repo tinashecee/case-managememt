@@ -13,9 +13,9 @@ const initializePassport = require('./passportConfig');
 const genFunc = require('connect-pg-simple');
 
 const PostgresqlStore = genFunc(session);
-const sessionStore = new PostgresqlStore({
+/*const sessionStore = new PostgresqlStore({
   conString: 'postgres://ctcheuka:jXsapD5U8blt@ep-rapid-lake-643093.us-east-2.aws.neon.tech/neondb',
-});
+});*/
 const moment = require("moment");
 const app = express();
 initializePassport(passport);
@@ -33,8 +33,8 @@ app.use(
         secret:'secret',
         cookie: {secure: true, maxAge: 60000 },
         resave:false,
-        saveUninitialized:false,
-        store: sessionStore
+        saveUninitialized:false
+        //store: sessionStore
     })
 );
 app.use(passport.initialize());
