@@ -63,23 +63,23 @@ app.get('/a', (req, res) => {
   app.get('/display-message', (req, res) => {
       res.render("display-message",{layout:'./layouts/index-layout'});
   });
-app.get('', checkNotAuthenticated, async (req,res) => {
+app.get('', async (req,res) => {
     
     res.render('index',{layout:'./layouts/index-layout',authed:authed,user:nam,})
 });
-app.get('/assistant',checkNotAuthenticated, async (req,res) => {
+app.get('/assistant', async (req,res) => {
     
     res.render('assistant',{layout:'./layouts/assistant-layout'})
 });
-app.get('/budget', checkNotAuthenticated, async (req,res) => {
+app.get('/budget',  async (req,res) => {
     
     res.render('budget',{layout:'./layouts/budget-layout'})
 });
-app.get('/calender', checkNotAuthenticated, async (req,res) => {
+app.get('/calender',  async (req,res) => {
     
     res.render('calender',{layout:'./layouts/calender-layout'})
 });
-app.get('/cases', checkNotAuthenticated, async (req,res) => {
+app.get('/cases',  async (req,res) => {
     pool.query(
         `SELECT * FROM cases`,
         [],
@@ -95,11 +95,19 @@ app.get('/cases', checkNotAuthenticated, async (req,res) => {
     )
    
 });
-app.get('/compliance', checkNotAuthenticated, async (req,res) => {
+app.get('/compliance',  async (req,res) => {
     
     res.render('compliance',{layout:'./layouts/compliance-layout'})
 });
-app.get('/contracts', checkNotAuthenticated, async (req,res) => {
+app.get('/contract_view',  async (req,res) => {
+    
+    res.render('contract_view',{layout:'./layouts/contract_view_layout'})
+});
+app.get('/case_view',  async (req,res) => {
+    
+    res.render('case_view',{layout:'./layouts/case_view_layout'})
+});
+app.get('/contracts',  async (req,res) => {
     pool.query(
         `SELECT * FROM contracts`,
         [],
@@ -120,28 +128,28 @@ app.get('/contracts', checkNotAuthenticated, async (req,res) => {
     )
     
 });
-app.get('/lawfir_cases', checkNotAuthenticated, async (req,res) => {
+app.get('/lawfirm_cases',  async (req,res) => {
     
     res.render('lawfir_cases',{layout:'./layouts/lawfir-cases-layout'})
 });
-app.get('/lawfirm_contracts', checkNotAuthenticated, async (req,res) => {
+app.get('/lawfirm_contracts',  async (req,res) => {
     
     res.render('lawfirm_contracts',{layout:'./layouts/lawfirm-contracts-layout'})
 });
-app.get('/lawfirm_tasks', checkNotAuthenticated, async (req,res) => {
+app.get('/lawfirm_tasks',  async (req,res) => {
     
     res.render('lawfirm_tasks',{layout:'./layouts/lawfirm-tasks-layout'})
 });
-app.get('/lawfirmcontacts', checkNotAuthenticated, async (req,res) => {
+app.get('/lawfirm_contacts',  async (req,res) => {
     
-    res.render('lawfirmcontacts',{layout:'./layouts/lawfirmcontacts-layout'})
+    res.render('lawfirmcontacts',{layout:'./layouts/lawfirm-contacts-layout'})
 });
-app.get('/lawfirmnotes', checkNotAuthenticated, async (req,res) => {
+app.get('/lawfirm_notes',  async (req,res) => {
     
-    res.render('lawfirmnotes',{layout:'./layouts/lawfirmnotes-layout'})
+    res.render('lawfirmnotes',{layout:'./layouts/lawfirm-notes-layout'})
 });
 
-app.get('/lawfirms', checkNotAuthenticated, async (req,res) => {
+app.get('/lawfirms',  async (req,res) => {
     
     pool.query(
         `SELECT * FROM law_firms`,
@@ -170,24 +178,24 @@ app.get('/lawfirms', checkNotAuthenticated, async (req,res) => {
    
    
 });
-app.get('/lawfirmstatement', checkNotAuthenticated, async (req,res) => {
+app.get('/lawfirm_statement',  async (req,res) => {
     
-    res.render('lawfirmstatement',{layout:'./layouts/lawfirmstatement-layout'})
+    res.render('lawfirmstatement',{layout:'./layouts/lawfirm-statement-layout'})
 });
-app.get('/lawfirmview', checkNotAuthenticated, async (req,res) => {
+app.get('/lawfirm_view',  async (req,res) => {
     
-    res.render('lawfirmview',{layout:'./layouts/lawfirmview-layout'})
+    res.render('lawfirmview',{layout:'./layouts/lawfirm-view-layout'})
 });
-app.get('/learn', checkNotAuthenticated, async (req,res) => {
+app.get('/learn',  async (req,res) => {
     
     res.render('learn',{layout:'./layouts/learn-layout'})
 });
-app.get('/resources', checkNotAuthenticated, async (req,res) => {
+app.get('/resources',  async (req,res) => {
     
     res.render('resources',{layout:'./layouts/resources-layout'})
 });
 
-app.get('/tasks', checkNotAuthenticated, async (req,res) => {
+app.get('/tasks',  async (req,res) => {
     pool.query(
         `SELECT * FROM tasks`,
         [],
@@ -208,7 +216,7 @@ app.get('/tasks', checkNotAuthenticated, async (req,res) => {
  
     
 });
-app.get('/vendors', checkNotAuthenticated, async (req,res) => {
+app.get('/vendors', async (req,res) => {
     pool.query(
         `SELECT * FROM vendors`,
         [],
@@ -312,7 +320,7 @@ app.post('/add-case', (req, res)=>{
     let case_name = req.body.case_name
     let law_firm = req.body.law_firm
     let tag = req.body.tag
-    let staff_members = req.body.status
+    let staff_members = req.body.members
     let progress = req.body.progress
     let yourDate = new Date()
     date_created = formatDate(yourDate)

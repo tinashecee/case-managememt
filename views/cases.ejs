@@ -88,7 +88,7 @@
                         <div class="col text-left">
                            <div class="col-md-3">
                                     <label for="view" class="form-label">View</label>
-                                    <select class="form-select" id="status" name="status" required="">
+                                    <select class="form-select" id="view" name="view" required="">
                                         <option value="">View All</option>
                                         <option value="25">25</option>
                                         <option value="50">50</option>
@@ -184,7 +184,7 @@
                             </div>
                             <div class="col-md-3">
                                     <label for="members" class="form-label">Members</label>
-                                    <select class="form-select" id="status" name="status" required="">
+                                    <select class="form-select" id="members" name="members" required="">
                                         <option value="">Select Members</option>
                                         <option value="John">John</option>
                                         <option value="Mary">Mary</option>
@@ -237,7 +237,7 @@
                                     <td>
                                         <%= moment(dat.end_date).format('Do MMMM, YYYY') %></td>
                                     <td>
-                                        <%= dat.staff_members %></td>
+                                       <p><%= dat.staff_members %></p> </td>
                                     <td>
                                         <div class="d-flex align-items-center">
                                             <span class="mr-2"><%= dat.progress %></span>
