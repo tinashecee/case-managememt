@@ -225,10 +225,11 @@
                                 <% if (data.length > 0) { %>
                                     <% for (let dat of data) { %>
                                 <tr>
+                                    
                                     <th scope="row">
                                         <%= dat.case_id %>
                                     </th>
-                                    <td><%= dat.case_name %></td>
+                                    <td><a href='/case_view?id=<%= dat.case_id %>'><%= dat.case_name %></a></td>
                                     <td><%= dat.law_firm %></td>
                                     <td>
                                         <%= dat.tags %></td>

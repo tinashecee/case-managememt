@@ -100,12 +100,45 @@ app.get('/compliance',  async (req,res) => {
     res.render('compliance',{layout:'./layouts/compliance-layout'})
 });
 app.get('/contract_view',  async (req,res) => {
-    
-    res.render('contract_view',{layout:'./layouts/contract_view_layout'})
+    let query = req.query.id
+    pool.query(
+        `SELECT * FROM contracts WHERE contract_id = $1`,
+        [query],
+        (err, results) => {
+            if(err){
+                console.log(err)
+                throw err;
+                
+            }
+            let dollarUS = Intl.NumberFormat("en-US", {
+                style: "currency",
+                currency: "USD", 
+            });
+            console.log(results.rows)
+             res.render('contract_view',{layout:'./layouts/contract_view_layout',data:results.rows,dollarUS:dollarUS})
+        }
+    )
 });
 app.get('/case_view',  async (req,res) => {
-    
-    res.render('case_view',{layout:'./layouts/case_view_layout'})
+    let query = req.query.id
+    pool.query(
+        `SELECT * FROM cases WHERE case_id = $1`,
+        [query],
+        (err, results) => {
+            if(err){
+                console.log(err)
+                throw err;
+                
+            }
+            let dollarUS = Intl.NumberFormat("en-US", {
+                style: "currency",
+                currency: "USD",
+            });
+            console.log(results.rows)
+             res.render('case_view',{layout:'./layouts/case_view_layout',data:results.rows})
+        }
+    )
+   
 });
 app.get('/contracts',  async (req,res) => {
     pool.query(
