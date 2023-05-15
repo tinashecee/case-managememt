@@ -162,18 +162,38 @@
                               class="form-control"
                               id="vat-number"
                               name="vat_number"
-                              required
                             />
                           </div>
                           <div class="mb-3">
                             <label for="contact_person" class="form-label">Contact Person</label>
-                            <input
-                              type="text"
-                              class="form-control"
-                              id="contact_person"
-                              name="contact_person"
-                              required
-                            />
+                            <div id="contact-container">
+                              <div class="contact-input">
+                                <div class="row mb-3">
+                                <div class="col-md-6">
+                                <label for="name1">Name:</label>
+                                <input type="text"  class="form-control" name="name1" required>
+                              </div>
+                              <div class="col-md-6">
+                                <label for="email1">Email:</label>
+                                <input type="email"  class="form-control" name="email1" required>
+                              </div>
+                              </div>
+                              <div class="row mb-3">
+                              <div class="col-md-6">
+                                <label for="position1">Position:</label>
+                                <input type="text"  class="form-control" name="position1" required>
+                              </div>
+                              <div class="col-md-6">
+                                <label for="phone1">Phone:</label>
+                                <input type="tel"  class="form-control" name="phone1" required>
+                              </div>
+                              </div>
+                                <div class="row">
+                                  <div class="col-md-6"><button type="button" style="width: 50%;" onclick="addContact()">+</button></div>
+                                
+                                </div>
+                              </div>
+                            </div>
                           </div>
                           <div class="mb-3">
                             <label for="phone_number" class="form-label"
@@ -192,7 +212,7 @@
                               >Website</label
                             >
                             <input
-                              type="url"
+                              type="text"
                               class="form-control"
                               id="website"
                               name="website"
@@ -210,22 +230,6 @@
                               name="email"
                               required
                             />
-                          </div>
-                          <div class="mb-3">
-                            <label for="group" class="form-label"
-                              >Group</label
-                            >
-                            <select
-                              class="form-select"
-                              id="group"
-                              name="group"
-                              required
-                            >
-                              <option value="">Select a group</option>
-                              <option value="1">Group 1</option>
-                              <option value="2">Group 2</option>
-                              <option value="3">Group 3</option>
-                            </select>
                           </div>
                         
                       </div>
@@ -275,13 +279,9 @@
             <tr>
               <th scope="col">&nbsp; &nbsp; &nbsp; &nbsp; No.</th>
               <th scope="col">law Firm</th>
-              <th scope="col">Primary Contact</th>
               <th scope="col">Primary Email&nbsp;</th>
               <th scope="col">Phones</th>
-              <th scope="col">Active</th>
-              <th scope="col">Groups</th>
               <th scope="col">Date Created</th>
-              <th scope="col"></th>
             </tr>
           </thead>
           <tbody>
@@ -304,10 +304,7 @@
                   <span><%= dat.law_firm_id %></span>
                 </div>
               </th>
-              <td><span><%= dat.name %></span>
-              </td>
-              <td>
-                <span><%= dat.contact_person %></span>
+              <td><span><a href='/lawfirm_view?id=<%= dat.law_firm_id %>'><%= dat.name %></a></span>
               </td>
               <td>
                 <div class="d-flex align-items-center">
@@ -319,7 +316,7 @@
                   <span class="ml-2"><%= dat.phone_number %></span>
                 </div>
               </td>
-              <td>
+             <!---- <td>
                 <label class="custom-toggle">
                   <% if(dat.status == true) { %>
                    <input onchange="dut( '<%= dat.law_firm_id %>','<%= dat.status %>' ) " id="active_checkboxq" type="checkbox" checked="" value=" <%= dat.name %>" name="active" />
@@ -333,38 +330,13 @@
                     data-label-on="Yes"
                   ></span>
                 </label>
-              </td>
-              <td>
-                <div class="d-flex align-items-center">
-                  <span class="ml-2">Litigation&nbsp;</span>
-                </div>
-              </td>
+              </td> -->
               <td>
                 <div class="d-flex align-items-center">
                   <span class="ml-2"><%= moment(dat.date_created).format('Do MMMM, YYYY') %></span>
                 </div>
               </td>
-              <td>
-                <div class="dropdown">
-                  <a
-                    class="btn btn-sm btn-icon-only text-light"
-                    href="#"
-                    role="button"
-                    aria-haspopup="true"
-                    aria-expanded="false"
-                  >
-                    <i class="fas fa-ellipsis-v"></i>
-                  </a>
-                  <div
-                    class="dropdown-menu dropdown-menu-right dropdown-menu-arrow"
-                    style=""
-                  >
-                    <a class="dropdown-item" href="#">Action</a>
-                    <a class="dropdown-item" href="#">Another action</a>
-                    <a class="dropdown-item" href="#">Something else here</a>
-                  </div>
-                </div>
-              </td>
+             
             </tr>
             <% } %>
             <% } %>

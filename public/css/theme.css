@@ -17859,7 +17859,7 @@ a.text-lighter:hover {
 }
 .bootstrap-tagsinput [data-role="remove"]:after {
     font-size: 16px;
-    content: "×";
+    content: "ï¿½";
 }
 #chartjs-tooltip {
     position: absolute;
@@ -21231,4 +21231,7 @@ pre > code.highlight {
 }
 .ct-footer-links li + li {
     margin-left: 1rem;
+}
+.extraRow {
+    background-color: #f2f2f2;
 }

@@ -4,7 +4,7 @@
       <div class="col-lg-4">
         <div class="card">
           <div class="card-header border-0 pb-0">
-            <h1 class="mb-0">Law Firm Name</h1>
+            <h1 class="mb-0"><%= data[0].name %></h1>
           </div>
           <div class="card-body pt-0 pb-2 px-0">
             <div
@@ -16,7 +16,7 @@
                   <h3 class="mb-0">Profile</h3>
                 </div>
               </div>
-              <a href="/lawfirm_view"
+              <a href='/lawfirm_view?id=<%= law_firm_id %>'
                 ><i class="fa fa-edit"></i
               ></a>
             </div>
@@ -30,20 +30,7 @@
                     <h3 class="mb-0">Contacts</h3>
                   </div>
                 </div>
-                <a href="/lawfirm_contacts"
-                  ><i class="fa fa-edit"></i
-                ></a>
-              </div>
-              <div
-                class="border-bottom d-flex align-items-center justify-content-between px-4 py-2"
-              >
-                <div class="d-flex align-items-center">
-                  <i class="fa text-primary text-lg fa-pen"></i>
-                  <div class="ml-3">
-                    <h3 class="mb-0">Notes</h3>
-                  </div>
-                </div>
-                <a href="lawfirm_notes"
+                <a href='/lawfirm_contacts?id=<%= law_firm_id %>'
                   ><i class="fa fa-edit"></i
                 ></a>
               </div>
@@ -56,7 +43,7 @@
                     <h3 class="mb-0">Statement</h3>
                   </div>
                 </div>
-                <a href="lawfirm_statement"
+                <a href='/lawfirm_statement?id=<%= law_firm_id %>'
                   ><i class="fa fa-edit"></i
                 ></a>
               </div>
@@ -74,19 +61,6 @@
                 ></a>
               </div>
               <div class="card-body pt-0 pb-2 px-0">
-                <div
-                  class="border-bottom border-top d-flex align-items-center justify-content-between px-4 py-2"
-                >
-                  <div class="d-flex align-items-center">
-                    <i class="fa text-primary text-lg fa-handshake"></i>
-                    <div class="ml-3">
-                      <h3 class="mb-0">Contracts</h3>
-                    </div>
-                  </div>
-                  <a href="/lawfirm_contracts"
-                    ><i class="fa fa-edit"></i
-                  ></a>
-                </div>
                 <div class="card-body pt-0 pb-2 px-0">
                   <div
                     class="border-bottom border-top d-flex align-items-center justify-content-between px-4 py-2"
@@ -97,24 +71,9 @@
                         <h3 class="mb-0">Cases</h3>
                       </div>
                     </div>
-                    <a href="lawfirm_cases"
+                    <a href='/lawfirm_cases?id=<%= law_firm_id %>'
                       ><i class="fa fa-edit"></i
                     ></a>
-                  </div>
-                  <div class="card-body pt-0 pb-2 px-0">
-                    <div
-                      class="border-bottom border-top d-flex align-items-center justify-content-between px-4 py-2"
-                    >
-                      <div class="d-flex align-items-center">
-                        <i class="fa text-primary text-lg fa-cog"></i>
-                        <div class="ml-3">
-                          <h3 class="mb-0">Tasks</h3>
-                        </div>
-                      </div>
-                      <a href="lawfirm_tasks"
-                        ><i class="fa fa-edit"></i
-                      ></a>
-                    </div>
                   </div>
                 </div>
               </div>
@@ -180,16 +139,15 @@
                         >
                       </li>
                       <li class="nav-item">
-                        <a
+                        <button
                           class="nav-link mb-sm-3 mb-md-0"
                           id="tabs-icons-text-3-tab"
-                          data-toggle="tab"
-                          href="#tabs-icons-text-3"
+                          data-toggle="modal" data-target="#exampleModal1"
                           role="tab"
                           aria-controls="tabs-icons-text-3"
                           aria-selected="false"
-                          >Bulk Actions<i class="fa mr-2"></i
-                        ></a>
+                          >Add Contact<i class="fa mr-2"></i
+                        ></button>
                       </li>
                     </ul>
                   </div>
@@ -229,11 +187,10 @@
                   <th scope="col">Email Address</th>
                   <th scope="col">Position</th>
                   <th scope="col">Phone Number</th>
-                  <th scope="col"></th>
-                  <th scope="col"></th>
                 </tr>
               </thead>
               <tbody>
+                <%  for (let dat of data[0].contacts) { %>
                 <tr>
                   <td>
                     <div class="d-flex align-items-center">
@@ -241,29 +198,78 @@
                         src="https://demos.creative-tim.com/argon-dashboard-pro-bs4/assets/img/theme/team-2.jpg"
                         class="avatar avatar-sm rounded-circle"
                       />
-                      <span class="ml-2">Miriam Jhonson</span>
+                      <span class="ml-2"><%= dat.name %></span>
                     </div>
                   </td>
                   <td>
                     <div class="d-flex align-items-center">
-                      <span class="ml-2">test@gmail.com</span>
+                      <span class="ml-2"><%= dat.email %></span>
                     </div>
                   </td>
                   <td>
                     <div class="d-flex align-items-center">
-                      <span class="ml-2">Managing Partner</span>
+                      <span class="ml-2"><%= dat.position %></span>
                     </div>
                   </td>
                   <td>
                     <div class="d-flex align-items-center">
-                      <span class="ml-2">+263772772772</span>
+                      <span class="ml-2"><%= dat.phone %></span>
                     </div>
                   </td>
                 </tr>
+                <% } %>
               </tbody>
             </table>
           </div>
         </div>
       </div>
     </div>
+  </div>
+  <div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <form action='update-lawfirm-contact?id=<%= law_firm_id %>' method="POST">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Add Contact Person</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">X</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                 
+              <div class="mb-3">
+                <label for="contact_person" class="form-label">Contact Person</label>
+                <div id="contact-container">
+                  <div class="contact-input">
+                    <div class="row mb-3">
+                    <div class="col-md-6">
+                    <label for="name1">Name:</label>
+                    <input type="text"  class="form-control" name="name1" required>
+                  </div>
+                  <div class="col-md-6">
+                    <label for="email1">Email:</label>
+                    <input type="email"  class="form-control" name="email1" required>
+                  </div>
+                  </div>
+                  <div class="row mb-3">
+                  <div class="col-md-6">
+                    <label for="position1">Position:</label>
+                    <input type="text"  class="form-control" name="position1" required>
+                  </div>
+                  <div class="col-md-6">
+                    <label for="phone1">Phone:</label>
+                    <input type="tel"  class="form-control" name="phone1" required>
+                  </div>
+                  </div>
+                  </div>
+                </div>
+              </div>          
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit"  class="btn btn-primary">Submit</button>
+            </div>
+        </form> 
+        </div>
+  </div>
   </div>

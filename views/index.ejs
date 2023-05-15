@@ -45,7 +45,7 @@
               <h5 class="card-title text-uppercase text-muted mb-0">
                 Total cases
               </h5>
-              <span class="h2 font-weight-bold mb-0">350,897</span>
+              <span class="h2 font-weight-bold mb-0"><%= cases_length %></span>
             </div>
             <div class="col-auto">
               <div
@@ -70,7 +70,7 @@
               <h5 class="card-title text-uppercase text-muted mb-0">
                 total contracts
               </h5>
-              <span class="h2 font-weight-bold mb-0">2,530</span>
+              <span class="h2 font-weight-bold mb-0"><%= contracts_length %></span>
             </div>
             <div class="col-auto">
               <div
@@ -140,12 +140,14 @@
               </tr>
             </thead>
             <tbody>
+              <% for (let dat of expiring_contracts) { %>
               <tr>
-                <td>NUST x Soxfort Solutions</td>
-                <td>Soxfort Solutions</td>
-                <td>$100,000.00</td>
-                <td>20/06/2023</td>
+                <td><%= dat.name %></td>
+                <td><%= dat.vendor %></td>
+                <td><%= dollarUS.format(dat.contract_value) %></td>
+                <td><%= moment(dat.end_date).format('Do MMMM, YYYY') %></td>
               </tr>
+              <% } %>
             </tbody>
           </table>
         </div>
@@ -271,115 +273,20 @@
               <tr>
                 <th scope="col">Task</th>
                 <th scope="col">Due Date</th>
-                <th scope="col">STage COmplete</th>
+                <th scope="col">Assigned To</th>
               </tr>
             </thead>
             <tbody>
+              <% for (let dat of tasks) { %>
               <tr>
-                <th scope="row">Schedule Meeting</th>
-                <td>1,480</td>
+                <th scope="row"><%= dat.name %></th>
+                <td><%= moment(dat.end_date).format('Do MMMM, YYYY') %></td>
                 <td>
-                  <div class="d-flex align-items-center">
-                    <span class="mr-2">60%</span>
-                    <div>
-                      <div class="progress">
-                        <div
-                          class="progress-bar bg-gradient-danger"
-                          role="progressbar"
-                          aria-valuenow="60"
-                          aria-valuemin="0"
-                          aria-valuemax="100"
-                          style="width: 60%"
-                        ></div>
-                      </div>
-                    </div>
-                  </div>
+                    <%= dat.assigned_to %>
+             
                 </td>
               </tr>
-              <tr>
-                <th scope="row">File Report&nbsp;</th>
-                <td>5,480</td>
-                <td>
-                  <div class="d-flex align-items-center">
-                    <span class="mr-2">70%</span>
-                    <div>
-                      <div class="progress">
-                        <div
-                          class="progress-bar bg-gradient-success"
-                          role="progressbar"
-                          aria-valuenow="70"
-                          aria-valuemin="0"
-                          aria-valuemax="100"
-                          style="width: 70%"
-                        ></div>
-                      </div>
-                    </div>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <th scope="row">Meeting at 17:00Hrs&nbsp;</th>
-                <td>4,807</td>
-                <td>
-                  <div class="d-flex align-items-center">
-                    <span class="mr-2">80%</span>
-                    <div>
-                      <div class="progress">
-                        <div
-                          class="progress-bar bg-gradient-primary"
-                          role="progressbar"
-                          aria-valuenow="80"
-                          aria-valuemin="0"
-                          aria-valuemax="100"
-                          style="width: 80%"
-                        ></div>
-                      </div>
-                    </div>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <th scope="row">Instagram</th>
-                <td>3,678</td>
-                <td>
-                  <div class="d-flex align-items-center">
-                    <span class="mr-2">75%</span>
-                    <div>
-                      <div class="progress">
-                        <div
-                          class="progress-bar bg-gradient-info"
-                          role="progressbar"
-                          aria-valuenow="75"
-                          aria-valuemin="0"
-                          aria-valuemax="100"
-                          style="width: 75%"
-                        ></div>
-                      </div>
-                    </div>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <th scope="row">twitter</th>
-                <td>2,645</td>
-                <td>
-                  <div class="d-flex align-items-center">
-                    <span class="mr-2">30%</span>
-                    <div>
-                      <div class="progress">
-                        <div
-                          class="progress-bar bg-gradient-warning"
-                          role="progressbar"
-                          aria-valuenow="30"
-                          aria-valuemin="0"
-                          aria-valuemax="100"
-                          style="width: 30%"
-                        ></div>
-                      </div>
-                    </div>
-                  </div>
-                </td>
-              </tr>
+              <% } %>
             </tbody>
           </table>
         </div>

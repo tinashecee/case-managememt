@@ -356,5 +356,66 @@
     <script src="https://rawcdn.githack.com/Loopple/loopple-public-assets/7bb803d2af2ab6d71d429b0cb459c24a4cd0fbb4/argon-dashboard/js/argon.min.js"></script>
     <script src="/js/loopple/loopple.js"></script>
     <script  src="/js/script-lawfirm.js"></script>
+    <script>
+        let contactCount = 1;
+    
+        function addContact() {
+
+          contactCount++;
+    
+          const container = document.getElementById("contact-container");
+    
+          const newContactInput = document.createElement("div");
+          newContactInput.className = "contact-input";
+          newContactInput.innerHTML = `
+          <div class="row mb-3">
+                                <div class="col-md-6">
+            <label for="name${contactCount}">Name:</label>
+            <input type="text" class="form-control" name="name${contactCount}" required>
+        </div>
+                              <div class="col-md-6">
+            <label for="email${contactCount}">Email:</label>
+            <input type="email" class="form-control" name="email${contactCount}" required>
+        </div>
+        </div>
+        <div class="row mb-3">
+                              <div class="col-md-6">
+            <label for="position${contactCount}">Position:</label>
+            <input type="text" class="form-control" name="position${contactCount}" required>
+        </div>
+                              <div class="col-md-6">
+            <label for="phone${contactCount}">Phone:</label>
+            <input type="tel" class="form-control" name="phone${contactCount}" required>
+        </div>
+        </div>
+            <button type="button" onclick="removeContact(this)">-</button>
+          `;
+    
+          container.appendChild(newContactInput);
+          fetch('/update-contact-person-count',{
+			method: 'POST',
+			body: JSON.stringify({
+			  count: contactCount,
+			}),
+			headers: {
+				'Content-type': 'application/json; charset=UTF-8'
+			},
+		})
+        }
+    
+        function removeContact(button) {
+          const contactInput = button.parentNode;
+          contactInput.parentNode.removeChild(contactInput);
+          fetch('/reduce-contact-person-count',{
+			method: 'POST',
+			body: JSON.stringify({
+			  count: contactCount-1,
+			}),
+			headers: {
+				'Content-type': 'application/json; charset=UTF-8'
+			},
+		})
+        }
+      </script>
   </body>
   

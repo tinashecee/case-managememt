@@ -2,7 +2,7 @@
       <div class="container-fluid pt-3">
         <div class="row removable">
           <div class="col-lg-12">
-            <h1 class="">{Nust In House Case Management System}</h1>
+            <h1 class=""><%= data[0].name %></h1>
           </div>
         </div>
         <div class="row removable">
@@ -11,11 +11,7 @@
               <div class="card-header border-0 pb-0">
                 <h4 class="mb-0">Details</h4>
                 <div class="card">
-                  <div class="card-header border-0 pb-0">
-                    <h4 class="mb-0">Details</h4>
-                    <p class="text-sm">Bellow you will find all the steps</p>
-                  </div>
-                  <button class="btn btn-primary btn-sm">Edit</button>
+                  
                   <div class="card-body text-left">
                     <div class="accordion p-0" id="accordionExample">
                       <div class="card shadow-none mb-0">
@@ -40,6 +36,7 @@
                             <p>
                               <%= data[0].notes %>
                             </p>
+                            <button class="btn btn-primary btn-sm">Edit</button>
                           </div>
                         </div>
                       </div>
@@ -102,9 +99,6 @@
                         ><i class="fa fa-edit"></i
                       ></button>
                         </div>
-                        <div class="col-auto">
-                          <a href="#" class="btn btn-primary btn-sm">Download</a>
-                        </div>
                       </div>
                     </div>
                   </div>
@@ -140,6 +134,11 @@
                 <li class="list-group-item">
                   <div class="row align-items-center">
                     <div class="col">
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal4"
+                    ><i class="fa fa-eye"></i
+                  ></button>
+                </div>
+                    <div class="col">
                       <h6 class="card-subtitle mb-2 text-muted">File Name</h6>
                       <p class="card-text">example-file.pdf</p>
                     </div>
@@ -160,7 +159,7 @@
       <div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
-                <form action="add-case" method="POST">
+                <form action='update-contract-value?id=<%= id %>' method="POST">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">Edit Contract Value</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -173,7 +172,7 @@
                       >Contract Value</label
                     >
                     <input
-                      type="text"
+                      type="number"
                       class="form-control"
                       id="contract_value"
                       name="contract_value"
@@ -192,7 +191,7 @@
     <div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered" role="document">
           <div class="modal-content">
-              <form action="add-case" method="POST">
+              <form action='update-contract-duration?id=<%= id %>' method="POST">
               <div class="modal-header">
                   <h5 class="modal-title" id="exampleModalLabel">Edit Duration</h5>
                   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -235,7 +234,7 @@
     <div class="modal fade" id="exampleModal3" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered" role="document">
           <div class="modal-content">
-              <form action="add-case" method="POST">
+              <form action='update-contract-terms?id=<%= id %>' method="POST">
               <div class="modal-header">
                   <h5 class="modal-title" id="exampleModalLabel">Edit Payment Terms</h5>
                   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -271,7 +270,7 @@
     <div class="modal fade" id="exampleModal4" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered" role="document">
           <div class="modal-content">
-              <form action="add-case" method="POST">
+              <form action='update-contract-status?id=<%= id %>' method="POST">
               <div class="modal-header">
                   <h5 class="modal-title" id="exampleModalLabel">Edit Status</h5>
                   <button type="button" class="close" data-dismiss="modal" aria-label="Close">

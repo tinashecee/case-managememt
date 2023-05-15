@@ -7,6 +7,7 @@
      <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
          <div class="modal-dialog modal-dialog-centered" role="document">
              <div class="modal-content">
+              <form action="/add-tasks" method="POST">
                  <div class="modal-header">
                      <h5 class="modal-title" id="exampleModalLabel">Add task</h5>
                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -14,7 +15,7 @@
                      </button>
                  </div>
                  <div class="modal-body">
-                  <form action="/add-tasks" method="POST">
+                
                     <div class="mb-3">
                       <label for="taskName" class="form-label">Task Name</label>
                       <input type="text" class="form-control" id="taskName" name="taskName" required>
@@ -64,14 +65,13 @@
                       <label for="taskDescription" class="form-label">Task Description</label>
                       <textarea class="form-control" id="taskDescription" name="taskDescription" rows="3"></textarea>
                     </div>
-                    <button type="submit" class="btn btn-primary">Submit</button>
-                  </form>
-                  
+                   
                  </div>
                  <div class="modal-footer">
                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                     <button type="button" class="btn btn-primary">Submit</button>
+                     <button type="submit" class="btn btn-primary">Submit</button>
                  </div>
+                </form>
              </div>
          </div>
      </div>
@@ -405,7 +405,7 @@
                 <div class="d-flex align-items-center">
                   <span class="ml-2">
                     <font style="vertical-align: inherit">
-                      <font style="vertical-align: inherit"><%= dat.status %></font>
+                      <font style="vertical-align: inherit"><%= dat.assigned_to %></font>
                     </font>
                   </span>
                 </div>

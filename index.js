@@ -55,6 +55,18 @@ let array1 = []
 let array2 = []
 let array3 = []
 let errors =[];
+let contact_person_count = 1;
+let line_budget_count = 1;
+let budget_balance = 0;
+let budget_amount = 0
+let budget_id = '';
+let expenditure_budget_id = ''
+let expenditure_budget = ''
+let expenditure_actual = ''
+let total_expenditure = 0
+let expenditure_left = 0
+let current_balance = 0
+let budget_statement  = []
 app.get('/a', (req, res) => {
     req.flash('success', 'Welcome!!');
     res.redirect('/display-message');
@@ -64,16 +76,108 @@ app.get('/a', (req, res) => {
       res.render("display-message",{layout:'./layouts/index-layout'});
   });
 app.get('', async (req,res) => {
+    pool.query(
+        `SELECT * FROM tasks`,
+        [],
+        (err, results) => {
+            if(err){
+                console.log(err)
+                throw err;
+                
+            }
+            pool.query(
+                `SELECT * FROM cases`,
+                [],
+                (err, results1) => {
+                    if(err){
+                        console.log(err)
+                        throw err;
+                        
+                    }
+                    pool.query(
+                        `SELECT * FROM contracts`,
+                        [],
+                        (err, result2) => {
+                            if(err){
+                                console.log(err)
+                                throw err;
+                                
+                            }        
+                            pool.query(
+                                `SELECT *
+                                FROM contracts
+                                WHERE end_date < CURRENT_DATE + INTERVAL '1 month'`,
+                                [],
+                                (err, result3) => {
+                                    if(err){
+                                        console.log(err)
+                                        throw err;
+                                        
+                                    }
+                                    let dollarUS = Intl.NumberFormat("en-US", {
+                                        style: "currency",
+                                        currency: "USD", 
+                                    });
+                                     
+                                    console.log(result3.rows)
+             array1 = results.rows
+             res.render('index',{layout:'./layouts/index-layout',dollarUS:dollarUS, expiring_contracts:result3.rows, contracts_length:result2.rows.length ,cases_length:results1.rows.length, tasks:results.rows,authed:authed,user:nam,})
+                })
+            })
+            })
+        }
+    )
     
-    res.render('index',{layout:'./layouts/index-layout',authed:authed,user:nam,})
 });
 app.get('/assistant', async (req,res) => {
     
     res.render('assistant',{layout:'./layouts/assistant-layout'})
 });
 app.get('/budget',  async (req,res) => {
-    
-    res.render('budget',{layout:'./layouts/budget-layout'})
+    pool.query(
+        `SELECT * FROM budget`,
+        [],
+        (err, results) => {
+            if(err){
+                console.log(err)
+                throw err;
+                
+            }
+             pool.query(
+                `SELECT * FROM budget_items`,
+                [],
+                (err, results1) => {
+                    if(err){
+                        console.log(err)
+                        throw err;
+                        
+                    }
+                     results.rows
+                     let dollarUS = Intl.NumberFormat("en-US", {
+                        style: "currency",
+                        currency: "USD", 
+                    });
+                   
+                    if(results.rows[0]){
+                        budget_balance = results.rows[0].balance
+                        budget_amount = results.rows[0].amount
+                        budget_id = results.rows[0].budget_id
+                    }
+                    if(results1.rows[0] && results.rows[0]){
+                        results1.rows.forEach(e=>{
+                           total_expenditure += parseFloat(e.actual)
+                        })
+                     let wer =   ( parseFloat(results.rows[0].amount) - total_expenditure)/parseFloat(results.rows[0].amount) * 100
+                                          expenditure_left = wer.toFixed(2)
+                     current_balance = parseFloat(results.rows[0].amount) - total_expenditure
+                     
+
+                    }
+                     res.render('budget',{layout:'./layouts/budget-layout',budget_statement:budget_statement,data:results.rows, data1:results1.rows, dollarUS:dollarUS,total_expenditure:total_expenditure,expenditure_left:expenditure_left, current_balance:current_balance})
+                }
+            )
+        }
+    )
 });
 app.get('/calender',  async (req,res) => {
     
@@ -90,7 +194,20 @@ app.get('/cases',  async (req,res) => {
                 
             }
              array3 = results.rows
-             res.render('cases',{layout:'./layouts/lawfirms-layout',data:array3})
+             pool.query(
+                `SELECT name FROM law_firms`,
+                [],
+                (err, results) => {
+                    if(err){
+                        console.log(err)
+                        throw err;
+                        
+                    }
+                     results.rows
+                     console.log( results.rows)
+                     res.render('cases',{layout:'./layouts/lawfirms-layout',data:array3, dataA:results.rows})
+                }
+            )
         }
     )
    
@@ -115,7 +232,7 @@ app.get('/contract_view',  async (req,res) => {
                 currency: "USD", 
             });
             console.log(results.rows)
-             res.render('contract_view',{layout:'./layouts/contract_view_layout',data:results.rows,dollarUS:dollarUS})
+             res.render('contract_view',{layout:'./layouts/contract_view_layout',data:results.rows,dollarUS:dollarUS,id:query})
         }
     )
 });
@@ -134,8 +251,19 @@ app.get('/case_view',  async (req,res) => {
                 style: "currency",
                 currency: "USD",
             });
-            console.log(results.rows)
-             res.render('case_view',{layout:'./layouts/case_view_layout',data:results.rows})
+            pool.query(
+                `SELECT name FROM law_firms`,
+                [],
+                (err, results1) => {
+                    if(err){
+                        console.log(err)
+                        throw err;
+                        
+                    }
+                     
+                    res.render('case_view',{layout:'./layouts/case_view_layout',data:results.rows, dataA:results1.rows,id:query})
+                }
+            )
         }
     )
    
@@ -155,31 +283,140 @@ app.get('/contracts',  async (req,res) => {
                 currency: "USD",
             });
            // dollarUS.format(currentUser.account_balance)
-             array2 = results.rows
-             res.render('contracts',{layout:'./layouts/contracts-layout',data:array2,dollarUS:dollarUS})
+           pool.query(
+            `SELECT company_name FROM vendors`,
+            [],
+            (err, results1) => {
+                if(err){
+                    console.log(err)
+                    throw err;
+                    
+                }
+                let dollarUS = Intl.NumberFormat("en-US", {
+                    style: "currency",
+                    currency: "USD",
+                });
+               // dollarUS.format(currentUser.account_balance)
+                 array2 = results.rows
+                 res.render('contracts',{layout:'./layouts/contracts-layout',data:array2,dollarUS:dollarUS,vendors:results1.rows})
+            }
+        )
         }
     )
     
 });
 app.get('/lawfirm_cases',  async (req,res) => {
+    let query = req.query.id
+    pool.query(
+        `SELECT * FROM law_firms WHERE law_firm_id = $1`,
+        [query],
+        (err, results) => {
+            if(err){
+                console.log(err)
+                throw err;
+                
+            }
+            let dollarUS = Intl.NumberFormat("en-US", {
+                style: "currency",
+                currency: "USD", 
+            });
+            pool.query(
+                `SELECT * FROM cases WHERE law_firm = $1`,
+                [results.rows[0].name],
+                (err, results1) => {
+                    if(err){
+                        console.log(err)
+                        throw err;
+                        
+                    }
+                    res.render('lawfir_cases',{layout:'./layouts/lawfir-cases-layout',data:results.rows,dollarUS:dollarUS,cases:results1.rows,law_firm_id:query})
+
+                    
+                }
+            )
+                    }
+    )
     
-    res.render('lawfir_cases',{layout:'./layouts/lawfir-cases-layout'})
 });
 app.get('/lawfirm_contracts',  async (req,res) => {
-    
-    res.render('lawfirm_contracts',{layout:'./layouts/lawfirm-contracts-layout'})
+    let query = req.query.id
+    pool.query(
+        `SELECT * FROM law_firms WHERE law_firm_id = $1`,
+        [query],
+        (err, results) => {
+            if(err){
+                console.log(err)
+                throw err;
+                
+            }
+            let dollarUS = Intl.NumberFormat("en-US", {
+                style: "currency",
+                currency: "USD", 
+            });
+            console.log(results.rows)
+            res.render('lawfirm_contracts',{layout:'./layouts/lawfirm-contracts-layout',data:results.rows,dollarUS:dollarUS,law_firm_id:query})
+        }
+    )
 });
 app.get('/lawfirm_tasks',  async (req,res) => {
-    
-    res.render('lawfirm_tasks',{layout:'./layouts/lawfirm-tasks-layout'})
+    let query = req.query.id
+    pool.query(
+        `SELECT * FROM law_firms WHERE law_firm_id = $1`,
+        [query],
+        (err, results) => {
+            if(err){
+                console.log(err)
+                throw err;
+                
+            }
+            let dollarUS = Intl.NumberFormat("en-US", {
+                style: "currency",
+                currency: "USD", 
+            });
+            console.log(results.rows)
+            res.render('lawfirm_contracts',{layout:'./layouts/lawfirm-contracts-layout',data:results.rows,dollarUS:dollarUS,law_firm_id:query})
+        }
+    )
 });
 app.get('/lawfirm_contacts',  async (req,res) => {
-    
-    res.render('lawfirmcontacts',{layout:'./layouts/lawfirm-contacts-layout'})
+    let query = req.query.id
+    pool.query(
+        `SELECT * FROM law_firms WHERE law_firm_id = $1`,
+        [query],
+        (err, results) => {
+            if(err){
+                console.log(err)
+                throw err;
+                
+            }
+            let dollarUS = Intl.NumberFormat("en-US", {
+                style: "currency",
+                currency: "USD", 
+            });
+            console.log(results.rows)
+            res.render('lawfirmcontacts',{layout:'./layouts/lawfirm-contacts-layout',data:results.rows,dollarUS:dollarUS,law_firm_id:query})
+        }
+    )
 });
 app.get('/lawfirm_notes',  async (req,res) => {
-    
-    res.render('lawfirmnotes',{layout:'./layouts/lawfirm-notes-layout'})
+    let query = req.query.id
+    pool.query(
+        `SELECT * FROM law_firms WHERE law_firm_id = $1`,
+        [query],
+        (err, results) => {
+            if(err){
+                console.log(err)
+                throw err;
+                
+            }
+            let dollarUS = Intl.NumberFormat("en-US", {
+                style: "currency",
+                currency: "USD", 
+            });
+            console.log(results.rows)
+            res.render('lawfirmnotes',{layout:'./layouts/lawfirm-notes-layout',data:results.rows,dollarUS:dollarUS,law_firm_id:query})
+        }
+    )
 });
 
 app.get('/lawfirms',  async (req,res) => {
@@ -212,12 +449,43 @@ app.get('/lawfirms',  async (req,res) => {
    
 });
 app.get('/lawfirm_statement',  async (req,res) => {
-    
-    res.render('lawfirmstatement',{layout:'./layouts/lawfirm-statement-layout'})
+    let query = req.query.id
+    pool.query(
+        `SELECT * FROM law_firms WHERE law_firm_id = $1`,
+        [query],
+        (err, results) => {
+            if(err){
+                console.log(err)
+                throw err;
+                
+            }
+            let dollarUS = Intl.NumberFormat("en-US", {
+                style: "currency",
+                currency: "USD", 
+            });
+            console.log(results.rows)
+            res.render('lawfirmstatement',{layout:'./layouts/lawfirm-statement-layout',data:results.rows,dollarUS:dollarUS,law_firm_id:query})
+        }
+    )
 });
 app.get('/lawfirm_view',  async (req,res) => {
-    
-    res.render('lawfirmview',{layout:'./layouts/lawfirm-view-layout'})
+    let query = req.query.id
+    pool.query(
+        `SELECT * FROM law_firms WHERE law_firm_id = $1`,
+        [query],
+        (err, results) => {
+            if(err){
+                console.log(err)
+                throw err;
+                
+            }
+            let dollarUS = Intl.NumberFormat("en-US", {
+                style: "currency",
+                currency: "USD", 
+            });
+            res.render('lawfirmview',{layout:'./layouts/lawfirm-view-layout',data:results.rows,dollarUS:dollarUS,law_firm_id:query})
+        }
+    )
 });
 app.get('/learn',  async (req,res) => {
     
@@ -241,7 +509,6 @@ app.get('/tasks',  async (req,res) => {
            
             
              array1 = results.rows
-             console.log(results.rows)
              res.render('tasks',{layout:'./layouts/tasks-layout',data:results.rows})
           
         }
@@ -298,8 +565,58 @@ function formatDate(date) {
 
     return [year, month, day].join('-');
 }
+app.post('/update-lawfirm-profile', (req, res)=>{
+  let query = req.query.id
+  let lawfirm_name = req.body.lawfirm_name
+  let email = req.body.email
+  let address = req.body.address
+  let phone_number = req.body.phone_number
+  pool.query(
+    'UPDATE law_firms SET name = $1, email = $2, address = $3, phone_number = $4 WHERE law_firm_id = $5',
+   [lawfirm_name,email,address,phone_number, query], 
+   (err, results) => {
+       if(err){
+           throw err;
+       }
+       res.redirect('/lawfirm_view?id='+query);
+   }
+)
+
+})
+app.post('/update-lawfirm-contact', (req, res)=>{
+    let query = req.query.id
+    let name1 = req.body.name1
+    let email1 = req.body.email1
+    let position1 = req.body.position1
+    let phone1 = req.body.phone1
+    pool.query(
+        `SELECT * FROM law_firms WHERE law_firm_id = $1`,
+        [query],
+        (err, result) => {
+            if(err){
+                console.log(err)
+                throw err;
+                
+            }
+          result.rows[0].contacts.push({name:name1,email:email1,position:position1,phone:phone1})
+          console.log(result.rows[0].contacts)
+          pool.query(
+            'UPDATE law_firms SET contacts = $1 WHERE law_firm_id = $2',
+           [ result.rows[0].contacts, query], 
+           (err, results) => {
+               if(err){
+                   throw err;
+               }
+               res.redirect('/lawfirm_contacts?id='+query);
+           }
+        )
+        })
+     
+   
+  
+  })
 app.post('/add-lawfirm', (req, res)=>{
-    console.log(req.body)
+   
     let law_firm = req.body.law_firm
     let address = req.body.address
     let vat_number = req.body.vat_number
@@ -307,13 +624,17 @@ app.post('/add-lawfirm', (req, res)=>{
     let phone_number = req.body.phone_number
     let website = req.body.website
     let email = req.body.email
-    let groups = req.body.group
+    let contacts = []
+    for(let i=1;i<contact_person_count+1;i++){
+        contacts.push({name:req.body[`name${i}`],email:req.body[`email${i}`],position:req.body[`position${i}`],phone:req.body[`phone${i}`]})
+    }
     let yourDate = new Date()
     date_created = formatDate(yourDate)
+    console.log(contacts)
     pool.query(
-        `INSERT INTO law_firms (name, address, phone_number, contact_person, status, groups, date_created, email, vat_number, website)
+        `INSERT INTO law_firms (name, address, phone_number, contacts, status, groups, date_created, email, vat_number, website)
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
-        [law_firm, address, phone_number, contact_person, true, groups, date_created, email, vat_number, website], 
+        [law_firm, address, phone_number, contacts, true, "groups", date_created, email, vat_number, website], 
         (err, results) => {
             if(err){
                 throw err;
@@ -322,6 +643,125 @@ app.post('/add-lawfirm', (req, res)=>{
             res.redirect('/lawfirms');
         }
     )
+});
+app.post('/update-lawfirm', (req, res)=>{
+    let query = req.query.id
+    let law_firm = req.body.law_firm
+    let yourDate = new Date()
+    date_created = formatDate(yourDate)
+    pool.query(
+         'UPDATE cases SET law_firm = $1 WHERE case_id = $2',
+        [law_firm, query], 
+        (err, results) => {
+            if(err){
+                throw err;
+            }
+            res.redirect('/case_view?id='+query);
+        }
+    )
+})
+app.post('/update-case-status', (req, res)=>{
+    let query = req.query.id
+    let status = req.body.status
+    let yourDate = new Date()
+    date_created = formatDate(yourDate)
+    pool.query(
+         'UPDATE cases SET status = $1 WHERE case_id = $2',
+        [status, query], 
+        (err, results) => {
+            if(err){
+                throw err;
+            }
+            res.redirect('/case_view?id='+query);
+        }
+    )
+});
+app.post('/update-case-startdate', (req, res)=>{
+    let query = req.query.id
+    let start_date = req.body.start_date
+    let yourDate = new Date()
+    date_created = formatDate(yourDate)
+    pool.query(
+         'UPDATE cases SET start_date = $1 WHERE case_id = $2',
+        [start_date, query], 
+        (err, results) => {
+            if(err){
+                throw err;
+            }
+            res.redirect('/case_view?id='+query);
+        }
+    )
+    
+});
+
+app.post('/update-contract-value', (req, res)=>{
+    let query = req.query.id
+    let contract_value = req.body.contract_value
+    let yourDate = new Date()
+    date_created = formatDate(yourDate)
+    pool.query(
+         'UPDATE contracts SET contract_value = $1 WHERE contract_id = $2',
+        [contract_value, query], 
+        (err, results) => {
+            if(err){
+                throw err;
+            }
+            res.redirect('/contract_view?id='+query);
+        }
+    )
+    
+});
+app.post('/update-contract-duration', (req, res)=>{
+    let query = req.query.id
+    let start_date = req.body.start_date
+    let end_date = req.body.end_date
+    let yourDate = new Date()
+    date_created = formatDate(yourDate)
+    pool.query(
+         'UPDATE contracts SET start_date = $1, end_date = $2 WHERE contract_id = $3',
+        [start_date, end_date, query], 
+        (err, results) => {
+            if(err){
+                throw err;
+            }
+            res.redirect('/contract_view?id='+query);
+        }
+    )
+    
+});
+app.post('/update-contract-terms', (req, res)=>{
+    let query = req.query.id
+    let payment_terms = req.body.payment_terms
+    let yourDate = new Date()
+    date_created = formatDate(yourDate)
+    pool.query(
+         'UPDATE contracts SET payment_terms = $1 WHERE contract_id = $2',
+        [payment_terms, query], 
+        (err, results) => {
+            if(err){
+                throw err;
+            }
+            res.redirect('/contract_view?id='+query);
+        }
+    )
+    
+});
+app.post('/update-contract-status', (req, res)=>{
+    let query = req.query.id
+    let status = req.body.status
+    let yourDate = new Date()
+    date_created = formatDate(yourDate)
+    pool.query(
+         'UPDATE contracts SET status = $1 WHERE contract_id = $2',
+        [status, query], 
+        (err, results) => {
+            if(err){
+                throw err;
+            }
+            res.redirect('/contract_view?id='+query);
+        }
+    )
+    
 });
 app.post('/change-lawfirm-status', (req, res)=>{
     console.log(req.body)
@@ -425,6 +865,118 @@ app.post('/add-vendor', (req, res)=>{
         }
     )
 });
+app.post('/add-budget', (req, res)=>{
+    let amount = req.body.amount
+    let start_date = req.body.start_date
+    let end_date = req.body.end_date
+    let notes = req.body.notes
+    
+    pool.query(
+        `INSERT INTO budget ( amount, start_date, end_date, notes, balance)
+        VALUES ($1, $2, $3, $4, $5)`,
+        [ amount, start_date, end_date, notes, amount], 
+        (err, results) => {
+            if(err){
+                throw err;
+            }
+            console.log(results.row);
+            req.flash('success_msg','You have successfully added a line budget');
+            res.redirect('/budget');
+        }
+    )
+})
+app.post('/add-line-budget', (req, res)=>{
+    for(let i=1;i<line_budget_count+1;i++){
+        console.log(budget_balance- req.body[`budget${i}`])
+
+       if( parseFloat(budget_balance) < parseFloat(req.body[`budget${i}`])){
+            console.log("budget not enough")
+        }else{
+            pool.query(
+                `INSERT INTO budget_items (budget_name, budget,variance, actual, expenditure)
+                VALUES ($1, $2, $3, $4, $5)`,
+                [req.body[`budget_name${i}`],req.body[`budget${i}`],0,0,[]], 
+                (err, results) => {
+                    if(err){
+                        throw err;
+                    }
+                    budget_balance-=req.body[`budget${i}`]
+                    console.log(budget_balance,"     ",budget_id)
+                    pool.query('UPDATE budget SET balance = $1 WHERE budget_id = $2',
+                    [budget_balance, budget_id],
+                    (err, result) => {
+                        if(err){
+                            throw err;
+                        }
+                        console.log(result)
+                    })
+                })
+                    
+                }
+            
+        }
+          
+    
+    req.flash('success_msg','You have successfully added a line budget item');
+    res.redirect('/budget');
+})
+app.post('/edit-budget', (req, res)=>{
+    let query = req.query.id
+    let edit_amount = req.body.edit_amount
+    let edit_start_date = req.body.edit_start_date
+    let edit_end_date = req.body.edit_end_date
+    let edit_notes = req.body.edit_notes
+    pool.query(
+        'UPDATE budget SET amount = $1, start_date = $2, end_date = $3, notes = $4 WHERE budget_id = $5',
+        [edit_amount, edit_start_date, edit_end_date,edit_notes, query],
+        (err, results) => {
+            if(err){
+                throw err;
+            }
+            req.flash('success_msg','You have successfully edited a budget');
+            res.redirect('/budget');
+        }
+    )
+})
+app.post('/add-expenditure', (req, res)=>{
+    let expenditure = req.body.expenditure
+    let expenditure_date = req.body.expenditure_date
+    let expenditure_desc = req.body.expenditure_desc
+    let a = parseFloat(expenditure_actual) + parseFloat(expenditure)
+    let b = parseFloat( expenditure_budget) - a
+    expenditure_budget -= parseFloat(expenditure_actual)
+    console.log(expenditure_budget_id)
+    pool.query(
+        'SELECT expenditure FROM budget_items WHERE budget_id = $1',
+       [parseFloat(expenditure_budget_id)], 
+       (err, results) => {
+           if(err){
+               throw err;
+           }
+           let array = results.rows[0].expenditure
+           if(array == null){
+              array = []
+           }
+           array.push({expenditure_date:expenditure_date,expenditure_desc:expenditure_desc,expenditure:expenditure,balance:expenditure_budget})
+           console.log(array)
+   pool.query(
+      'UPDATE budget_items SET actual = $1, variance = $2, expenditure = $3 WHERE budget_id = $4',
+     [a,b,array,expenditure_budget_id], 
+     (err, results) => {
+         if(err){
+             throw err;
+         }
+         res.redirect('/budget');
+     }
+  )
+    })
+  
+  })
+  app.post('/expenditure_id', (req, res)=>{
+      expenditure_budget_id = req.body.budget_id
+      expenditure_actual = req.body.actual
+      expenditure_budget =req.body.budget
+  })
 app.post('/add-tasks', (req, res)=>{
     console.log(req.body)
     let task_name = req.body.taskName
@@ -537,4 +1089,32 @@ app.post("/users/login", passport.authenticate('local', {
     authed = true
     res.render('index',{layout:'./layouts/index-layout',authed:true,user:nam})}
 );
+app.post('/update-contact-person-count', async (req,res) => { 
+    contact_person_count=req.body.count
+})
+app.post('/reduce-contact-person-count', async (req,res) => { 
+    contact_person_count-=1
+})
+app.post('/update-line-budget-count', async (req,res) => { 
+    line_budget_count=req.body.count
+})
+app.post('/reduce-line-budget-count', async (req,res) => { 
+    line_budget_count-=1
+})
+app.post('/budget_statement', async (req,res) => {
+    console.log(req.body.data) 
+    let id = req.body.data
+    pool.query('SELECT * FROM budget_items WHERE budget_id = $1',
+       [id], 
+       (err, results) => {
+           if(err){
+               throw err;
+           }
+           budget_statement = results.rows[0].expenditure
+           console.log(budget_statement)
+           
+        })
+    
+   
+})
 app.listen(PORT, console.log(`Server running on port ${PORT}`));

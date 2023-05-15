@@ -127,7 +127,12 @@
                                 </div>
                                 <div class="col-md-6">
                                     <label for="law-firm" class="form-label">Law Firm</label>
-                                    <input type="text" class="form-control" id="law_firm" name="law_firm" required="">
+                                    <select class="form-select" id="law_firm" name="law_firm" required="">
+                                        <option value="">Select a Law Firm</option>
+                                        <%  for (let dat of dataA) { %>
+                                        <option value="<%= dat.name %>"><%= dat.name %></option>
+                                        <% } %>
+                                    </select>
                                 </div>
                             </div>
                             <div class="row mb-3">
@@ -218,7 +223,6 @@
                                     <th scope="col">Start Date</th>
                                     <th scope="col">Deadline</th>
                                     <th scope="col">Members</th>
-                                    <th scope="col"></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -239,16 +243,6 @@
                                         <%= moment(dat.end_date).format('Do MMMM, YYYY') %></td>
                                     <td>
                                        <p><%= dat.staff_members %></p> </td>
-                                    <td>
-                                        <div class="d-flex align-items-center">
-                                            <span class="mr-2"><%= dat.progress %></span>
-                                            <div>
-                                                <div class="progress">
-                                                    <div class="progress-bar bg-gradient-danger" role="progressbar" aria-valuenow="<%= dat.progress %>" aria-valuemin="0" aria-valuemax="100" style="width: 60%;"></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </td>
                                 </tr>
                                 <% } %>
                                 <% } %>

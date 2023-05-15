@@ -342,4 +342,95 @@
     <script src="https://rawcdn.githack.com/Loopple/loopple-public-assets/5cef8f62939eeb089fa26d4c53a49198de421e3d/argon-dashboard/js/vendor/chart.extension.js"></script>
     <script src="https://rawcdn.githack.com/Loopple/loopple-public-assets/7bb803d2af2ab6d71d429b0cb459c24a4cd0fbb4/argon-dashboard/js/argon.min.js"></script>
     <script src="/js/loopple/loopple.js"></script>
+    <script>
+        let contactCount = 1;
+    
+        function addContact() {
+
+          contactCount++;
+    
+          const container = document.getElementById("contact-container");
+    
+          const newContactInput = document.createElement("div");
+          newContactInput.className = "contact-input";
+          newContactInput.innerHTML = `
+          <div class="row mb-3">
+                                <div class="col-md-6">
+            <label for="budget_name${contactCount}">Budget Line Name:</label>
+            <input type="text" class="form-control" name="budget_name${contactCount}" required>
+        </div>
+                              <div class="col-md-6">
+            <label for="budget${contactCount}">Budget Line Amount:</label>
+            <input type="number" class="form-control" name="budget${contactCount}" required>
+        </div>
+        </div>
+       
+            <button type="button" onclick="removeContact(this)">-</button>
+          `;
+    
+          container.appendChild(newContactInput);
+          fetch('/update-line-budget-count',{
+			method: 'POST',
+			body: JSON.stringify({
+			  count: contactCount,
+			}),
+			headers: {
+				'Content-type': 'application/json; charset=UTF-8'
+			},
+		})
+        }
+    
+        function removeContact(button) {
+          const contactInput = button.parentNode;
+          contactInput.parentNode.removeChild(contactInput);
+          fetch('/reduce-line-budget-count',{
+			method: 'POST',
+			body: JSON.stringify({
+			  count: contactCount-1,
+			}),
+			headers: {
+				'Content-type': 'application/json; charset=UTF-8'
+			},
+		})
+        }
+        function expenditure(a,b,c) {
+            fetch('/expenditure_id',{
+			method: 'POST',
+			body: JSON.stringify({  
+                budget:a,
+			  budget_id: b,
+              actual:c
+			}),
+			headers: {
+				'Content-type': 'application/json; charset=UTF-8'
+			},
+		})
+        }
+        function budget_statement(a) {
+            console.log(a)
+            fetch('/budget_statement',{
+			method: 'POST',
+			body: JSON.stringify({  
+                data:a
+			}),
+			headers: {
+				'Content-type': 'application/json; charset=UTF-8'
+			},
+		})
+        }
+        let expandBtns = document.querySelectorAll(".expandBtn");
+
+expandBtns.forEach((btn, index) => {
+    btn.addEventListener("click", function() {
+        let extraRow = document.querySelectorAll(".extraRow")[index];
+        if (extraRow.style.display === "none") {
+            extraRow.style.display = "";
+            btn.innerHTML = "Collapse";
+        } else {
+            extraRow.style.display = "none";
+            btn.innerHTML = "Expand";
+        }
+    });
+});
+      </script>
 </body>
