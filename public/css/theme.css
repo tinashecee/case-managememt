@@ -21235,3 +21235,12 @@ pre > code.highlight {
 .extraRow {
     background-color: #f2f2f2;
 }
+.modal-custom {
+  width: 500px; /* specify your width */
+  max-width: 500px; /* this is necessary for smaller devices */
+}
+
+.custom-scroll {
+  height: 300px; /* specify your height */
+  overflow-y: auto;
+}

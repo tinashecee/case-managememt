@@ -10,12 +10,18 @@ const flash = require('connect-flash');
 const passport = require('passport');
 const cookieParser = require('cookie-parser');
 const initializePassport = require('./passportConfig');
+const csvwriter = require('csv-writer');
 //const genFunc = require('connect-pg-simple');
 
 //const PostgresqlStore = genFunc(session);
 /*const sessionStore = new PostgresqlStore({
   conString: 'postgres://ctcheuka:jXsapD5U8blt@ep-rapid-lake-643093.us-east-2.aws.neon.tech/neondb',
 });*/
+const HTML_TEMPLATE = require("./mail-template.js");
+const SENDMAIL = require("./mailer.js") 
+const message = "Hi there, you were emailed me through nodemailer"
+
+
 const moment = require("moment");
 const app = express();
 initializePassport(passport);
@@ -57,6 +63,7 @@ let array3 = []
 let errors =[];
 let contact_person_count = 1;
 let line_budget_count = 1;
+let compliance_count = 1;
 let budget_balance = 0;
 let budget_amount = 0
 let budget_id = '';
@@ -67,6 +74,11 @@ let total_expenditure = 0
 let expenditure_left = 0
 let current_balance = 0
 let budget_statement  = []
+let compliance_department = ''
+let compliance_contact_name = ''
+let compliance_contact_email = ''
+let compliance_survey_questions = []
+let compliance_data = []
 app.get('/a', (req, res) => {
     req.flash('success', 'Welcome!!');
     res.redirect('/display-message');
@@ -212,9 +224,29 @@ app.get('/cases',  async (req,res) => {
     )
    
 });
+app.post('/survey_elems',  async (req,res) => {
+   res.send({compliance_survey_questions:compliance_survey_questions})
+})
 app.get('/compliance',  async (req,res) => {
+    pool.query(
+        `SELECT * FROM compliance_results`,
+        [],
+        (err, results) => {
+            if(err){
+                console.log(err)
+                throw err;
+                
+            }
+            compliance_data=results.rows
+            res.render('compliance',{layout:'./layouts/compliance-layout',compliance_results:results.rows})
+        }
+    )
     
-    res.render('compliance',{layout:'./layouts/compliance-layout'})
+    
+});
+app.get('/compliance-survey',  async (req,res) => {
+    
+    res.render('compliance_survey',{layout:'./layouts/compliance-survey-layout',compliance_survey_questions:compliance_survey_questions})
 });
 app.get('/contract_view',  async (req,res) => {
     let query = req.query.id
@@ -1001,13 +1033,202 @@ app.post('/add-tasks', (req, res)=>{
         }
     )
 });
+app.post('/compliance-form-part-1', (req, res)=>{
+   let a = req.body.department
+   compliance_department = a
+   console.log(compliance_department)
+   
+})
+app.post('/compliance-form-part-2', (req, res)=>{
+    let a = req.body.contact_name
+    let b = req.body.contact_email
+    compliance_contact_name = a
+    compliance_contact_email = b
+    console.log(compliance_contact_name,compliance_contact_email)
+})
+app.post('/compliance-form-part-3', (req, res)=>{
+    compliance_survey_questions = []
+    for(let i=1;i<compliance_count+1;i++){
+        if(req.body[`response${i}`] == 'text_input'){
+            let a= {
+                "type": "text",
+                "name": "question"+i,
+                "title": req.body[`question${i}`],
+                "isRequired": true,
+                "response":""
+               }
+               compliance_survey_questions.push(a)
+
+        }
+        if(req.body[`response${i}`] == 'yes_or_no'){
+            let b =  {
+                "type": "boolean",
+                "name": "question"+i,
+                "title": req.body[`question${i}`],
+                "isRequired": true,
+                "response":""
+               }
+             let c =  {
+                "type": "comment",
+                "name": "question"+(i)+"a",
+                "visibleIf": `{question${i}} = false`,
+                "title": "Reason",
+                "isRequired": true,
+                "response":""
+               }
+               compliance_survey_questions.push(b)
+               compliance_survey_questions.push(c)
+        }    }
+        pool.query(
+            'SELECT * FROM compliance_results WHERE department = $1',
+           [compliance_department], 
+           (err, results) => {
+               if(err){
+                   throw err;
+               }
+               let yourDate = new Date()
+               date_created = formatDate(yourDate)
+               if(results.rows[0]){
+                
+                pool.query(
+                    'UPDATE compliance_results SET questions = $1, responses = $2, score = $3, contact_person = $4, contact_email = $5, date_completed = $6 WHERE department = $7',
+                   [compliance_survey_questions, {}, 0, compliance_contact_name, compliance_contact_email,date_created,compliance_department], 
+                   (err, results) => {
+                       if(err){
+                           throw err;
+                       }
+                       res.redirect('/budget');
+                   }
+                )
+               }else{
+                pool.query(
+                    `INSERT INTO compliance_results (department, questions, responses, score, contact_person, contact_email, date_completed)
+                    VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+                    [compliance_department, compliance_survey_questions, [], 0, compliance_contact_name, compliance_contact_email,date_created], 
+                    (err, results1) => {
+                        if(err){
+                            throw err;
+                        }
+                    }
+                )
+               }
+            })
+        const options = {
+            from: "CASE MANAGEMENT SYSTEM <mochonam19@gmail.com>", // sender address
+            to: compliance_contact_email, // receiver email
+            subject: "Compliance Survey for the department of "+compliance_department, // Subject line
+            text: message,
+            html: `<div>Greetings ${compliance_contact_name} , Please  click this link to complete Compliance Form  <br> <h1> http://localhost:8080/compliance-survey </h1> </div>`
+        }        
+        // send mail with defined transport object and mail options
+SENDMAIL(options, (info) => {
+    console.log("Email sent successfully");
+    req.flash('success','Survey successfully sent via Email');
+      console.log("MESSAGE ID: ", info.messageId);
+
+ });
+   res.redirect('/compliance')
+        console.log(compliance_survey_questions)
+})
+app.get('/download',async (req,res) =>{
+    let createCsvWriter = csvwriter.createObjectCsvWriter;
+
+    let usersArray = []
+  
+    compliance_data.forEach(e=>{
+        let b = {
+            department:e.department,
+            contact_name:e.contact_name,
+            contact_email:e.contact_email,
+            score: e.score,
+            date_completed: e.date_completed,
+            questions: JSON.stringify(e.questions)
+        }
+        console.log( JSON.stringify(e.questions))
+        usersArray.push(b)
+      })
+    const path = 'sample.csv';
+   
+    const csvWriter = createCsvWriter({
+      path: path,
+      header: [{ id:'department',title:'Department'},{ id:'contact_person',title:'Contact Person'},{id:'contact_email',title:'Contact Email'},{id:'score',title:'Score'},{id:'questions',title:'Questions'},{id:'date_completed',title:'Date Completed'}]});
+
+    try 
+    {
+         
+         csvWriter.writeRecords(usersArray)
+         .then(() => {res.download(path); 
+           
+        });
+    }
+    catch (error) 
+    {
+      console.log(error);
+    }
+});
+app.get('/download1',async (req,res) =>{
+    let createCsvWriter = csvwriter.createObjectCsvWriter;
+    const path = 'sample1.csv';
+    let questions = []
+    compliance_data.forEach(e=>{
+        questions.push(e.questions)
+      })
+      console.log(compliance_data)
+      console.log(questions)
+    const csvWriter = createCsvWriter({
+        path: path,
+        header: [{ id:'title',title:'Question'},{ id:'response',title:'Response'}]});
+        try 
+        {
+             
+             csvWriter.writeRecords(questions[0])
+             .then(() => {res.download(path);
+            });
+        }
+        catch (error) 
+        {
+          console.log(error);
+        }    
+})
+app.post('/compliance_results',(req,res) =>{
+    let responses = req.body.responses
+    let yourDate = new Date()
+    date_created = formatDate(yourDate)
+    boolean_count = 0
+    boolean_yes_count = 0
+    compliance_survey_questions.forEach(e=>{
+        if(e.type == 'boolean'){
+            boolean_count += 1
+        }
+    })
+    const keys = Object.keys(responses);
+    keys.forEach((key, index) => {
+       // console.log(`${key}: ${courses[key]}`);
+       if(responses[key] == true) boolean_yes_count += 1
+       compliance_survey_questions.forEach(e=>{
+        if(e.name == key) e.response = responses[key]
+     })
+    });
+    let y = (boolean_yes_count/boolean_count * 100).toFixed(0)
+    console.log(y)
+    pool.query(
+        'UPDATE compliance_results SET responses = $1, date_completed = $2, questions = $3, score = $4 WHERE department = $5',
+       [responses, date_created, compliance_survey_questions, y, compliance_department], 
+       (err, results) => {
+           if(err){
+               throw err;
+           }
+           res.redirect('/budget');
+       }
+    )
+})
 app.get('/users/logout', (req,res) => {
     req.logout(function(err) {
         if (err) { return next(err); }
         authed =false;
     usrId=''
     nam=''
-    req.flash('success', 'Your logged out');
+    req.flash('success', 'You are logged out');
     res.redirect('/login');
       });
     
@@ -1100,6 +1321,13 @@ app.post('/update-line-budget-count', async (req,res) => {
 })
 app.post('/reduce-line-budget-count', async (req,res) => { 
     line_budget_count-=1
+})
+
+app.post('/update-compliance-question-count', async (req,res) => { 
+    compliance_count=req.body.count
+})
+app.post('/reduce-compliance-question-count', async (req,res) => { 
+    compliance_count-=1
 })
 app.post('/budget_statement', async (req,res) => {
     console.log(req.body.data) 

@@ -1,0 +1,71 @@
+<head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <title>Compliance Survey</title>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <!-- Default V2 theme -->
+    <link href="https://unpkg.com/survey-jquery/defaultV2.min.css" type="text/css" rel="stylesheet">
+
+    <!-- Modern theme -->
+    <!-- <link href="https://unpkg.com/survey-jquery/modern.min.css" type="text/css" rel="stylesheet"> -->
+
+    <script type="text/javascript" src="https://unpkg.com/survey-jquery"></script>
+
+  </head>
+  
+  <body>
+   
+    <%- body %>
+
+  <script>
+    fetch('/survey_elems',{
+        method: 'POST',
+        body: JSON.stringify({
+        }),
+        headers: {
+            'Content-type': 'application/json; charset=UTF-8'
+        },
+    }).then(function(response) {
+        response.json().then(function(text) {
+            Survey
+    .StylesManager
+    .applyTheme("defaultV2");
+
+const surveyJson = {
+    elements: text.compliance_survey_questions
+};
+console.log('<%= compliance_survey_questions %>')
+const survey = new Survey.Model(surveyJson);
+survey.focusFirstQuestionAutomatic = false;
+
+function alertResults (sender) {
+    console.log(sender.data)
+   // const results = JSON.stringify(sender.data);
+   // alert(results);
+   fetch('/compliance_results',{
+        method: 'POST',
+        body: JSON.stringify({
+            responses:sender.data
+        }),
+        headers: {
+            'Content-type': 'application/json; charset=UTF-8'
+        },
+    }).then(function(response) {})
+}
+
+survey.onComplete.add(alertResults);
+
+$(function() {
+    $("#surveyContainer").Survey({ model: survey });
+});
+            console.log(text.compliance_survey_questions)
+        })
+    })
+   
+  </script>
+  </body>
+  

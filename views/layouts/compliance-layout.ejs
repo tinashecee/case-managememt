@@ -354,5 +354,85 @@
     <script src="https://rawcdn.githack.com/Loopple/loopple-public-assets/5cef8f62939eeb089fa26d4c53a49198de421e3d/argon-dashboard/js/vendor/chart.extension.js"></script>
     <script src="https://rawcdn.githack.com/Loopple/loopple-public-assets/7bb803d2af2ab6d71d429b0cb459c24a4cd0fbb4/argon-dashboard/js/argon.min.js"></script>
     <script src="/js/loopple/loopple.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script>
+        $('#openModal2').click(function(){
+  $('#exampleModal1').modal('hide');
+  $('#exampleModal2').modal('show');
+});
+$('#openModal3').click(function(){
+  $('#exampleModal2').modal('hide');
+  $('#exampleModal3').modal('show');
+});
+        let contactCount = 1;
+    
+    function addContact() {
+
+      contactCount++;
+
+      const container = document.getElementById("contact-container");
+
+      const newContactInput = document.createElement("div");
+      newContactInput.className = "contact-input";
+      newContactInput.innerHTML = `
+    
+        <div class="row">
+                        <div class="col-md-6">
+                        <label for="question${contactCount}">Question:</label>
+                        <input type="text" id="response${contactCount}" class="form-control" name="question${contactCount}" required>
+                      </div>
+                      <div class="col-md-6">
+                        <label for="response${contactCount}">Type of Response:</label>
+                        <select class="form-select" id="response${contactCount}" name="response${contactCount}" required="">
+                            <option value="">Select Type of Response</option>
+                            <option value="yes_or_no">Yes or No</option>
+                            <option value="text_input">Text Input</option>
+                        </select>
+                      </div>
+                      </div> 
+        <button type="button" onclick="removeContact(this)">-</button>
+      `;
+
+      container.appendChild(newContactInput);
+      fetch('/update-compliance-question-count',{
+        method: 'POST',
+        body: JSON.stringify({
+          count: contactCount,
+        }),
+        headers: {
+            'Content-type': 'application/json; charset=UTF-8'
+        },
+    })
+    }
+
+    function removeContact(button) {
+      const contactInput = button.parentNode;
+      contactInput.parentNode.removeChild(contactInput);
+      fetch('/reduce-compliance-question-count',{
+        method: 'POST',
+        body: JSON.stringify({
+          count: contactCount-1,
+        }),
+        headers: {
+            'Content-type': 'application/json; charset=UTF-8'
+        },
+    })
+    }
+    let expandBtns = document.querySelectorAll(".expandBtn");
+
+expandBtns.forEach((btn, index) => {
+    btn.addEventListener("click", function() {
+        let extraRow = document.querySelectorAll(".extraRow")[index];
+        if (extraRow.style.display === "none") {
+            extraRow.style.display = "";
+            btn.innerHTML = "Collapse";
+        } else {
+            extraRow.style.display = "none";
+            btn.innerHTML = "Expand";
+        }
+    });
+});
+    </script>
   </body>
   
