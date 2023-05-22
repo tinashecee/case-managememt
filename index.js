@@ -657,7 +657,7 @@ app.get('/resources-results',  async (req,res) => {
               title: element.innerText.trim(),
               url: urlElement ? urlElement.getAttribute('href') : ''
             };
-          });
+          }); 
         });
       
         // Print the legislation titles and URLs
