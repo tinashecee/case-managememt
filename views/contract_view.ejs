@@ -115,7 +115,7 @@
                 <div class="embed-responsive embed-responsive-16by9">
                   <embed
                     class="embed-responsive-item"
-                    src="C:\Users\morto\Downloads\document.pdf"
+                    id="embed-pdf"
                     type="application/pdf"
                   />
                 </div>
@@ -126,31 +126,31 @@
             </div>
             <div class="card">
               <div class="card-header">
-                <h5 class="card-title">Contract Version and Attachements</h5>
-                <input id='files' class="btn btn-primary" type="file" multiple>
-                
+                <h5 class="card-title">Attachements</h5>
+                <form action="upload-contract" method="post" enctype="multipart/form-data">
+                  <input id='files' name="avatar" class="btn btn-primary" type="file" >
+                  <input class="btn btn-primary" type="submit">
+                </form>
               </div>
                         <ul class="list-group list-group-flush">
-                <li class="list-group-item">
-                  <div class="row align-items-center">
-                    <div class="col">
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal4"
-                    ><i class="fa fa-eye"></i
-                  ></button>
-                </div>
-                    <div class="col">
-                      <h6 class="card-subtitle mb-2 text-muted">File Name</h6>
-                      <p class="card-text">example-file.pdf</p>
-                    </div>
-                    <div class="col">
-                      <h6 class="card-subtitle mb-2 text-muted">Date Uploaded</h6>
-                      <p class="card-text">31/01/2023:00:00:00Hrs</p>
-                    </div>
-                    <div class="col-auto">
-                      <a href="#" class="btn btn-primary btn-sm">Download</a>
-                    </div>
-                  </div>
-                </li>
+                          <% for (let dat of files) { %>
+                            <li class="list-group-item">
+                              <div class="row align-items-center">
+                                
+                                <div class="col-md-3">
+                                  <button type="button" class="btn btn-primary" onclick="changeSrc('<%= dat %>')"
+                                  ><i class="fa fa-eye"></i
+                                ></button>
+                              </div>
+                              
+                                <div class="col-md-9">
+                                  <h6 class="card-subtitle mb-2 text-muted">File Name</h6>
+                                  <p class="card-text"><%= dat %></p>
+                                </div>
+                              
+                              </div>
+                            </li>
+                            <% } %>
               </ul>
             </div>
           </div>

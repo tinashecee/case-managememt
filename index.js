@@ -11,12 +11,16 @@ const passport = require('passport');
 const cookieParser = require('cookie-parser');
 const initializePassport = require('./passportConfig');
 const csvwriter = require('csv-writer');
-//const genFunc = require('connect-pg-simple');
+const fs = require("fs");
+const puppeteer = require('puppeteer');
+const fileUpload = require('express-fileupload');
+const cors = require('cors');
+const morgan = require('morgan');
 
-//const PostgresqlStore = genFunc(session);
-/*const sessionStore = new PostgresqlStore({
-  conString: 'postgres://ctcheuka:jXsapD5U8blt@ep-rapid-lake-643093.us-east-2.aws.neon.tech/neondb',
-});*/
+const _ = require('lodash');
+// enable files upload
+
+
 const HTML_TEMPLATE = require("./mail-template.js");
 const SENDMAIL = require("./mailer.js") 
 const message = "Hi there, you were emailed me through nodemailer"
@@ -37,12 +41,18 @@ app.use(cookieParser('NotSoSecret'));
 app.use(
     session({
         secret:'secret',
-        cookie: {secure: true, maxAge: 60000 },
-        resave:false,
-        saveUninitialized:false
-        //store: sessionStore
+        cookie: {secure: false, maxAge: 60000 },
+        resave:true,
+        saveUninitialized:true,
     })
 );
+app.use(fileUpload({
+    createParentPath: true
+}));
+
+//add other middleware
+app.use(cors());
+app.use(morgan('dev'));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
@@ -79,15 +89,91 @@ let compliance_contact_name = ''
 let compliance_contact_email = ''
 let compliance_survey_questions = []
 let compliance_data = []
-app.get('/a', (req, res) => {
-    req.flash('success', 'Welcome!!');
-    res.redirect('/display-message');
-  });
+let scrapping_results = []
+
+// Function to scrape websites for specific information
+async function scrapeWebsites(keyword) {
+    // Launch a headless browser instance
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+  
+    // Perform a Google search with the provided keyword
+    await page.goto(`https://www.google.com/search?q=${keyword}`);
+  
+    // Extract the search results
+    const searchResults = await page.$$eval('.tF2Cxc', (results) => {
+      return results.map((result) => {
+        const titleElement = result.querySelector('.DKV0Md');
+        const urlElement = result.querySelector('a');
+        const url = urlElement ? urlElement.href : '';
+        return {
+          title: titleElement ? titleElement.innerText : '',
+          url: url,
+        };
+      });
+    });
+  
+    // Print the search results
+    searchResults.forEach((result) => {
+      console.log(`Title: ${result.title}`);
+      console.log(`URL: ${result.url}`);
+      console.log('----------------------');
+    });
+  
+    // Close the browser instance
+    await browser.close();
+  }
+
+// Run the scraping function
+
+
+
+app.post('/upload-case', async (req, res) => {
+    try {
+        if(!req.files) {
+            res.send({
+                status: false,
+                message: 'No file uploaded'
+            });
+        } else {
+            //Use the name of the input field (i.e. "avatar") to retrieve the uploaded file
+            let avatar = req.files.avatar;
+            
+            //Use the mv() method to place the file in the upload directory (i.e. "uploads")
+            avatar.mv('./public/uploads/' + avatar.name);
+
+            
+            res.redirect('/case_view')
+        }
+    } catch (err) {
+        res.status(500).send(err);
+    }
+});
+app.post('/upload-contract', async (req, res) => {
+    try {
+        if(!req.files) {
+            res.send({
+                status: false,
+                message: 'No file uploaded'
+            });
+        } else {
+            //Use the name of the input field (i.e. "avatar") to retrieve the uploaded file
+            let avatar = req.files.avatar;
+            
+            //Use the mv() method to place the file in the upload directory (i.e. "uploads")
+            avatar.mv('./public/uploads1/' + avatar.name);
+
+            res.redirect('/case_view')
+        }
+    } catch (err) {
+        res.status(500).send(err);
+    }
+});
     
   app.get('/display-message', (req, res) => {
       res.render("display-message",{layout:'./layouts/index-layout'});
   });
-app.get('', async (req,res) => {
+app.get('',checkNotAuthenticated, async (req,res) => {
     pool.query(
         `SELECT * FROM tasks`,
         [],
@@ -145,7 +231,7 @@ app.get('/assistant', async (req,res) => {
     
     res.render('assistant',{layout:'./layouts/assistant-layout'})
 });
-app.get('/budget',  async (req,res) => {
+app.get('/budget',checkNotAuthenticated,  async (req,res) => {
     pool.query(
         `SELECT * FROM budget`,
         [],
@@ -195,7 +281,7 @@ app.get('/calender',  async (req,res) => {
     
     res.render('calender',{layout:'./layouts/calender-layout'})
 });
-app.get('/cases',  async (req,res) => {
+app.get('/cases',checkNotAuthenticated,  async (req,res) => {
     pool.query(
         `SELECT * FROM cases`,
         [],
@@ -227,7 +313,7 @@ app.get('/cases',  async (req,res) => {
 app.post('/survey_elems',  async (req,res) => {
    res.send({compliance_survey_questions:compliance_survey_questions})
 })
-app.get('/compliance',  async (req,res) => {
+app.get('/compliance',checkNotAuthenticated,  async (req,res) => {
     pool.query(
         `SELECT * FROM compliance_results`,
         [],
@@ -248,7 +334,7 @@ app.get('/compliance-survey',  async (req,res) => {
     
     res.render('compliance_survey',{layout:'./layouts/compliance-survey-layout',compliance_survey_questions:compliance_survey_questions})
 });
-app.get('/contract_view',  async (req,res) => {
+app.get('/contract_view',checkNotAuthenticated,  async (req,res) => {
     let query = req.query.id
     pool.query(
         `SELECT * FROM contracts WHERE contract_id = $1`,
@@ -264,11 +350,18 @@ app.get('/contract_view',  async (req,res) => {
                 currency: "USD", 
             });
             console.log(results.rows)
-             res.render('contract_view',{layout:'./layouts/contract_view_layout',data:results.rows,dollarUS:dollarUS,id:query})
+            let directory_name = "./public/uploads1";
+                    let filenames = fs.readdirSync(directory_name);
+                      
+                    console.log("\nFilenames in directory:");
+                    filenames.forEach((file) => {
+                        console.log("File:", file);
+                    });
+             res.render('contract_view',{layout:'./layouts/contract_view_layout',data:results.rows,dollarUS:dollarUS,id:query,files:filenames})
         }
     )
 });
-app.get('/case_view',  async (req,res) => {
+app.get('/case_view',checkNotAuthenticated,  async (req,res) => {
     let query = req.query.id
     pool.query(
         `SELECT * FROM cases WHERE case_id = $1`,
@@ -292,15 +385,21 @@ app.get('/case_view',  async (req,res) => {
                         throw err;
                         
                     }
-                     
-                    res.render('case_view',{layout:'./layouts/case_view_layout',data:results.rows, dataA:results1.rows,id:query})
+                    let directory_name = "./public/uploads";
+                    let filenames = fs.readdirSync(directory_name);
+                      
+                    console.log("\nFilenames in directory:");
+                    filenames.forEach((file) => {
+                        console.log("File:", file);
+                    });
+                    res.render('case_view',{layout:'./layouts/case_view_layout',data:results.rows, dataA:results1.rows,id:query, files:filenames})
                 }
             )
         }
     )
    
 });
-app.get('/contracts',  async (req,res) => {
+app.get('/contracts',checkNotAuthenticated,  async (req,res) => {
     pool.query(
         `SELECT * FROM contracts`,
         [],
@@ -337,7 +436,7 @@ app.get('/contracts',  async (req,res) => {
     )
     
 });
-app.get('/lawfirm_cases',  async (req,res) => {
+app.get('/lawfirm_cases',checkNotAuthenticated,  async (req,res) => {
     let query = req.query.id
     pool.query(
         `SELECT * FROM law_firms WHERE law_firm_id = $1`,
@@ -370,7 +469,7 @@ app.get('/lawfirm_cases',  async (req,res) => {
     )
     
 });
-app.get('/lawfirm_contracts',  async (req,res) => {
+app.get('/lawfirm_contracts',checkNotAuthenticated,  async (req,res) => {
     let query = req.query.id
     pool.query(
         `SELECT * FROM law_firms WHERE law_firm_id = $1`,
@@ -390,7 +489,7 @@ app.get('/lawfirm_contracts',  async (req,res) => {
         }
     )
 });
-app.get('/lawfirm_tasks',  async (req,res) => {
+app.get('/lawfirm_tasks',checkNotAuthenticated,  async (req,res) => {
     let query = req.query.id
     pool.query(
         `SELECT * FROM law_firms WHERE law_firm_id = $1`,
@@ -410,7 +509,7 @@ app.get('/lawfirm_tasks',  async (req,res) => {
         }
     )
 });
-app.get('/lawfirm_contacts',  async (req,res) => {
+app.get('/lawfirm_contacts',checkNotAuthenticated,  async (req,res) => {
     let query = req.query.id
     pool.query(
         `SELECT * FROM law_firms WHERE law_firm_id = $1`,
@@ -430,7 +529,7 @@ app.get('/lawfirm_contacts',  async (req,res) => {
         }
     )
 });
-app.get('/lawfirm_notes',  async (req,res) => {
+app.get('/lawfirm_notes',checkNotAuthenticated,  async (req,res) => {
     let query = req.query.id
     pool.query(
         `SELECT * FROM law_firms WHERE law_firm_id = $1`,
@@ -451,7 +550,7 @@ app.get('/lawfirm_notes',  async (req,res) => {
     )
 });
 
-app.get('/lawfirms',  async (req,res) => {
+app.get('/lawfirms',checkNotAuthenticated,  async (req,res) => {
     
     pool.query(
         `SELECT * FROM law_firms`,
@@ -480,7 +579,7 @@ app.get('/lawfirms',  async (req,res) => {
    
    
 });
-app.get('/lawfirm_statement',  async (req,res) => {
+app.get('/lawfirm_statement',checkNotAuthenticated,  async (req,res) => {
     let query = req.query.id
     pool.query(
         `SELECT * FROM law_firms WHERE law_firm_id = $1`,
@@ -500,7 +599,7 @@ app.get('/lawfirm_statement',  async (req,res) => {
         }
     )
 });
-app.get('/lawfirm_view',  async (req,res) => {
+app.get('/lawfirm_view',checkNotAuthenticated,  async (req,res) => {
     let query = req.query.id
     pool.query(
         `SELECT * FROM law_firms WHERE law_firm_id = $1`,
@@ -527,8 +626,94 @@ app.get('/resources',  async (req,res) => {
     
     res.render('resources',{layout:'./layouts/resources-layout'})
 });
+app.get('/resources-results',  async (req,res) => {
+   
+    let keyword;
+    let keyword_url;
+    console.log(req.query.query)
+    if(req.query.query == 'cases_and_judgements'){
+        keyword = 'cases and judgements zimbabwe'
+    }
+    if(req.query.query == 'legislation'){
+        const browser = await puppeteer.launch();
+        const page = await browser.newPage();
+      
+        await page.goto('https://zimlii.org/legislation/all');
+      
+        // Wait for the legislation items to load
+        await page.waitForSelector('.content__title');
+      
+        // Extract the legislation titles and URLs
+        const legislationList = await page.$$eval('.content__title', (titleElements) => {
+          return titleElements.map((element) => {
+            const legislationDiv = element.closest('.content');
+            const urlElement = legislationDiv.querySelector('a');
+            return {
+              title: element.innerText.trim(),
+              url: urlElement ? urlElement.getAttribute('href') : ''
+            };
+          });
+        });
+      
+        // Print the legislation titles and URLs
+        legislationList.forEach((legislation) => {
+          console.log('Title:', legislation.title);
+          console.log('URL:', legislation.url);
+          console.log('----------------------');
+        });
+      
+        await browser.close();
+    res.render('resources_legislature',{layout:'./layouts/resources-results-layout',results: legislationList})
+    }
+    if(req.query.query == 'gazettes'){
+        keyword = 'gazettes zimbabwe'
+    }
+    if(req.query.query == 'regulations'){
+        keyword = 'regulations zimbabwe' 
+    } 
 
-app.get('/tasks',  async (req,res) => {
+   
+});
+app.post('/resources-search-results',  async (req,res) => {
+     let keyword = req.body.search
+   //  const keyword = 'legal cases zimbabwe';
+//scrapeWebsites(keyword);
+      // Launch a headless browser instance
+      const browser = await puppeteer.launch();
+      const page = await browser.newPage();
+    
+      // Perform a Google search with the provided keyword
+      await page.goto(`https://www.google.com/search?q=${keyword}`);
+    
+      // Extract the search results
+      const searchResults = await page.$$eval('.tF2Cxc', (results) => {
+        return results.map((result) => {
+          const titleElement = result.querySelector('.DKV0Md');
+          const urlElement = result.querySelector('a');
+          const url = urlElement ? urlElement.href : '';
+          return {
+            title: titleElement ? titleElement.innerText : '',
+            url: url,
+          };
+        });
+      });
+    
+      // Print the search results
+      searchResults.forEach((result) => {
+        console.log(`Title: ${result.title}`);
+        console.log(`URL: ${result.url}`);
+        console.log('----------------------');
+      });
+      scrapping_results = searchResults
+      // Close the browser instance
+      await browser.close();
+   res.redirect("/resources-search-results")
+});
+app.get('/resources-search-results',  async (req,res) => {
+
+    res.render('resources_legislature',{layout:'./layouts/resources-results-layout',results: scrapping_results})
+});
+app.get('/tasks',checkNotAuthenticated,  async (req,res) => {
     pool.query(
         `SELECT * FROM tasks`,
         [],
@@ -548,7 +733,7 @@ app.get('/tasks',  async (req,res) => {
  
     
 });
-app.get('/vendors', async (req,res) => {
+app.get('/vendors',checkNotAuthenticated, async (req,res) => {
     pool.query(
         `SELECT * FROM vendors`,
         [],
@@ -569,9 +754,11 @@ app.get('/vendors', async (req,res) => {
 
 function checkNotAuthenticated(req,res,next){
     if(req.isAuthenticated()){
+        console.log(req.isAuthenticated())
         authed=true;
         return next();
     }
+    console.log(req.isAuthenticated())
     authed=false;
     res.redirect("/login");
 }
@@ -1308,7 +1495,10 @@ app.post("/users/login", passport.authenticate('local', {
     usrId = req.user.id;
     nam = (req.user.name).charAt(0).toUpperCase() + (req.user.name).slice(1)
     authed = true
-    res.render('index',{layout:'./layouts/index-layout',authed:true,user:nam})}
+    console.log(req.isAuthenticated())
+    res.redirect('/')
+
+}
 );
 app.post('/update-contact-person-count', async (req,res) => { 
     contact_person_count=req.body.count
