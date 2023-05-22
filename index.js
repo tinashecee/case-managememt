@@ -635,7 +635,12 @@ app.get('/resources-results',  async (req,res) => {
         keyword = 'cases and judgements zimbabwe'
     }
     if(req.query.query == 'legislation'){
-        const browser = await puppeteer.launch();
+        const browser = await puppeteer.launch({
+            args: [
+              '--no-sandbox',
+              '--disable-setuid-sandbox',
+            ],
+          });
         const page = await browser.newPage();
       
         await page.goto('https://zimlii.org/legislation/all');
