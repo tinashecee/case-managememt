@@ -173,7 +173,7 @@ app.post('/upload-contract', async (req, res) => {
   app.get('/display-message', (req, res) => {
       res.render("display-message",{layout:'./layouts/index-layout'});
   });
-app.get('',checkNotAuthenticated, async (req,res) => {
+app.get('', async (req,res) => {
     pool.query(
         `SELECT * FROM tasks`,
         [],
@@ -231,7 +231,7 @@ app.get('/assistant', async (req,res) => {
     
     res.render('assistant',{layout:'./layouts/assistant-layout'})
 });
-app.get('/budget',checkNotAuthenticated,  async (req,res) => {
+app.get('/budget', async (req,res) => {
     pool.query(
         `SELECT * FROM budget`,
         [],
@@ -281,7 +281,7 @@ app.get('/calender',  async (req,res) => {
     
     res.render('calender',{layout:'./layouts/calender-layout'})
 });
-app.get('/cases',checkNotAuthenticated,  async (req,res) => {
+app.get('/cases',  async (req,res) => {
     pool.query(
         `SELECT * FROM cases`,
         [],
@@ -313,7 +313,7 @@ app.get('/cases',checkNotAuthenticated,  async (req,res) => {
 app.post('/survey_elems',  async (req,res) => {
    res.send({compliance_survey_questions:compliance_survey_questions})
 })
-app.get('/compliance',checkNotAuthenticated,  async (req,res) => {
+app.get('/compliance',  async (req,res) => {
     pool.query(
         `SELECT * FROM compliance_results`,
         [],
@@ -334,7 +334,7 @@ app.get('/compliance-survey',  async (req,res) => {
     
     res.render('compliance_survey',{layout:'./layouts/compliance-survey-layout',compliance_survey_questions:compliance_survey_questions})
 });
-app.get('/contract_view',checkNotAuthenticated,  async (req,res) => {
+app.get('/contract_view',  async (req,res) => {
     let query = req.query.id
     pool.query(
         `SELECT * FROM contracts WHERE contract_id = $1`,
@@ -361,7 +361,7 @@ app.get('/contract_view',checkNotAuthenticated,  async (req,res) => {
         }
     )
 });
-app.get('/case_view',checkNotAuthenticated,  async (req,res) => {
+app.get('/case_view',  async (req,res) => {
     let query = req.query.id
     pool.query(
         `SELECT * FROM cases WHERE case_id = $1`,
@@ -399,7 +399,7 @@ app.get('/case_view',checkNotAuthenticated,  async (req,res) => {
     )
    
 });
-app.get('/contracts',checkNotAuthenticated,  async (req,res) => {
+app.get('/contracts',  async (req,res) => {
     pool.query(
         `SELECT * FROM contracts`,
         [],
@@ -436,7 +436,7 @@ app.get('/contracts',checkNotAuthenticated,  async (req,res) => {
     )
     
 });
-app.get('/lawfirm_cases',checkNotAuthenticated,  async (req,res) => {
+app.get('/lawfirm_cases',  async (req,res) => {
     let query = req.query.id
     pool.query(
         `SELECT * FROM law_firms WHERE law_firm_id = $1`,
@@ -469,7 +469,7 @@ app.get('/lawfirm_cases',checkNotAuthenticated,  async (req,res) => {
     )
     
 });
-app.get('/lawfirm_contracts',checkNotAuthenticated,  async (req,res) => {
+app.get('/lawfirm_contracts',  async (req,res) => {
     let query = req.query.id
     pool.query(
         `SELECT * FROM law_firms WHERE law_firm_id = $1`,
@@ -489,7 +489,7 @@ app.get('/lawfirm_contracts',checkNotAuthenticated,  async (req,res) => {
         }
     )
 });
-app.get('/lawfirm_tasks',checkNotAuthenticated,  async (req,res) => {
+app.get('/lawfirm_tasks', async (req,res) => {
     let query = req.query.id
     pool.query(
         `SELECT * FROM law_firms WHERE law_firm_id = $1`,
@@ -509,7 +509,7 @@ app.get('/lawfirm_tasks',checkNotAuthenticated,  async (req,res) => {
         }
     )
 });
-app.get('/lawfirm_contacts',checkNotAuthenticated,  async (req,res) => {
+app.get('/lawfirm_contacts',  async (req,res) => {
     let query = req.query.id
     pool.query(
         `SELECT * FROM law_firms WHERE law_firm_id = $1`,
@@ -529,7 +529,7 @@ app.get('/lawfirm_contacts',checkNotAuthenticated,  async (req,res) => {
         }
     )
 });
-app.get('/lawfirm_notes',checkNotAuthenticated,  async (req,res) => {
+app.get('/lawfirm_notes',  async (req,res) => {
     let query = req.query.id
     pool.query(
         `SELECT * FROM law_firms WHERE law_firm_id = $1`,
@@ -550,7 +550,7 @@ app.get('/lawfirm_notes',checkNotAuthenticated,  async (req,res) => {
     )
 });
 
-app.get('/lawfirms',checkNotAuthenticated,  async (req,res) => {
+app.get('/lawfirms', async (req,res) => {
     
     pool.query(
         `SELECT * FROM law_firms`,
@@ -579,7 +579,7 @@ app.get('/lawfirms',checkNotAuthenticated,  async (req,res) => {
    
    
 });
-app.get('/lawfirm_statement',checkNotAuthenticated,  async (req,res) => {
+app.get('/lawfirm_statement',  async (req,res) => {
     let query = req.query.id
     pool.query(
         `SELECT * FROM law_firms WHERE law_firm_id = $1`,
@@ -599,7 +599,7 @@ app.get('/lawfirm_statement',checkNotAuthenticated,  async (req,res) => {
         }
     )
 });
-app.get('/lawfirm_view',checkNotAuthenticated,  async (req,res) => {
+app.get('/lawfirm_view', async (req,res) => {
     let query = req.query.id
     pool.query(
         `SELECT * FROM law_firms WHERE law_firm_id = $1`,
@@ -825,7 +825,7 @@ app.get('/resources-cases-and-judgements',  async (req,res) => {
 
     res.render('resources_gazettes',{layout:'./layouts/resources-results-layout',results: scrapping_results})
 });
-app.get('/tasks',checkNotAuthenticated,  async (req,res) => {
+app.get('/tasks',  async (req,res) => {
     pool.query(
         `SELECT * FROM tasks`,
         [],
@@ -845,7 +845,7 @@ app.get('/tasks',checkNotAuthenticated,  async (req,res) => {
  
     
 });
-app.get('/vendors',checkNotAuthenticated, async (req,res) => {
+app.get('/vendors', async (req,res) => {
     pool.query(
         `SELECT * FROM vendors`,
         [],
