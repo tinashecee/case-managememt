@@ -626,6 +626,73 @@ app.get('/resources',  async (req,res) => {
     
     res.render('resources',{layout:'./layouts/resources-layout'})
 });
+app.post('/resources-gazettes', async (req,res) => {
+    
+  let year = req.body.year
+  const browser = await puppeteer.launch();
+  const page = await browser.newPage();
+ console.log(year)
+  await page.goto(`https://zimlii.org/gazettes/${year}`);
+
+  // Wait for the gazette items to load
+  await page.waitForSelector('li');
+
+  // Extract the gazette titles and links
+  const gazetteList = await page.$$eval('li', (liElements) => {
+    return liElements.filter((element) => element.innerText.trim().startsWith('Zimbabwe')).map((li) => {
+      const titleElement = li.querySelector('a');
+      return {
+        title: titleElement.innerText.trim(),
+        link: titleElement.href
+      };
+    });
+  });
+
+  // Print the gazette titles and links
+  gazetteList.forEach((gazette) => {
+    console.log('Title:', gazette.title);
+    console.log('Link:', gazette.link);
+    console.log('----------------------');
+  });
+   scrapping_results = gazetteList
+  await browser.close();
+  res.redirect("/resources-gazettes")
+});
+app.post('/resources-cases-and-judgements', async (req,res) => {
+    
+    let court = req.body.court
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+   console.log(court)
+    
+  
+    // Navigating to the target website
+    await page.goto(`https://zimlii.org/judgments/${court}`);
+
+    await page.waitForSelector('table');
+
+    const judgments = await page.evaluate(() => {
+      const rows = Array.from(document.querySelectorAll('table tr'));
+      rows.shift(); // Remove header row
+
+      return rows.map(row => {
+        const linkElement = row.querySelector('td:nth-child(1) a');
+
+        const title = linkElement ? linkElement.textContent.trim() : '';
+        const link = linkElement ? linkElement.getAttribute('href') : '';
+
+        return { title, link };
+      });
+    });
+
+    console.log(judgments);
+
+    await browser.close();
+    scrapping_results = judgments
+    // Closing the browser
+    await browser.close();
+    res.redirect("/resources-cases-and-judgements")
+  });
 app.get('/resources-results',  async (req,res) => {
    
     let keyword;
@@ -635,46 +702,82 @@ app.get('/resources-results',  async (req,res) => {
         keyword = 'cases and judgements zimbabwe'
     }
     if(req.query.query == 'legislation'){
-        const browser = await puppeteer.launch({
-            args: [
-              '--no-sandbox',
-              '--disable-setuid-sandbox',
-            ],
-          });
+        const browser = await puppeteer.launch();
         const page = await browser.newPage();
       
-        await page.goto('https://zimlii.org/legislation/all');
+        // Increase the navigation timeout to 60 seconds (60000 milliseconds)
+        await page.setDefaultNavigationTimeout(60000);
       
-        // Wait for the legislation items to load
-        await page.waitForSelector('.content__title');
+        try {
+          await page.goto('https://zimlii.org/legislation/all');
       
-        // Extract the legislation titles and URLs
-        const legislationList = await page.$$eval('.content__title', (titleElements) => {
-          return titleElements.map((element) => {
-            const legislationDiv = element.closest('.content');
-            const urlElement = legislationDiv.querySelector('a');
-            return {
-              title: element.innerText.trim(),
-              url: urlElement ? urlElement.getAttribute('href') : ''
-            };
-          }); 
-        });
+          // Wait for the legislation items to load
+          await page.waitForSelector('.content__title');
       
-        // Print the legislation titles and URLs
-        legislationList.forEach((legislation) => {
-          console.log('Title:', legislation.title);
-          console.log('URL:', legislation.url);
-          console.log('----------------------');
-        });
+          // Extract the legislation titles and URLs
+          const legislationList = await page.$$eval('.content__title', (titleElements) => {
+            return titleElements.map((element) => {
+              const legislationDiv = element.closest('.content');
+              const urlElement = legislationDiv.querySelector('a');
+              return {
+                title: element.innerText.trim(),
+                url: urlElement ? urlElement.getAttribute('href') : ''
+              };
+            });
+          });
       
-        await browser.close();
-    res.render('resources_legislature',{layout:'./layouts/resources-results-layout',results: legislationList})
+          // Print the legislation titles and URLs
+          legislationList.forEach((legislation) => {
+            console.log('Title:', legislation.title);
+            console.log('URL:', legislation.url);
+            console.log('----------------------');
+          });
+          res.render('resources_legislature',{layout:'./layouts/resources-results-layout',results: legislationList})
+        } catch (error) {
+          console.error('Error:', error);
+        } finally {
+          await browser.close();
+        }
+    
     }
     if(req.query.query == 'gazettes'){
         keyword = 'gazettes zimbabwe'
     }
     if(req.query.query == 'regulations'){
         keyword = 'regulations zimbabwe' 
+        const browser = await puppeteer.launch();
+  const page = await browser.newPage();
+
+  const baseUrl = 'https://www.veritaszim.net/taxonomy/term/8';
+  const totalPages = 5; // Specify the number of pages to scrape
+
+  const legislationList = [];
+
+  for (let pageIdx = 0; pageIdx < totalPages; pageIdx++) {
+    const pageUrl = `${baseUrl}?page=${pageIdx}`;
+
+    await page.goto(pageUrl);
+
+    // Wait for the legislation items to load
+    await page.waitForSelector('.node-title');
+
+    // Extract the legislation titles and URLs on the current page
+    const legislationOnPage = await page.$$eval('.node-title', (titleElements) => {
+      return titleElements.map((element) => {
+        const titleLink = element.querySelector('a');
+        return {
+          title: titleLink.innerText.trim(),
+          url: titleLink.href
+        };
+      });
+    });
+
+    legislationList.push(...legislationOnPage);
+  }
+
+  await browser.close();
+
+  res.render('resources_legislature',{layout:'./layouts/resources-results-layout',results: legislationList})
     } 
 
    
@@ -712,11 +815,15 @@ app.post('/resources-search-results',  async (req,res) => {
       scrapping_results = searchResults
       // Close the browser instance
       await browser.close();
-   res.redirect("/resources-search-results")
+   res.redirect("/resources-gazettes")
 });
-app.get('/resources-search-results',  async (req,res) => {
+app.get('/resources-gazettes',  async (req,res) => {
 
-    res.render('resources_legislature',{layout:'./layouts/resources-results-layout',results: scrapping_results})
+    res.render('resources_gazettes',{layout:'./layouts/resources-results-layout',results: scrapping_results})
+});
+app.get('/resources-cases-and-judgements',  async (req,res) => {
+
+    res.render('resources_gazettes',{layout:'./layouts/resources-results-layout',results: scrapping_results})
 });
 app.get('/tasks',checkNotAuthenticated,  async (req,res) => {
     pool.query(

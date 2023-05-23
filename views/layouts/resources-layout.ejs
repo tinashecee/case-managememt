@@ -19,6 +19,8 @@
     />
     <link rel="stylesheet" href="/css/theme.css" />
     <link rel="stylesheet" href="/css/loopple/loopple.css" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0/css/bootstrap.min.css">
+
   </head>
   
   <body class="g-sidenav-show">
@@ -346,6 +348,7 @@
           </div>
       </nav>
     <%- body %>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0/js/bootstrap.bundle.min.js"></script>
     </div>
     <script src="https://rawcdn.githack.com/Loopple/loopple-public-assets/5cef8f62939eeb089fa26d4c53a49198de421e3d/argon-dashboard/js/vendor/jquery.min.js"></script>
     <script src="https://rawcdn.githack.com/Loopple/loopple-public-assets/5cef8f62939eeb089fa26d4c53a49198de421e3d/argon-dashboard/js/vendor/bootstrap.bundle.min.js"></script>
@@ -354,5 +357,22 @@
     <script src="https://rawcdn.githack.com/Loopple/loopple-public-assets/5cef8f62939eeb089fa26d4c53a49198de421e3d/argon-dashboard/js/vendor/chart.extension.js"></script>
     <script src="https://rawcdn.githack.com/Loopple/loopple-public-assets/7bb803d2af2ab6d71d429b0cb459c24a4cd0fbb4/argon-dashboard/js/argon.min.js"></script>
     <script src="/js/loopple/loopple.js"></script>
+    
+
+    <script>
+        // Get the select element
+        const selectYear = document.getElementById('year');
+    
+        // Generate options for years from 1980 to 2023
+        for (let year = 1980; year <= 2023; year++) {
+          const option = document.createElement('option');
+          option.value = year;
+          option.name = 'year';
+          option.textContent = year;
+          selectYear.appendChild(option);
+        }
+        var courtSelect = document.getElementById("court-select");
+
+      </script>
   </body>
   

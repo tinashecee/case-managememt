@@ -55,7 +55,7 @@
                 >
               </div>
             </div>
-            <a href="resources-results?query=cases_and_judgements" class="btn btn-secondary btn-lg mt-5">View Cases</a>
+            <button class="btn btn-secondary btn-lg mt-5" data-toggle="modal" data-target="#exampleModal1">View Cases</button>
           </div>
         </div>
       </div>
@@ -135,11 +135,74 @@
                 >
               </div>
             </div>
-            <a href="resources-results?query=gazettes" class="btn btn-secondary btn-lg mt-5"
-              >View View Gazettes</a
+            <button class="btn btn-secondary btn-lg mt-5"  data-toggle="modal" data-target="#exampleModal"
+              >View View Gazettes</button
             >
           </div>
         </div>
       </div>
     </div>
+  </div>
+  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <form action='/resources-gazettes' method="POST">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Pick a year</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">X</span>
+                </button>
+            </div>
+            <div class="modal-body">
+              <div class="container mt-5">
+                <label for="year" class="form-label">Select a Year:</label>
+                <select id="year" name="year" class="form-select">
+                  <!-- JavaScript will dynamically populate the options -->
+                </select>
+              </div>
+                             
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+        </form> 
+        </div>
+  </div>
+  </div>
+  <div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <form action='/resources-cases-and-judgements' method="POST">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">View Cases and Judgements</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">X</span>
+                </button>
+            </div>
+            <div class="modal-body">
+              <div class="container mt-5">
+                <label for="court-select" class="form-label">Select Court:</label>
+                <select name="court" id="court-select">
+                  <option  value="ZWCC">Constitution Court</option>
+                  <option  value="ZWLC">Labour Courts</option>
+                  <option  value="ZWSC">Supreme Court</option>
+                  <optgroup label="High Courts">
+                    <option  value="ZWBHC">Bulawayo High Court</option>
+                    <option  value="ZWCHHC">Chinhoyi High Court</option>
+                    <option   value="ZWHHC">Harare High Court</option>
+                    <option  value="ZWMSVHC">Masvingo High Court</option>
+                    <option  value="ZWMTHC">Mutare High Court</option>
+                    </optgroup>
+                </select>
+              </div>
+                             
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+        </form> 
+        </div>
+  </div>
   </div>
