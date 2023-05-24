@@ -90,6 +90,7 @@ let compliance_contact_email = ''
 let compliance_survey_questions = []
 let compliance_data = []
 let scrapping_results = []
+let current_task
 
 // Function to scrape websites for specific information
 async function scrapeWebsites(keyword) {
@@ -216,11 +217,20 @@ app.get('', async (req,res) => {
                                         style: "currency",
                                         currency: "USD", 
                                     });
-                                     
+                                    pool.query(
+                                        `SELECT * FROM users`,
+                                        [],
+                                        (err, results4) => {
+                                            if(err){
+                                                console.log(err)
+                                                throw err;
+                                                
+                                            }
                                     console.log(result3.rows)
              array1 = results.rows
-             res.render('index',{layout:'./layouts/index-layout',dollarUS:dollarUS, expiring_contracts:result3.rows, contracts_length:result2.rows.length ,cases_length:results1.rows.length, tasks:results.rows,authed:authed,user:nam,})
+             res.render('index',{layout:'./layouts/index-layout',dollarUS:dollarUS, expiring_contracts:result3.rows, contracts_length:result2.rows.length ,cases_length:results1.rows.length, tasks:results.rows,authed:authed,user:nam,users:results4.rows})
                 })
+            })
             })
             })
         }
@@ -825,6 +835,23 @@ app.get('/resources-cases-and-judgements',  async (req,res) => {
 
     res.render('resources_gazettes',{layout:'./layouts/resources-results-layout',results: scrapping_results})
 });
+app.get('/settings/users',  async (req,res) => {
+    pool.query(
+        `SELECT * FROM users`,
+        [],
+        (err, results) => {
+            if(err){
+                console.log(err)
+                throw err;
+                
+            }
+           
+             res.render('users',{layout:'./layouts/users-layout',data:results.rows,user:nam})
+          
+        }
+    )
+   
+});
 app.get('/tasks',  async (req,res) => {
     pool.query(
         `SELECT * FROM tasks`,
@@ -835,10 +862,21 @@ app.get('/tasks',  async (req,res) => {
                 throw err;
                 
             }
-           
+            pool.query(
+                `SELECT * FROM users`,
+                [],
+                (err, results1) => {
+                    if(err){
+                        console.log(err)
+                        throw err;
+                        
+                    }
+
+                    array1 = results.rows
+                    res.render('tasks',{layout:'./layouts/tasks-layout',data:results.rows,users:results1.rows})
+                })
             
-             array1 = results.rows
-             res.render('tasks',{layout:'./layouts/tasks-layout',data:results.rows})
+             
           
         }
     )
@@ -1308,8 +1346,31 @@ app.post('/add-expenditure', (req, res)=>{
       expenditure_actual = req.body.actual
       expenditure_budget =req.body.budget
   })
-app.post('/add-tasks', (req, res)=>{
+app.post('/edit-tasks', (req, res)=>{
     console.log(req.body)
+    let task_name = req.body.taskName
+    let start_date = req.body.startDate
+    let due_date = req.body.dueDate
+    let priority = req.body.priority
+    let frequency = req.body.frequency
+    let assigness = req.body.assiigness
+    let task_description = req.body.taskDescription
+    let statuss = req.body.status
+    let yourDate = new Date()
+    date_created = formatDate(yourDate)
+    pool.query(
+        `UPDATE tasks SET task_name = $1, start_date = $2, due_date = $3, priority = $4, frequency = $5, assigness = $6, task_description = $7, status = $8 WHERE task_id = $9`,
+        [task_name, start_date, due_date, priority, frequency, assigness, task_description, statuss,current_task], 
+        (err, results) => {
+            if(err){
+                throw err;
+            }
+            req.flash('success_msg','You have successfully edited task');
+            res.redirect('/tasks');
+        }
+    )
+});
+app.post('/add-tasks', (req, res)=>{
     let task_name = req.body.taskName
     let start_date = req.body.startDate
     let due_date = req.body.dueDate
@@ -1328,6 +1389,20 @@ app.post('/add-tasks', (req, res)=>{
                 throw err;
             }
             req.flash('success_msg','You have successfully added a task');
+            res.redirect('/tasks');
+        }
+    )
+});
+app.post('/delete-tasks', (req, res)=>{
+    
+    pool.query(
+        `DELETE from tasks WHERE task_id = $1`,
+        [current_task], 
+        (err, results) => {
+            if(err){
+                throw err;
+            }
+            req.flash('success_msg','You have successfully deleted a task');
             res.redirect('/tasks');
         }
     )
@@ -1489,6 +1564,32 @@ app.get('/download1',async (req,res) =>{
           console.log(error);
         }    
 })
+app.get('/download3',async (req,res) =>{
+    let createCsvWriter = csvwriter.createObjectCsvWriter;
+
+    let usersArray = array
+  
+    
+    const path = 'sample2.csv';
+   
+    const csvWriter = createCsvWriter({
+      path: path,
+      header: [{ id:'law_firm_id',title:'ID'},{ id:'name',title:'Name'},{id:'email',title:'Email'},{id:'address',title:'Address'},{id:'phone_number',title:'Phone Number'},{id:'vat_number',title:'VAT Number'},{id:'website',title:'Website'}]});
+
+    try 
+    {
+         
+         csvWriter.writeRecords(usersArray)
+         .then(() => {
+            res.download(path); 
+           
+        });
+    }
+    catch (error) 
+    {
+      console.log(error);
+    }
+});
 app.post('/compliance_results',(req,res) =>{
     let responses = req.body.responses
     let yourDate = new Date()
@@ -1630,6 +1731,9 @@ app.post('/update-compliance-question-count', async (req,res) => {
 })
 app.post('/reduce-compliance-question-count', async (req,res) => { 
     compliance_count-=1
+})
+app.post('/current_task', async (req,res) => { 
+    current_task = req.body.task_id
 })
 app.post('/budget_statement', async (req,res) => {
     console.log(req.body.data) 

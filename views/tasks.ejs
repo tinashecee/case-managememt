@@ -56,9 +56,9 @@
                     <div class="mb-3">
                       <label for="assignees" class="form-label">Assignees</label>
                       <select class="form-select" id="frequency" name="assiigness" required>
-                        <option value="john">John</option>
-                        <option value="mary">Mary</option>
-                        <option value="jack">Jack</option>
+                        <% for (let dat of users) { %>
+                          <option value="<%= dat.id %>"><%= dat.name %></option>
+                          <% } %>
                       </select>
                     </div>
                     <div class="mb-3">
@@ -348,6 +348,9 @@
                   <font style="vertical-align: inherit">Priority</font>
                 </font>
               </th>
+              <th scope="col">
+               
+              </th>
               <th scope="col"></th>
               <th></th>
             </tr>
@@ -358,17 +361,7 @@
             <tr>
               <th scope="row">
                 <div class="d-flex align-items-center">
-                  <div class="custom-control custom-checkbox">
-                    <input
-                      class="custom-control-input"
-                      id="table-check-1"
-                      type="checkbox"
-                    />
-                    <label
-                      class="custom-control-label"
-                      for="table-check-1"
-                    ></label>
-                  </div>
+                  
                   <span>
                     <font style="vertical-align: inherit">
                       <font style="vertical-align: inherit"
@@ -410,17 +403,122 @@
                   </span>
                 </div>
                 </td>
-                 <td> 
-                <select class="form-select" id="status" name="Priority" required="">
-                    <option value="Pending">High</option>
-                    <option value="In Progress">Low</option>
-                    <option value="Completed">Medium</option>
-                </select>
-                </div></td>
+                <td class="table-actions">
+                  <button class="table-action btn btn-sm btn-block btn-neutral expandBtn"  onclick="current_task('<%= dat.task_id %>')" data-toggle="modal" data-target="#exampleModal3" data-original-title="Edit product">
+                      <i class="fas fa-trash"></i>
+                  </button>
+                  <button class="table-action btn btn-sm btn-block btn-neutral"  onclick="current_task('<%= dat.task_id %>')" data-toggle="modal" data-target="#exampleModal2" data-original-title="Edit product">
+                      <i class="fas fa-edit"></i>
+                  </button>
+              </td>
                
             </tr>
             <% } %>
             <% } %>
           </tbody>
         </table>
+      </div>
+      <div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <form action='/edit-task' method="POST">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Edit Task</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">X</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                
+                  <div class="mb-3">
+                    <label for="taskName" class="form-label">Task Name</label>
+                    <input type="text" class="form-control" id="taskName" name="taskName" required>
+                  </div>
+                  <div class="row mb-3">
+                    <div class="col-md-6">
+                      <label for="startDate" class="form-label">Start Date</label>
+                      <input type="date" class="form-control" id="startDate" name="startDate" required>
+                    </div>
+                    <div class="col-md-6">
+                      <label for="dueDate" class="form-label">Due Date</label>
+                      <input type="date" class="form-control" id="dueDate" name="dueDate" required>
+                    </div>
+                  </div>
+                  <div class="mb-3">
+                    <label for="priority" class="form-label">Priority</label>
+                    <select class="form-select" id="priority" name="priority" required>
+                      <option value="" disabled selected>Select Priority</option>
+                      <option value="high">High</option>
+                      <option value="medium">Medium</option>
+                      <option value="low">Low</option>
+                    </select>
+                  </div>
+                  <div class="mb-3">
+                    <label for="frequency" class="form-label">Frequency</label>
+                    <select class="form-select" id="frequency" name="frequency" required>
+                      <option value="" disabled selected>Select Frequency</option>
+                      <option value="weekly">Weekly</option>
+                      <option value="biweekly">2 Weeks</option>
+                      <option value="monthly">1 Month</option>
+                      <option value="bimonthly">2 Months</option>
+                      <option value="quarterly">3 Months</option>
+                      <option value="halfyearly">6 Months</option>
+                      <option value="yearly">1 Year</option>
+                      <option value="custom">Custom</option>
+                    </select>
+                  </div>
+                  <div class="mb-3">
+                    <label for="assignees" class="form-label">Assignees</label>
+                    <select class="form-select" id="frequency" name="assiigness" required>
+                      <% for (let dat of users) { %>
+                      <option value="<%= dat.id %>"><%= dat.name %></option>
+                      <% } %>
+                    </select>
+                  </div>
+                  <div class="mb-3">
+                    <label for="taskDescription" class="form-label">Task Description</label>
+                    <textarea class="form-control" id="taskDescription" name="taskDescription" rows="3"></textarea>
+                  </div>
+                  <div class="mb-3">
+                    <label for="completed" class="form-label">Status</label>
+                    <select class="form-select" id="status" name="status" required>
+                      <option value="ACTIVE" selected>ACTIVE</option>
+                      <option value="COMPLETED">COMPLETED</option>
+                     
+                    </select>
+                  </div>
+               </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" disabled class="btn btn-primary">SAVE</button>
+                </div>
+            </form> 
+            </div>
+      </div>
+      </div>
+      <div class="modal fade" id="exampleModal3" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <form action='/delete-task' method="POST">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Delete Task</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">X</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                
+                  
+                  <div class="mb-3">
+                    <span>Are you sure that you want to <label for="priority" style="color: red;" class="form-label"> DELETE TASK?</label></span>
+                   
+                  </div>
+               </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">CANCEL</button>
+                    <button type="submit" disabled class="btn btn-primary">DELETE</button>
+                </div>
+            </form> 
+            </div>
+      </div>
       </div>

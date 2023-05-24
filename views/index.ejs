@@ -55,12 +55,6 @@
               </div>
             </div>
           </div>
-          <p class="mt-3 mb-0 text-sm">
-            <span class="text-success mr-2"
-              ><i class="fa fa-arrow-up"></i> 3.48%</span
-            >
-            <span class="text-nowrap">Since last month</span>
-          </p>
         </div>
       </div>
       <div class="card border shadow-none border-left-0">
@@ -80,12 +74,6 @@
               </div>
             </div>
           </div>
-          <p class="mt-3 mb-0 text-sm">
-            <span class="text-success mr-2"
-              ><i class="fa fa-arrow-up"></i> 2.10%</span
-            >
-            <span class="text-nowrap">Since last month</span>
-          </p>
         </div>
       </div>
       <div class="card border shadow-none border-left-0">
@@ -105,12 +93,6 @@
               </div>
             </div>
           </div>
-          <p class="mt-3 mb-0 text-sm">
-            <span class="text-success mr-2"
-              ><i class="fa fa-arrow-up"></i> 11%</span
-            >
-            <span class="text-nowrap">Since last month</span>
-          </p>
         </div>
       </div>
     </div>
@@ -137,6 +119,7 @@
                 <th scope="col">vendor</th>
                 <th scope="col">contract value</th>
                 <th scope="col">Expiry Date</th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
@@ -146,6 +129,11 @@
                 <td><%= dat.vendor %></td>
                 <td><%= dollarUS.format(dat.contract_value) %></td>
                 <td><%= moment(dat.end_date).format('Do MMMM, YYYY') %></td>
+                <td class="table-actions">
+                  <a href='/contract_view?id=<%= dat.contract_id %>' class="table-action btn btn-sm btn-block btn-neutral"  >
+                      <i class="fas fa-eye"></i>
+                  </a>
+              </td>
               </tr>
               <% } %>
             </tbody>
@@ -271,21 +259,102 @@
           <table class="table align-items-center table-flush">
             <thead class="thead-light">
               <tr>
-                <th scope="col">Task</th>
-                <th scope="col">Due Date</th>
-                <th scope="col">Assigned To</th>
+                <th scope="col">
+                  <font style="vertical-align: inherit">
+                    <font style="vertical-align: inherit">Name</font>
+                  </font>
+                </th>
+                <th scope="col">
+                  <font style="vertical-align: inherit">
+                    <font style="vertical-align: inherit">Status</font>
+                  </font>
+                </th>
+                <th scope="col">
+                  <font style="vertical-align: inherit">
+                    <font style="vertical-align: inherit">Start Date</font>
+                  </font>
+                </th>
+                <th scope="col">
+                  <font style="vertical-align: inherit">
+                    <font style="vertical-align: inherit">Due Date</font>
+                  </font>
+                </th>
+                <th scope="col">
+                  <font style="vertical-align: inherit">
+                    <font style="vertical-align: inherit">Assigned To</font>
+                  </font>
+                </th>
+                <th scope="col">
+                  <font style="vertical-align: inherit">
+                    <font style="vertical-align: inherit">Priority</font>
+                  </font>
+                </th>
+                <th scope="col">
+                 
+                </th>
+                <th scope="col"></th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
-              <% for (let dat of tasks) { %>
+              <% if (tasks.length > 0) { %>
+                <% for (let dat of tasks) { %>
               <tr>
-                <th scope="row"><%= dat.name %></th>
-                <td><%= moment(dat.end_date).format('Do MMMM, YYYY') %></td>
-                <td>
-                    <%= dat.assigned_to %>
-             
+                <th scope="row">
+                  <div class="d-flex align-items-center">
+                    
+                    <span>
+                      <font style="vertical-align: inherit">
+                        <font style="vertical-align: inherit"
+                          ><%= dat.name %></font
+                        >
+                      </font>
+                    </span>
+                  </div>
+                  </th>
+                  <td>
+                  <span class="badge badge-pill badge-success">
+                    <font style="vertical-align: inherit">
+                      <font style="vertical-align: inherit"><%= dat.status %></font>
+                    </font>
+                  </span>
+                   </td>
+                  <td>
+                   <span>
+                    <font style="vertical-align: inherit">
+                      <font style="vertical-align: inherit"><%=  moment(dat.start_date).format('Do MMMM, YYYY') %></font>
+                    </font>
+                  </span>
+                   </td>
+                  <td>
+                  <div class="d-flex align-items-center">
+                    <span class="ml-2">
+                      <font style="vertical-align: inherit">
+                        <font style="vertical-align: inherit"><%= moment(dat.due_date).format('Do MMMM, YYYY')  %></font>
+                      </font>
+                    </span>
+                  </div>
+                 </td>
+                 <td>
+                  <div class="d-flex align-items-center">
+                    <span class="ml-2">
+                      <font style="vertical-align: inherit">
+                        <font style="vertical-align: inherit"><%= dat.assigned_to %></font>
+                      </font>
+                    </span>
+                  </div>
+                  </td>
+                  <td class="table-actions">
+                    <button class="table-action btn btn-sm btn-block btn-neutral expandBtn"  onclick="current_task('<%= dat.task_id %>')" data-toggle="modal" data-target="#exampleModal3" data-original-title="Edit product">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                    <button class="table-action btn btn-sm btn-block btn-neutral"  onclick="current_task('<%= dat.task_id %>')" data-toggle="modal" data-target="#exampleModal2" data-original-title="Edit product">
+                        <i class="fas fa-edit"></i>
+                    </button>
                 </td>
+                 
               </tr>
+              <% } %>
               <% } %>
             </tbody>
           </table>
@@ -293,4 +362,108 @@
       </div>
     </div>
   </div>
+</div>
+<div class="modal fade" id="exampleModal2" style="z-index:45" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+          <form action='/edit-task' method="POST">
+          <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Edit Task</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">X</span>
+              </button>
+          </div>
+          <div class="modal-body">
+          
+            <div class="mb-3">
+              <label for="taskName" class="form-label">Task Name</label>
+              <input type="text" class="form-control" id="taskName" name="taskName" required>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label for="startDate" class="form-label">Start Date</label>
+                <input type="date" class="form-control" id="startDate" name="startDate" required>
+              </div>
+              <div class="col-md-6">
+                <label for="dueDate" class="form-label">Due Date</label>
+                <input type="date" class="form-control" id="dueDate" name="dueDate" required>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="priority" class="form-label">Priority</label>
+              <select class="form-select" id="priority" name="priority" required>
+                <option value="" disabled selected>Select Priority</option>
+                <option value="high">High</option>
+                <option value="medium">Medium</option>
+                <option value="low">Low</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="frequency" class="form-label">Frequency</label>
+              <select class="form-select" id="frequency" name="frequency" required>
+                <option value="" disabled selected>Select Frequency</option>
+                <option value="weekly">Weekly</option>
+                <option value="biweekly">2 Weeks</option>
+                <option value="monthly">1 Month</option>
+                <option value="bimonthly">2 Months</option>
+                <option value="quarterly">3 Months</option>
+                <option value="halfyearly">6 Months</option>
+                <option value="yearly">1 Year</option>
+                <option value="custom">Custom</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="assignees" class="form-label">Assignees</label>
+              <select class="form-select" id="frequency" name="assiigness" required>
+                <% for (let dat of users) { %>
+                <option value="<%= dat.id %>"><%= dat.name %></option>
+                <% } %>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="taskDescription" class="form-label">Task Description</label>
+              <textarea class="form-control" id="taskDescription" name="taskDescription" rows="3"></textarea>
+            </div>
+            <div class="mb-3">
+              <label for="completed" class="form-label">Status</label>
+              <select class="form-select" id="status" name="status" required>
+                <option value="ACTIVE" selected>ACTIVE</option>
+                <option value="COMPLETED">COMPLETED</option>
+               
+              </select>
+            </div>
+         </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="submit" disabled class="btn btn-primary">SAVE</button>
+          </div>
+      </form> 
+      </div>
+</div>
+</div>
+<div class="modal fade" id="exampleModal3" style="z-index:45" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+          <form action='/delete-task' method="POST">
+          <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Delete Task</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">X</span>
+              </button>
+          </div>
+          <div class="modal-body">
+          
+            
+            <div class="mb-3">
+              <span>Are you sure that you want to <label for="priority" style="color: red;" class="form-label"> DELETE TASK?</label></span>
+             
+            </div>
+         </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">CANCEL</button>
+              <button type="submit" disabled class="btn btn-primary">DELETE</button>
+          </div>
+      </form> 
+      </div>
+</div>
 </div>

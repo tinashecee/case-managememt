@@ -1,0 +1,298 @@
+
+<div class="container-fluid pt-3">
+    <div class="row mt-3 mb-4 mx-0 removable">
+        <div class="card-group w-100">
+            <div class="card border shadow-none">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col d-flex align-items-center">
+                            <h5 class="card-title text-uppercase text-muted mb-0">New</h5>
+                            <span class="badge badge-secondary border ml-2 text-md font-weight-bold mb-0">+ 11</span>
+                        </div>
+                    </div>
+                    <p class="mt-2 text-dark font-weight-700 display-3 mb-0">
+                        11
+                    </p>
+                </div>
+            </div>
+            <div class="card border shadow-none">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col d-flex align-items-center">
+                            <h5 class="card-title text-uppercase text-muted mb-0">In review</h5>
+                            <span class="badge badge-secondary border ml-2 text-md font-weight-bold mb-0">+ 4</span>
+                        </div>
+                    </div>
+                    <p class="mt-2 text-dark font-weight-700 display-3 mb-0">6</p>
+                </div>
+            </div>
+            <div class="card border shadow-none">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col d-flex align-items-center">
+                            <h5 class="card-title text-uppercase text-muted mb-0">Interview</h5>
+                            <span class="badge badge-secondary border ml-2 text-md font-weight-bold mb-0">+ 2</span>
+                        </div>
+                    </div>
+                    <p class="mt-2 text-dark font-weight-700 display-3 mb-0">
+                        4
+                    </p>
+                </div>
+            </div>
+            <div class="card border shadow-none">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col d-flex align-items-center">
+                            <h5 class="card-title text-uppercase text-muted mb-0">Offers</h5>
+                            <span class="badge badge-secondary border ml-2 text-md font-weight-bold mb-0">+ 1</span>
+                        </div>
+                    </div>
+                    <p class="mt-2 text-dark font-weight-700 display-3 mb-0">
+                        2
+                    </p>
+                </div>
+            </div>
+            <div class="card border shadow-none">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col d-flex align-items-center">
+                            <h5 class="card-title text-uppercase text-muted mb-0">Hired</h5>
+                            <span class="badge badge-secondary border ml-2 text-md font-weight-bold mb-0">+ 1</span>
+                        </div>
+                    </div>
+                    <p class="mt-2 text-dark font-weight-700 display-3 mb-0">
+                        1
+                    </p>
+                </div>
+            </div>
+            <div class="card border shadow-none">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col d-flex align-items-center">
+                            <h5 class="card-title text-uppercase text-muted mb-0">Rejected</h5>
+                            <span class="badge badge-secondary border ml-2 text-md font-weight-bold mb-0">+ 2</span>
+                        </div>
+                    </div>
+                    <p class="mt-2 text-dark font-weight-700 display-3 mb-0">
+                        3
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row removable">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="row align-items-center">
+                    <div class="col text-left">
+                       <div class="col-md-3">
+                                <label for="view" class="form-label">View</label>
+                                <select class="form-select" id="view" name="view" required="">
+                                    <option value="">View All</option>
+                                    <option value="25">25</option>
+                                    <option value="50">50</option>
+                                    <option value="100">100</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col text-left">
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control" placeholder="Search" id="search-input">
+                            <button class="btn btn-primary" type="button" id="search-btn">Search</button>
+                        </div>
+                    </div>
+                     <div class="col-lg-4"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                               New User
+                            </button>
+                            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                    <div class="modal-content">
+                                        <form action="add-case" method="POST">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">Add Case</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">X</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                          
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="case-name" class="form-label">Case Name</label>
+                                <input type="text" class="form-control" id="case_name" name="case_name" required="">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="department" class="form-label">Department</label>
+                                <select class="form-select" id="department" name="department" required="">
+                                    <option value="">Select a department</option>
+                                    <option value="ppwe">PPWE</option>
+                                    <option value="pmu">PMU</option>
+                                    <option value="icts">ICTS</option>
+                                    <option value="research-quality">Institutional Research and Quality Management</option>
+                                    <option value="cont_education">Centre for Continuing Education</option>
+                                    <option value="comms_marketing">Communication and Marketing</option>
+                                    <option value="engineering">Faculty of Engineering</option>
+                                    <option value="applied_sciences">Faculty of Applied Science</option>
+                                    <option value="medicine">Faculty of Medicine</option>
+                                    <option value="built_environment">Faculty of Built Environment</option>
+                                    <option value="commerce">Faculty of Commerce</option>
+                                    <option value="information_science">Faculty of Communication and Information Science</option>
+                                    <option value="science_technology">Faculty of Science and Technology Education</option>
+                                    <option value="research_inter">Research and Internationalisation</option>
+                                    <option value="affiliate">Affiliate Institutions</option>
+                                    <option value="innovation">Innovation</option>
+                                    <option value="business_development">Business Development</option>
+                                    <option value="human_resources">Human Resources</option>
+                                    <option value="academic">Academic/Admissions</option>
+                                    <option value="legal">Legal</option>
+                                    <option value="centrak_services">Central Services</option>
+                                    <option value="student-affairs">Student Affairs </option>
+                                    <option value="commercial_catering">Commercial Catering Unit </option>
+                                    <option value="bursar">Bursar</option>
+                                    <option value="library">Library</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="status" class="form-label">Status</label>
+                                <select class="form-select" id="status" name="status" required="">
+                                    <option value="">Select a status</option>
+                                    <option value="Pending">Pending</option>
+                                    <option value="In Progress">In Progress</option>
+                                    <option value="Completed">Completed</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label for="start-date" class="form-label">Start Date</label>
+                                <input type="date" class="form-control" id="start_date" name="start_date" required="">
+                            </div>
+                            <div class="col-md-4">
+                                <label for="deadline" class="form-label">Deadline</label>
+                                <input type="date" class="form-control" id="deadline" name="deadline" required="">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                                <label for="members" class="form-label">Members</label>
+                                <select class="form-select" id="members" name="members" required="">
+                                    <option value="">Select Members</option>
+                                    <option value="John">John</option>
+                                    <option value="Mary">Mary</option>
+                                    <option value="Jack">Jack</option>
+                                </select>
+                            </div>
+                        <div class="mb-3">
+                            <label for="comments" class="form-label">Comments</label>
+                            <textarea class="form-control" id="comments" name="comments"></textarea>
+                        </div>
+                                                     
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                            <button type="submit" class="btn btn-primary">Submit</button>
+                                        </div>
+                                    </form> 
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+                <div class="card">
+                    <table class="table align-items-center table-flush">
+                        <thead class="thead-light">
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Email</th>
+                                <th scope="col">Role</th>
+                                <th scope="col"></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if (data.length > 0) { %>
+                                <% for (let dat of data) { %>
+                            <tr>
+                                
+                                <th scope="row">
+                                    <%= dat.id %>
+                                </th>
+                                <td><%= dat.name %></td>
+                                <td>
+                                    <%= dat.email %></td>
+                                <td>
+                                    <%= dat.role %></td>
+                                    <td class="table-actions">
+                                        <button class="table-action btn btn-sm btn-block btn-neutral"   data-toggle="modal" data-target="#exampleModal1" data-original-title="Edit product">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                    </td>
+                            </tr>
+                            <% } %>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+ 
+    <div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <form action='add-budget' method="POST">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Edit User</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">X</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                  <div class="mb-3">
+                    <label for="user_name" class="form-label"
+                      >Name</label
+                    >
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="user_name"
+                      name="user_name"
+                      required
+                    />
+                </div>              
+                <div class="mb-3">
+                    <label for="email" class="form-label"
+                      >Email</label
+                    >
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="email"
+                      name="email"
+                      required
+                    />
+                  </div>
+                  <div class="mb-3">
+                    <label for="role" class="form-label">Role</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="role"
+                      name="role"
+                      required
+                    />
+                  </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </form> 
+            </div>
+        </div>
+    </div>

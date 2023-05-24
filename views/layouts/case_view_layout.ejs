@@ -96,13 +96,16 @@
                             <span class="nav-link-text">Tasks</span>
                         </a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="javascript:">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="contractsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <div class="rounded-circle avatar-xs text-center bg-light py-2 px-1 mr-3 d-flex align-items-center justify-content-center">
-                                <i class="fa fa-tag text-primary"></i>
+                                <i class="fa fa-lock text-danger"></i>
                             </div>
                             <span class="nav-link-text">Settings</span>
                         </a>
+                        <div class="dropdown-menu" aria-labelledby="contractsDropdown">
+                            <a class="dropdown-item" href="/settings/users">Users</a>
+                        </div>
                     </li>
                 </ul>
   
@@ -136,11 +139,7 @@
                                 </div>
                             </div>
                         </li>
-                        <li class="nav-item d-sm-none">
-                            <a class="nav-link" href="#" data-action="search-show" data-target="#navbar-search-main">
-                                <i class="ni ni-zoom-split-in"></i>
-                            </a>
-                        </li>
+                      
                         <li class="nav-item dropdown">
                             <a class="nav-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="fa fa-bell"></i>

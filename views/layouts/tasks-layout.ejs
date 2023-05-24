@@ -108,14 +108,17 @@
                           <span class="nav-link-text">Tasks</span>
                       </a>
                   </li>
-                  <li class="nav-item">
-                      <a class="nav-link" href="javascript:">
-                          <div class="rounded-circle avatar-xs text-center bg-light py-2 px-1 mr-3 d-flex align-items-center justify-content-center">
-                              <i class="fa fa-tag text-primary"></i>
-                          </div>
-                          <span class="nav-link-text">Settings</span>
-                      </a>
-                  </li>
+                  <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="contractsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <div class="rounded-circle avatar-xs text-center bg-light py-2 px-1 mr-3 d-flex align-items-center justify-content-center">
+                            <i class="fa fa-lock text-danger"></i>
+                        </div>
+                        <span class="nav-link-text">Settings</span>
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="contractsDropdown">
+                        <a class="dropdown-item" href="/settings/users">Users</a>
+                    </div>
+                </li>
               </ul>
 
           </div>
@@ -126,14 +129,7 @@
           <div class="container-fluid">
               <div class="collapse navbar-collapse" id="navbarSupportedContent">
                   <form class="navbar-search navbar-search-light form-inline mr-sm-3 mb-0" id="navbar-search-main">
-                      <div class="form-group mb-0">
-                          <div class="input-group input-group-alternative input-group-merge">
-                              <div class="input-group-prepend">
-                                  <span class="input-group-text"><i class="fas fa-search"></i></span>
-                              </div>
-                              <input class="form-control" placeholder="Search" type="text">
-                          </div>
-                      </div>
+                      
                       <button type="button" class="close" data-action="search-close" data-target="#navbar-search-main" aria-label="Close">
                           <span aria-hidden="true">�</span>
                       </button>
@@ -354,5 +350,19 @@
     <script src="https://rawcdn.githack.com/Loopple/loopple-public-assets/5cef8f62939eeb089fa26d4c53a49198de421e3d/argon-dashboard/js/vendor/chart.extension.js"></script>
     <script src="https://rawcdn.githack.com/Loopple/loopple-public-assets/7bb803d2af2ab6d71d429b0cb459c24a4cd0fbb4/argon-dashboard/js/argon.min.js"></script>
     <script src="/js/loopple/loopple.js"></script>
+    <script>
+        function current_task(t){
+            fetch('/current_task',{
+			method: 'POST',
+			body: JSON.stringify({  
+                task_id:t,
+			}),
+			headers: {
+				'Content-type': 'application/json; charset=UTF-8'
+			},
+		})
+        }
+        
+    </script>
   </body>
   
