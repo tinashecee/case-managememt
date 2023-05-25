@@ -57,7 +57,7 @@
                       <label for="assignees" class="form-label">Assignees</label>
                       <select class="form-select" id="frequency" name="assiigness" required>
                         <% for (let dat of users) { %>
-                          <option value="<%= dat.id %>"><%= dat.name %></option>
+                          <option value="<%= dat.name %>"><%= dat.name %></option>
                           <% } %>
                       </select>
                     </div>
@@ -143,66 +143,7 @@
             </p>
           </div>
         </div>
-        <div class="card border shadow-none">
-          <div class="card-body">
-            <div class="row">
-              <div class="col d-flex align-items-center">
-                <h5 class="card-title text-uppercase text-muted mb-0">
-                  <font style="vertical-align: inherit">
-                    <font style="vertical-align: inherit">testing</font>
-                  </font>
-                </h5>
-                <span
-                  class="badge badge-secondary border ml-2 text-md font-weight-bold mb-0"
-                >
-                  <font style="vertical-align: inherit">
-                    <font style="vertical-align: inherit">
-                      <font style="vertical-align: inherit">
-                        <font style="vertical-align: inherit">+ 2</font>
-                      </font>
-                    </font>
-                  </font>
-                </span>
-              </div>
-            </div>
-            <p class="mt-2 text-dark font-weight-700 display-3 mb-0">
-              <font style="vertical-align: inherit">
-                <font style="vertical-align: inherit"> 4 </font>
-              </font>
-            </p>
-          </div>
-        </div>
-        <div class="card border shadow-none">
-          <div class="card-body">
-            <div class="row">
-              <div class="col d-flex align-items-center">
-                <h5 class="card-title text-uppercase text-muted mb-0">
-                  <font style="vertical-align: inherit">
-                    <font style="vertical-align: inherit"
-                      >awaiting feedback</font
-                    >
-                  </font>
-                </h5>
-                <span
-                  class="badge badge-secondary border ml-2 text-md font-weight-bold mb-0"
-                >
-                  <font style="vertical-align: inherit">
-                    <font style="vertical-align: inherit">
-                      <font style="vertical-align: inherit">
-                        <font style="vertical-align: inherit">+ 1</font>
-                      </font>
-                    </font>
-                  </font>
-                </span>
-              </div>
-            </div>
-            <p class="mt-2 text-dark font-weight-700 display-3 mb-0">
-              <font style="vertical-align: inherit">
-                <font style="vertical-align: inherit"> 2 </font>
-              </font>
-            </p>
-          </div>
-        </div>
+     
         <div class="card border shadow-none">
           <div class="card-body">
             <div class="row">
@@ -234,58 +175,7 @@
         </div>
       </div>
     </div>
-    <div class="row removable">
-      <div class="col-lg-3">
-        <div class="">
-          <div class="nav-wrapper">
-            <ul
-              class="nav nav-pills nav-fill flex-column flex-md-row"
-              id="tabs-icons-text"
-              role="tablist"
-            >
-              <li class="nav-item">
-                <a
-                  class="nav-link mb-sm-3 mb-md-0 active"
-                  id="tabs-icons-text-1-tab"
-                  data-toggle="tab"
-                  href="#tabs-icons-text-1"
-                  role="tab"
-                  aria-controls="tabs-icons-text-1"
-                  aria-selected="true"
-                  ><i class="fa fa-home mr-2"></i>
-                  <font style="vertical-align: inherit">
-                    <font style="vertical-align: inherit">
-                      <font style="vertical-align: inherit">
-                        <font style="vertical-align: inherit">25</font>
-                      </font>
-                    </font>
-                  </font>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a
-                  class="nav-link mb-sm-3 mb-md-0"
-                  id="tabs-icons-text-2-tab"
-                  data-toggle="tab"
-                  href="#tabs-icons-text-2"
-                  role="tab"
-                  aria-controls="tabs-icons-text-2"
-                  aria-selected="false"
-                  ><i class="fa fa-bell mr-2"></i>
-                  <font style="vertical-align: inherit">
-                    <font style="vertical-align: inherit">Export</font>
-                  </font>
-                </a>
-              </li>
-              <li class="nav-item"></li>
-            </ul>
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-3"></div>
-      <div class="col-lg-3"></div>
-      <div class="col-lg-3"></div>
-    </div>
+
     <div class="card">
       <div class="card-header border-0">
         <div class="row align-items-center">
@@ -301,21 +191,15 @@
                   class="form-control"
                   placeholder="Search"
                   type="text"
+                  id="searchInput"
                 />
               </div>
             </div>
           </div>
-          <div class="col text-right">
-            <a href="#!" class="btn btn-sm btn-primary">
-              <font style="vertical-align: inherit">
-                <font style="vertical-align: inherit">See all</font>
-              </font>
-            </a>
-          </div>
         </div>
       </div>
       <div class="table-responsive">
-        <table class="table align-items-center table-flush">
+        <table class="table align-items-center table-flush" id="table">
           <thead class="thead-light">
             <tr>
               <th scope="col">
@@ -351,26 +235,20 @@
               <th scope="col">
                
               </th>
-              <th scope="col"></th>
-              <th></th>
             </tr>
           </thead>
-          <tbody>
+          <tbody id="resultsContainer">
             <% if (data.length > 0) { %>
               <% for (let dat of data) { %>
-            <tr>
-              <th scope="row">
+            <tr class="car">
+              <td scope="row">
                 <div class="d-flex align-items-center">
                   
                   <span>
-                    <font style="vertical-align: inherit">
-                      <font style="vertical-align: inherit"
-                        ><%= dat.name %></font
-                      >
-                    </font>
+                    <p class="car-title"><%= dat.name %></p>
                   </span>
                 </div>
-                </th>
+                </td>
                 <td>
                 <span class="badge badge-pill badge-success">
                   <font style="vertical-align: inherit">
@@ -378,30 +256,25 @@
                   </font>
                 </span>
                  </td>
+                 <td>
+                  <div class="d-flex align-items-center">
+                    <span class="ml-2 car-title" ><%=  moment(dat.start_date).format('Do MMMM, YYYY') %></span>
+                  </div>
+                </td>
                 <td>
-                 <span>
-                  <font style="vertical-align: inherit">
-                    <font style="vertical-align: inherit"><%=  moment(dat.start_date).format('Do MMMM, YYYY') %></font>
-                  </font>
-                </span>
-                 </td>
+                  <div class="d-flex align-items-center">
+                    <span class="ml-2 car-title" ><%= moment(dat.due_date).format('Do MMMM, YYYY')  %></span>
+                  </div>
+                </td>
                 <td>
-                <div class="d-flex align-items-center">
-                  <span class="ml-2">
-                    <font style="vertical-align: inherit">
-                      <font style="vertical-align: inherit"><%= moment(dat.due_date).format('Do MMMM, YYYY')  %></font>
-                    </font>
-                  </span>
-                </div>
-               </td>
-               <td>
-                <div class="d-flex align-items-center">
-                  <span class="ml-2">
-                    <font style="vertical-align: inherit">
-                      <font style="vertical-align: inherit"><%= dat.assigned_to %></font>
-                    </font>
-                  </span>
-                </div>
+                  <div class="d-flex align-items-center">
+                    <span class="ml-2 car-title" ><%= dat.assigned_to %></span>
+                  </div>
+                </td>
+                <td>
+                  <div class="d-flex align-items-center">
+                    <span class="ml-2 car-title" ><%= dat.priority %></span>
+                  </div>
                 </td>
                 <td class="table-actions">
                   <button class="table-action btn btn-sm btn-block btn-neutral expandBtn"  onclick="current_task('<%= dat.task_id %>')" data-toggle="modal" data-target="#exampleModal3" data-original-title="Edit product">
@@ -471,7 +344,7 @@
                     <label for="assignees" class="form-label">Assignees</label>
                     <select class="form-select" id="frequency" name="assiigness" required>
                       <% for (let dat of users) { %>
-                      <option value="<%= dat.id %>"><%= dat.name %></option>
+                      <option value="<%= dat.name %>"><%= dat.name %></option>
                       <% } %>
                     </select>
                   </div>
@@ -490,7 +363,7 @@
                </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" disabled class="btn btn-primary">SAVE</button>
+                    <button type="submit"  class="btn btn-primary">SAVE</button>
                 </div>
             </form> 
             </div>
@@ -516,7 +389,7 @@
                </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">CANCEL</button>
-                    <button type="submit" disabled class="btn btn-primary">DELETE</button>
+                    <button type="submit"  class="btn btn-primary">DELETE</button>
                 </div>
             </form> 
             </div>

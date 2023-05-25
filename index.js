@@ -91,6 +91,7 @@ let compliance_survey_questions = []
 let compliance_data = []
 let scrapping_results = []
 let current_task
+let current_vendor
 
 // Function to scrape websites for specific information
 async function scrapeWebsites(keyword) {
@@ -1062,7 +1063,23 @@ app.post('/update-case-startdate', (req, res)=>{
     )
     
 });
-
+app.post('/update-case-description', (req, res)=>{
+    let query = req.query.id
+    let description = req.body.description
+    let yourDate = new Date()
+    date_created = formatDate(yourDate)
+    pool.query(
+         'UPDATE cases SET notes = $1 WHERE case_id = $2',
+        [description, query], 
+        (err, results) => {
+            if(err){
+                throw err;
+            }
+            res.redirect('/case_view?id='+query);
+        }
+    )
+    
+});
 app.post('/update-contract-value', (req, res)=>{
     let query = req.query.id
     let contract_value = req.body.contract_value
@@ -1123,6 +1140,23 @@ app.post('/update-contract-status', (req, res)=>{
     pool.query(
          'UPDATE contracts SET status = $1 WHERE contract_id = $2',
         [status, query], 
+        (err, results) => {
+            if(err){
+                throw err;
+            }
+            res.redirect('/contract_view?id='+query);
+        }
+    )
+    
+});
+app.post('/update-contract-description', (req, res)=>{
+    let query = req.query.id
+    let description = req.body.description
+    let yourDate = new Date()
+    date_created = formatDate(yourDate)
+    pool.query(
+         'UPDATE contracts SET notes = $1 WHERE contract_id = $2',
+        [description, query], 
         (err, results) => {
             if(err){
                 throw err;
@@ -1230,6 +1264,41 @@ app.post('/add-vendor', (req, res)=>{
             }
             console.log(results.row);
             req.flash('success_msg','You have successfully added a vendor');
+            res.redirect('/vendors');
+        }
+    )
+});
+app.post('/edit-vendor', (req, res)=>{
+    console.log(req.body)
+    let contact_person = req.body.contactPerson
+    let phone_number = req.body.phoneNumber
+    let company_name = req.body.vendorName
+    let physical_address = req.body.address
+    let vat_number = req.body.vatNumber
+    let email = req.body.email
+    pool.query(
+        `UPDATE vendors SET  phone_number = $1, contact_person = $2, company_name = $3, vat_number = $4, physical_address = $5, email = $6 WHERE vendor_id = $7`,
+        [ phone_number, contact_person, company_name, vat_number, physical_address, email, current_vendor], 
+        (err, results) => {
+            if(err){
+                throw err;
+            }
+            console.log(results.row);
+            req.flash('success_msg','You have successfully updated a vendor');
+            res.redirect('/vendors');
+        }
+    )
+});
+app.post('/delete-vendor', (req, res)=>{
+    console.log(current_vendor)
+    pool.query(
+        `DELETE from vendors WHERE vendor_id = $1`,
+        [current_vendor], 
+        (err, results) => {
+            if(err){
+                throw err;
+            }
+            req.flash('success_msg','You have successfully deleted a vendor');
             res.redirect('/vendors');
         }
     )
@@ -1346,7 +1415,7 @@ app.post('/add-expenditure', (req, res)=>{
       expenditure_actual = req.body.actual
       expenditure_budget =req.body.budget
   })
-app.post('/edit-tasks', (req, res)=>{
+app.post('/edit-task', (req, res)=>{
     console.log(req.body)
     let task_name = req.body.taskName
     let start_date = req.body.startDate
@@ -1359,7 +1428,7 @@ app.post('/edit-tasks', (req, res)=>{
     let yourDate = new Date()
     date_created = formatDate(yourDate)
     pool.query(
-        `UPDATE tasks SET task_name = $1, start_date = $2, due_date = $3, priority = $4, frequency = $5, assigness = $6, task_description = $7, status = $8 WHERE task_id = $9`,
+        `UPDATE tasks SET name = $1, start_date = $2, due_date = $3, priority = $4, frequency = $5, assigned_to = $6, description = $7, status = $8 WHERE task_id = $9`,
         [task_name, start_date, due_date, priority, frequency, assigness, task_description, statuss,current_task], 
         (err, results) => {
             if(err){
@@ -1393,7 +1462,7 @@ app.post('/add-tasks', (req, res)=>{
         }
     )
 });
-app.post('/delete-tasks', (req, res)=>{
+app.post('/delete-task', (req, res)=>{
     
     pool.query(
         `DELETE from tasks WHERE task_id = $1`,
@@ -1407,6 +1476,7 @@ app.post('/delete-tasks', (req, res)=>{
         }
     )
 });
+
 app.post('/compliance-form-part-1', (req, res)=>{
    let a = req.body.department
    compliance_department = a
@@ -1609,7 +1679,7 @@ app.post('/compliance_results',(req,res) =>{
         if(e.name == key) e.response = responses[key]
      })
     });
-    let y = (boolean_yes_count/boolean_count * 100).toFixed(0)
+    let y = boolean_yes_count+"/"+boolean_count
     console.log(y)
     pool.query(
         'UPDATE compliance_results SET responses = $1, date_completed = $2, questions = $3, score = $4 WHERE department = $5',
@@ -1734,6 +1804,9 @@ app.post('/reduce-compliance-question-count', async (req,res) => {
 })
 app.post('/current_task', async (req,res) => { 
     current_task = req.body.task_id
+})
+app.post('/current_vendor', async (req,res) => { 
+    current_vendor = req.body.vendor_id
 })
 app.post('/budget_statement', async (req,res) => {
     console.log(req.body.data) 

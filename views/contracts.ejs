@@ -31,7 +31,7 @@
                   data-dismiss="modal"
                   aria-label="Close"
                 >
-                  <span aria-hidden="true">�</span>
+                  <span aria-hidden="true">x</span>
                 </button>
               </div>
               <div class="modal-body">
@@ -236,18 +236,18 @@
                       class="form-control"
                       placeholder="Search"
                       type="text"
+                      id="searchInput"
                     />
                   </div>
                 </div>
               </div>
               <div class="col text-right">
                 <a href="#!" class="btn btn-sm btn-primary">Export</a>
-                <a href="#!" class="btn btn-sm btn-primary">See all</a>
               </div>
             </div>
           </div>
           <div class="table-responsive">
-            <table class="table align-items-center table-flush">
+            <table class="table align-items-center table-flush" id="table">
               <thead class="thead-light">
                 <tr>
                   <th scope="col">
@@ -272,15 +272,7 @@
                   <th scope="row">
                     <div class="d-flex align-items-center">
                       <div class="custom-control custom-checkbox">
-                        <input
-                          class="custom-control-input"
-                          id="table-check-1"
-                          type="checkbox"
-                        />
-                        <label
-                          class="custom-control-label"
-                          for="table-check-1"
-                        ></label>
+                    
                       </div>
                       <span><a href='/contract_view?id=<%= dat.contract_id %>'><%= dat.vendor %></a></span>
                     </div>
