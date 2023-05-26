@@ -92,6 +92,7 @@ let compliance_data = []
 let scrapping_results = []
 let current_task
 let current_vendor
+let budgetLineItems
 
 // Function to scrape websites for specific information
 async function scrapeWebsites(keyword) {
@@ -261,7 +262,7 @@ app.get('/budget', async (req,res) => {
                         throw err;
                         
                     }
-                     results.rows
+                     budgetLineItems = results1.rows
                      let dollarUS = Intl.NumberFormat("en-US", {
                         style: "currency",
                         currency: "USD", 
@@ -282,7 +283,12 @@ app.get('/budget', async (req,res) => {
                      
 
                     }
-                     res.render('budget',{layout:'./layouts/budget-layout',budget_statement:budget_statement,data:results.rows, data1:results1.rows, dollarUS:dollarUS,total_expenditure:total_expenditure,expenditure_left:expenditure_left, current_balance:current_balance})
+                    const page = parseInt(req.query.page) || 1; // Current page number
+                    const limit = 10; // Number of items per page
+                    const startIndex = (page - 1) * limit;
+                    const endIndex = page * limit;
+                    const reso = results1.rows.slice(startIndex, endIndex);
+                     res.render('budget',{layout:'./layouts/budget-layout',budget_statement:budget_statement,data:results.rows, data1:reso,page, dollarUS:dollarUS,total_expenditure:total_expenditure,expenditure_left:expenditure_left, current_balance:current_balance})
                 }
             )
         }
@@ -306,7 +312,7 @@ app.get('/cases',  async (req,res) => {
              pool.query(
                 `SELECT name FROM law_firms`,
                 [],
-                (err, results) => {
+                (err, results1) => {
                     if(err){
                         console.log(err)
                         throw err;
@@ -314,7 +320,12 @@ app.get('/cases',  async (req,res) => {
                     }
                      results.rows
                      console.log( results.rows)
-                     res.render('cases',{layout:'./layouts/lawfirms-layout',data:array3, dataA:results.rows})
+                     const page = parseInt(req.query.page) || 1; // Current page number
+                    const limit = 10; // Number of items per page
+                    const startIndex = (page - 1) * limit;
+                    const endIndex = page * limit;
+                    const reso = results.rows.slice(startIndex, endIndex);
+                     res.render('cases',{layout:'./layouts/lawfirms-layout',data:reso,page, dataA:results1.rows})
                 }
             )
         }
@@ -438,9 +449,12 @@ app.get('/contracts',  async (req,res) => {
                     style: "currency",
                     currency: "USD",
                 });
-               // dollarUS.format(currentUser.account_balance)
-                 array2 = results.rows
-                 res.render('contracts',{layout:'./layouts/contracts-layout',data:array2,dollarUS:dollarUS,vendors:results1.rows})
+                 const page = parseInt(req.query.page) || 1; // Current page number
+                 const limit = 1; // Number of items per page
+                 const startIndex = (page - 10) * limit;
+                 const endIndex = page * limit;
+                 const reso = results.rows.slice(startIndex, endIndex);
+                 res.render('contracts',{layout:'./layouts/contracts-layout',data:reso,page,dollarUS:dollarUS,vendors:results1.rows})
             }
         )
         }
@@ -874,7 +888,12 @@ app.get('/tasks',  async (req,res) => {
                     }
 
                     array1 = results.rows
-                    res.render('tasks',{layout:'./layouts/tasks-layout',data:results.rows,users:results1.rows})
+                    const page = parseInt(req.query.page) || 1; // Current page number
+                    const limit = 10; // Number of items per page
+                    const startIndex = (page - 1) * limit;
+                    const endIndex = page * limit;
+                    const reso = results.rows.slice(startIndex, endIndex);
+                    res.render('tasks',{layout:'./layouts/tasks-layout',data:reso,page,users:results1.rows})
                 })
             
              
@@ -895,8 +914,12 @@ app.get('/vendors', async (req,res) => {
                 
             }
             
-             array1 = results.rows
-             res.render('vendors',{layout:'./layouts/vendors-layout',data:array1})
+             const page = parseInt(req.query.page) || 1; // Current page number
+                    const limit = 10; // Number of items per page
+                    const startIndex = (page - 1) * limit;
+                    const endIndex = page * limit;
+                    const reso = results.rows.slice(startIndex, endIndex);
+             res.render('vendors',{layout:'./layouts/vendors-layout',data:reso,page})
           
         }
     )
@@ -1645,6 +1668,64 @@ app.get('/download3',async (req,res) =>{
     const csvWriter = createCsvWriter({
       path: path,
       header: [{ id:'law_firm_id',title:'ID'},{ id:'name',title:'Name'},{id:'email',title:'Email'},{id:'address',title:'Address'},{id:'phone_number',title:'Phone Number'},{id:'vat_number',title:'VAT Number'},{id:'website',title:'Website'}]});
+
+    try 
+    {
+         
+         csvWriter.writeRecords(usersArray)
+         .then(() => {
+            res.download(path); 
+           
+        });
+    }
+    catch (error) 
+    {
+      console.log(error);
+    }
+});
+app.get('/download4',async (req,res) =>{
+    let createCsvWriter = csvwriter.createObjectCsvWriter;
+
+    let usersArray = budgetLineItems
+   
+    console.log(budgetLineItems)
+    const path = 'sample3.csv';
+    const csvWriter = createCsvWriter({
+      path: path,
+      header: [{ id:'budget_id',title:'ID'},{ id:'budget',title:'Budget'},{id:'actual',title:'Actual'},{id:'variance',title:'Variance'},{id:'start_date',title:'Start Date'},{id:'end_date',title:'End Date'},{id:'budget_name',title:'Budget Name'}]});
+
+    try 
+    {
+         
+         csvWriter.writeRecords(usersArray)
+         .then(() => {
+            res.download(path); 
+           
+        });
+    }
+    catch (error) 
+    {
+      console.log(error);
+    }
+});
+app.get('/download5',async (req,res) =>{
+    let createCsvWriter = csvwriter.createObjectCsvWriter;
+
+    
+    let  arrayD = []
+    budgetLineItems.forEach(e=>{
+        if(e.expenditure.length > 0){ 
+        e.expenditure.forEach(f=>{
+            arrayD.push(f)
+        })
+    }
+    
+    })
+    let usersArray = arrayD
+    const path = 'sample4.csv';
+    const csvWriter = createCsvWriter({
+      path: path,
+      header: [{ id:'expenditure_date',title:'Expenditure Date'},{ id:'expenditure_desc',title:'Expenditure Description'},{id:'expenditure',title:'Expenditure'},{id:'balance',title:'Balance'}]});
 
     try 
     {
