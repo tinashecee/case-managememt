@@ -283,10 +283,9 @@
                 <div class="col-md-12">
                   <label for="status" class="form-label">Status</label>
                   <select class="form-select" id="status" name="status" required="">
-                      <option value="">Select a status</option>
-                      <option value="Pending">Pending</option>
-                      <option value="In Progress">In Progress</option>
-                      <option value="Completed">Completed</option>
+                    <% for (let dat of contract_status) { %>                   
+                      <option value="<%= dat.contract_status_name %>"><%= dat.contract_status_name %></option>
+                      <% } %>
                   </select>
               </div>            
               </div>

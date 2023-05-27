@@ -1,0 +1,168 @@
+<div class="container-fluid pt-3">
+    <div class="row removable">
+        <div class="col-lg-12">
+            <h1 class="">Cases and Contracts</h1>
+        </div>
+    </div>
+    <div class="row removable">
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Case Status</h5>
+                    <p class="card-text"></p>
+                          <div class="col-lg-12"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                Add Case Status
+            </button>
+            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" style="display: none;" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <form action="/case_status" method="POST">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Add Case Status</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">x</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                                                                     <div class="mb-3">
+                                    <label for="case_status" class="form-label" >Case Stage</label>
+                                    <input type="text" class="form-control" id="case_status" name="case_status_name" required>
+                                </div>
+                                                                     <div class="mb-3">
+                                    <label for="description" class="form-label">Description</label>
+                                    <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+                                </div>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+                    </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header border-0">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <h3 class="mb-0">Case Stage</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table align-items-center table-flush">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>#</th>
+                                <th>Name</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if (data1.length > 0) { %>
+                            <% for (let dat of data1) { %>
+                            <tr>
+                                <td> <%= dat.id %>.</td>
+                                <td class="table-user d-flex align-items-center">
+                                    <div class="d-flex flex-column">
+                                        <p class="mb-0 font-weight-bold text-sm"><%= dat.case_status_name %></p>
+                                        <span class="text-gray"><%= dat.description%></span>
+                                                                                  </div>
+                                </td>
+                                <td>
+                                    <a href="/delete-case-status?id=<%= dat.id %>" class="btn btn-primary btn-sm"> Delete </a>
+                                </td>
+                            </tr>
+                            <% } %>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+                          </div>
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Add Contract Stage</h5>
+                    <p class="card-text"></p>
+                                <div class="col-lg-12"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal1">
+                Add Contract Stage
+            </button>
+            <div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel" style="display: none;" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <form action="/contract_status" method="POST">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Add Contract</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">x</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                                <div class="mb-3">
+                                    <label for="contract-value" class="form-label">Contract Stage</label>
+                                    <input type="text" class="form-control" id="contract-value" name="case_status_name" required>
+                                </div>
+                                                                      <div class="mb-3">
+                                    <label for="description" class="form-label">Description</label>
+                                    <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+                                </div>
+
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+                    </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+                    
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header border-0">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <h3 class="mb-0">Contract Stage</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="table align-items-center table-flush">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>#</th>
+                                <th>Name</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if (data2.length > 0) { %>
+                            <% for (let dat of data2) { %>
+                            <tr>
+                                <td> <%= dat.id %>. </td>
+                                <td class="table-user d-flex align-items-center">
+                                    <div class="d-flex flex-column">
+                                        <p class="mb-0 font-weight-bold text-sm"><%= dat.contract_status_name %></p>
+                                        <span class="text-gray"><%= dat.description %></span>
+                                                                                   </div>
+                                </td>
+                                <td>
+                                    <a href="/delete-contract-status?id=<%= dat.id %>" class="btn btn-primary btn-sm"> Delete </a>
+                                </td>
+                            </tr>
+                            <% } %>
+                            <% } %>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

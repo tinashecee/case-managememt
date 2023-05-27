@@ -24,14 +24,14 @@
                                             <div class="modal-body">
                                               
                             <div class="row mb-3">
-                                <div class="col-md-6">
+                                <div class="col-md-5">
                                     <label for="case-name" class="form-label">Case Name</label>
                                     <input type="text" class="form-control" id="case_name" name="case_name" required="">
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-5">
                                     <label for="law-firm" class="form-label">Law Firm</label>
                                     <select class="form-select" id="law_firm" name="law_firm" required="">
-                                        <option value="">Select a Law Firm</option>
+                                        <option value="">Select Law Firm</option>
                                         <%  for (let dat of dataA) { %>
                                         <option value="<%= dat.name %>"><%= dat.name %></option>
                                         <% } %>
@@ -42,41 +42,17 @@
                                 <div class="col-md-6">
                                     <label for="department" class="form-label">Department</label>
                                     <select class="form-select" id="department" name="department" required="">
-                                        <option value="">Select a department</option>
-                                        <option value="ppwe">PPWE</option>
-                                        <option value="pmu">PMU</option>
-                                        <option value="icts">ICTS</option>
-                                        <option value="research-quality">Institutional Research and Quality Management</option>
-                                        <option value="cont_education">Centre for Continuing Education</option>
-                                        <option value="comms_marketing">Communication and Marketing</option>
-                                        <option value="engineering">Faculty of Engineering</option>
-                                        <option value="applied_sciences">Faculty of Applied Science</option>
-                                        <option value="medicine">Faculty of Medicine</option>
-                                        <option value="built_environment">Faculty of Built Environment</option>
-                                        <option value="commerce">Faculty of Commerce</option>
-                                        <option value="information_science">Faculty of Communication and Information Science</option>
-                                        <option value="science_technology">Faculty of Science and Technology Education</option>
-                                        <option value="research_inter">Research and Internationalisation</option>
-                                        <option value="affiliate">Affiliate Institutions</option>
-                                        <option value="innovation">Innovation</option>
-                                        <option value="business_development">Business Development</option>
-                                        <option value="human_resources">Human Resources</option>
-                                        <option value="academic">Academic/Admissions</option>
-                                        <option value="legal">Legal</option>
-                                        <option value="centrak_services">Central Services</option>
-                                        <option value="student-affairs">Student Affairs </option>
-                                        <option value="commercial_catering">Commercial Catering Unit </option>
-                                        <option value="bursar">Bursar</option>
-                                        <option value="library">Library</option>
+                                        <% for (let dat of dataB) { %>
+                                        <option value="<%= dat.department_name %>"><%= dat.department_name %></option>
+                                        <% } %>
                                     </select>
                                 </div>
                                 <div class="col-md-6">
                                     <label for="status" class="form-label">Status</label>
                                     <select class="form-select" id="status" name="status" required="">
-                                        <option value="">Select a status</option>
-                                        <option value="Pending">Pending</option>
-                                        <option value="In Progress">In Progress</option>
-                                        <option value="Completed">Completed</option>
+                                        <% for (let dat of case_status) { %>                   
+                                        <option value="<%= dat.case_status_name %>"><%= dat.case_status_name %></option>
+                                        <% } %>
                                     </select>
                                 </div>
                             </div>
@@ -93,10 +69,9 @@
                             <div class="col-md-3">
                                     <label for="members" class="form-label">Members</label>
                                     <select class="form-select" id="members" name="members" required="">
-                                        <option value="">Select Members</option>
-                                        <option value="John">John</option>
-                                        <option value="Mary">Mary</option>
-                                        <option value="Jack">Jack</option>
+                                        <% for (let dat of users) { %>
+                                            <option value="<%= dat.name %>"><%= dat.name %></option>
+                                            <% } %>
                                     </select>
                                 </div>
                             <div class="mb-3">

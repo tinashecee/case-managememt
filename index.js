@@ -318,6 +318,31 @@ app.get('/cases',  async (req,res) => {
                         throw err;
                         
                     }
+                    pool.query(
+                        `SELECT * FROM department`,
+                        [],
+                        (err, results2) => {
+                            if(err){
+                                console.log(err)
+                                throw err;
+                                
+                            }
+                            pool.query( `SELECT * FROM users`,
+                            [],
+                            (err, results3) => {
+                                if(err){
+                                    console.log(err)
+                                    throw err;
+                                    
+                                }
+                                pool.query( `SELECT * FROM case_status`,
+                                [],
+                                (err, results4) => {
+                                    if(err){
+                                        console.log(err)
+                                        throw err;
+                                        
+                                    }
                      results.rows
                      console.log( results.rows)
                      const page = parseInt(req.query.page) || 1; // Current page number
@@ -325,7 +350,10 @@ app.get('/cases',  async (req,res) => {
                     const startIndex = (page - 1) * limit;
                     const endIndex = page * limit;
                     const reso = results.rows.slice(startIndex, endIndex);
-                     res.render('cases',{layout:'./layouts/lawfirms-layout',data:reso,page, dataA:results1.rows})
+                     res.render('cases',{layout:'./layouts/lawfirms-layout',data:reso,page, dataA:results1.rows,dataB:results2.rows,users:results3.rows,case_status:results4.rows})
+                            })
+                        })
+                        })
                 }
             )
         }
@@ -371,7 +399,14 @@ app.get('/contract_view',  async (req,res) => {
                 style: "currency",
                 currency: "USD", 
             });
-            console.log(results.rows)
+            pool.query( `SELECT * FROM contract_status`,
+                [],
+                (err, results2) => {
+                    if(err){
+                        console.log(err)
+                        throw err;
+                        
+                    }
             let directory_name = "./public/uploads1";
                     let filenames = fs.readdirSync(directory_name);
                       
@@ -379,7 +414,8 @@ app.get('/contract_view',  async (req,res) => {
                     filenames.forEach((file) => {
                         console.log("File:", file);
                     });
-             res.render('contract_view',{layout:'./layouts/contract_view_layout',data:results.rows,dollarUS:dollarUS,id:query,files:filenames})
+             res.render('contract_view',{layout:'./layouts/contract_view_layout',data:results.rows,dollarUS:dollarUS,id:query,files:filenames,contract_status:results2.rows})
+                })
         }
     )
 });
@@ -407,6 +443,14 @@ app.get('/case_view',  async (req,res) => {
                         throw err;
                         
                     }
+                    pool.query( `SELECT * FROM case_status`,
+                    [],
+                    (err, results2) => {
+                        if(err){
+                            console.log(err)
+                            throw err;
+                            
+                        }
                     let directory_name = "./public/uploads";
                     let filenames = fs.readdirSync(directory_name);
                       
@@ -414,7 +458,8 @@ app.get('/case_view',  async (req,res) => {
                     filenames.forEach((file) => {
                         console.log("File:", file);
                     });
-                    res.render('case_view',{layout:'./layouts/case_view_layout',data:results.rows, dataA:results1.rows,id:query, files:filenames})
+                    res.render('case_view',{layout:'./layouts/case_view_layout',data:results.rows, dataA:results1.rows,id:query, files:filenames,case_status:results2.rows})
+                })
                 }
             )
         }
@@ -449,18 +494,41 @@ app.get('/contracts',  async (req,res) => {
                     style: "currency",
                     currency: "USD",
                 });
+                pool.query( `SELECT * FROM contract_status`,
+                [],
+                (err, results2) => {
+                    if(err){
+                        console.log(err)
+                        throw err;
+                        
+                        
+                    }
+                    pool.query( `SELECT * FROM contract_status`,
+                    [],
+                    (err, results3) => {
+                        if(err){
+                            console.log(err)
+                            throw err;
+                            
+                            
+                        }
                  const page = parseInt(req.query.page) || 1; // Current page number
                  const limit = 1; // Number of items per page
                  const startIndex = (page - 10) * limit;
                  const endIndex = page * limit;
                  const reso = results.rows.slice(startIndex, endIndex);
-                 res.render('contracts',{layout:'./layouts/contracts-layout',data:reso,page,dollarUS:dollarUS,vendors:results1.rows})
+                 res.render('contracts',{layout:'./layouts/contracts-layout',data:reso,page,dollarUS:dollarUS,vendors:results1.rows,contract_status:results2.rows,dataB:results3.rows})
+                    })
+                })
             }
         )
         }
     )
     
 });
+app.post('/user-roles',  async (req,res) => {
+   
+})
 app.get('/lawfirm_cases',  async (req,res) => {
     let query = req.query.id
     pool.query(
@@ -913,13 +981,22 @@ app.get('/vendors', async (req,res) => {
                 throw err;
                 
             }
-            
+            pool.query(
+                `SELECT * FROM department`,
+                [],
+                (err, results2) => {
+                    if(err){
+                        console.log(err)
+                        throw err;
+                        
+                    }
              const page = parseInt(req.query.page) || 1; // Current page number
                     const limit = 10; // Number of items per page
                     const startIndex = (page - 1) * limit;
                     const endIndex = page * limit;
                     const reso = results.rows.slice(startIndex, endIndex);
-             res.render('vendors',{layout:'./layouts/vendors-layout',data:reso,page})
+             res.render('vendors',{layout:'./layouts/vendors-layout',data:reso,page,dataB:results2.rows})
+                })
           
         }
     )
@@ -1787,6 +1864,188 @@ app.get('/users/logout', (req,res) => {
 app.get('/login',checkAuthenticated, (req,res) => {
    
     res.render('login',{layout:'./layouts/login-layout',authed:authed,user:nam, errors:errors});
+});
+app.get('/forgot-password', (req,res) => {
+   
+    res.render('password',{layout:'./layouts/login-layout'});
+});
+app.get('/reset-password', (req,res) => {
+   
+    res.render('passwordreset',{layout:'./layouts/login-layout'});
+});
+app.get('/settings/user-roles', (req,res) => {
+    pool.query(
+        'SELECT * FROM user_roles',
+       [], 
+       (err, results) => {
+           if(err){
+               throw err;
+           }
+           res.render('user-roles',{layout:'./layouts/users-layout',authed:authed,user:nam,data1:results.rows});
+       }
+    )
+    
+    
+});
+app.get('/settings/departments', (req,res) => {
+   
+    pool.query(
+        `SELECT * FROM department`,
+        [], 
+        (err, results1) => {
+            if(err){
+                throw err;
+            }
+            res.render('departments',{layout:'./layouts/users-layout',authed:authed,user:nam,data1:results1.rows});
+        }
+    );
+});
+app.get('/settings/case-status', (req,res) => {
+    pool.query(
+        `SELECT * FROM case_status`,
+        [], 
+        (err, results1) => {
+            if(err){
+                throw err;
+            }
+            pool.query(
+                `SELECT * FROM contract_status`,
+                [], 
+                (err, results2) => {
+                    if(err){
+                        throw err;
+                    }
+                    res.render('case-status',{layout:'./layouts/users-layout',authed:authed,user:nam,data1:results1.rows,data2:results2.rows});
+                }
+            );
+           
+        }
+    );
+    
+});
+app.post('/update', async (req, res) => {
+ 
+      const { role, law_firms, cases, contracts, vendors, compliance, legal_resources, settings } = req.body;
+  
+      // Update query
+      const updateQuery = `
+        UPDATE user_roles
+        SET
+          law_firms = $1,
+          cases = $2,
+          contracts = $3,
+          vendors = $4,
+          compliance = $5,
+          legal_resources = $6,
+          settings = $7
+        WHERE role = $8
+      `;
+  
+      // Execute the update query
+      await pool.query(updateQuery, [
+        law_firms,
+        cases,
+        contracts,
+        vendors,
+        compliance,
+        legal_resources,
+        settings,
+        role,
+      ]);
+  
+      res.redirect('/settings/user-roles');
+    
+  });
+app.post('/case_status', (req,res) => {
+    let case_status_name = req.body.case_status_name
+    let description = req.body.description
+    pool.query(
+        `INSERT INTO case_status (case_status_name, description)
+        VALUES ($1, $2)`,
+        [case_status_name, description], 
+        (err, results) => {
+            if(err){
+                throw err;
+            }
+            req.flash('success_msg','You have successfully added a Case Status');
+            res.redirect('/settings/case-status');
+        }
+    )
+});
+app.post('/contract_status', (req,res) => {
+    let contract_status_name = req.body.case_status_name
+    let description = req.body.description
+    pool.query(
+        `INSERT INTO contract_status (contract_status_name, description)
+        VALUES ($1, $2)`,
+        [contract_status_name, description], 
+        (err, results) => {
+            if(err){
+                throw err;
+            }
+            req.flash('success_msg','You have successfully added a Contract Status');
+            res.redirect('/settings/case-status');
+        }
+    )
+});
+app.post('/department', (req,res) => {
+    let department_name = req.body.department_name
+    let contact_email = req.body.contact_email
+    let contact_person = req.body.contact_person
+    pool.query(
+        `INSERT INTO department (department_name,contact_person, contact_email)
+        VALUES ($1, $2, $3)`,
+        [department_name, contact_person, contact_email], 
+        (err, results) => {
+            if(err){
+                throw err;
+            }
+            req.flash('success_msg','You have successfully added a Department');
+            res.redirect('/settings/departments');
+        }
+    )
+});
+app.get('/delete-department', (req,res) => {
+    let id = req.query.id
+    pool.query(
+        `DELETE FROM department WHERE id = $1`,
+        [id], 
+        (err, results) => {
+            if(err){
+                throw err;
+            }
+            req.flash('success_msg','You have successfully deleted a Department');
+            res.redirect('/settings/departments');
+        }
+    )
+});
+app.get('/delete-case-status', (req,res) => {
+    let id = req.query.id
+    pool.query(
+        `DELETE FROM case_status WHERE id = $1`,
+        [id], 
+        (err, results) => {
+            if(err){
+                throw err;
+            }
+            req.flash('success_msg','You have successfully deleted a Case Status');
+            res.redirect('/settings/case-status');
+        }
+    )
+});
+app.get('/delete-contract-status', (req,res) => {
+    let id = req.query.id
+    pool.query(
+        `DELETE FROM contract_status WHERE id = $1`,
+        [id], 
+        (err, results) => {
+            if(err){
+                throw err;
+            }
+            req.flash('success_msg','You have successfully deleted a Contract Status');
+            res.redirect('/settings/case-status');
+        }
+    )
 });
 app.get('/users/logout', (req,res) => {
     req.logOut();

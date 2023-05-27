@@ -1,0 +1,495 @@
+<div class="card container-fluid pt-3">
+    <div class="col-lg-12">
+<div class="card"></div>
+<h1>User Roles</h1>
+<table class="table table-striped">
+<thead>
+  <tr>
+    <th>User Type</th>
+    <th>Law Firms</th>
+    <th>Cases</th>
+    <th>Contracts</th>
+    <th>Vendors</th>
+    <th>Compliance</th>
+    <th>Legal Resources</th>
+    <th>Settings</th>
+  </tr>
+</thead>
+<tbody>
+    <% for (let dat of data1) { %>
+  <tr>
+    <td><%= dat.role %> </td>
+    <td>
+      <div class="form-check">
+        <input disabled <% if (dat.law_firms == 'Full Access') { %>checked<% } %>
+          class="form-check-input"
+          type="checkbox"
+          id="staff-lawfirms-fullaccess"
+        />
+        <label
+          class="form-check-label"
+          for="admin-lawfirms-fullaccess"
+          >Full Access</label
+        >
+      </div>
+      <div class="form-check">
+        <input disabled <% if (dat.law_firms == 'View Only') { %>checked<% } %>
+          class="form-check-input"
+          type="checkbox"
+          id="admin-lawfirms-viewonly"
+        />
+        <label
+          class="form-check-label"
+          for="admin-lawfirms-viewonly"
+          >View Only</label
+        >
+      </div>
+      <div class="form-check">
+        <input disabled <% if (dat.law_firms == 'Delete') { %>checked<% } %>
+          class="form-check-input"
+          type="checkbox"
+          id="admin-lawfirms-delete"
+        />
+        <label class="form-check-label" for="admin-lawfirms-delete"
+          >Delete</label
+        >
+      </div>
+      <div class="form-check">
+        <input disabled <% if (dat.law_firms == 'Edit') { %>checked<% } %>
+          class="form-check-input"
+          type="checkbox"
+          id="admin-lawfirms-edit"
+        />
+        <label class="form-check-label" for="admin-lawfirms-edit"
+          >Edit</label
+        >
+      </div>
+    </td>
+    <td>
+      <div class="form-check">
+        <input disabled <% if (dat.cases == 'Full Access') { %>checked<% } %>
+          class="form-check-input"
+          type="checkbox"
+          id="admin-cases-fullaccess"
+        />
+        <label class="form-check-label" for="admin-cases-fullaccess"
+          >Full Access</label
+        >
+      </div>
+      <div class="form-check">
+        <input disabled <% if (dat.cases == 'View Only') { %>checked<% } %>
+          class="form-check-input"
+          type="checkbox"
+          id="admin-cases-viewonly"
+        />
+        <label class="form-check-label" for="admin-cases-viewonly"
+          >View Only</label
+        >
+      </div>
+      <div class="form-check">
+        <input disabled <% if (dat.cases == 'Delete') { %>checked<% } %>
+          class="form-check-input"
+          type="checkbox"
+          id="admin-cases-delete"
+        />
+        <label class="form-check-label" for="admin-cases-delete"
+          >Delete</label
+        >
+      </div>
+      <div class="form-check">
+        <input disabled <% if (dat.cases == 'Edit') { %>checked<% } %>
+          class="form-check-input"
+          type="checkbox"
+          id="admin-cases-edit"
+        />
+        <label class="form-check-label" for="admin-cases-edit"
+          >Edit</label
+        >
+      </div>
+    </td>
+    <td>
+      <div class="form-check">
+        <input disabled <% if (dat.contracts == 'Full Access') { %>checked<% } %>
+          class="form-check-input"
+          type="checkbox"
+          id="admin-contracts-fullaccess"
+        />
+        <label
+          class="form-check-label"
+          for="admin-contracts-fullaccess"
+          >Full Access</label
+        >
+      </div>
+      <div class="form-check">
+        <input disabled <% if (dat.contracts == 'View Only') { %>checked<% } %>
+          class="form-check-input"
+          type="checkbox"
+          id="admin-vendors-viewonly"
+        />
+        <label class="form-check-label" for="admin-vendors-viewonly"
+          >View Only</label
+        >
+      </div>
+      <div class="form-check">
+        <input disabled <% if (dat.contracts == 'Delete') { %>checked<% } %>
+          class="form-check-input"
+          type="checkbox"
+          id="admin-contracts
+  -delete"
+        />
+        <label class="form-check-label" for="admin-contracts-delete"
+          >Delete</label
+        >
+      </div>
+      <div class="form-check">
+        <input disabled <% if (dat.contracts == 'Edit') { %>checked<% } %>
+          class="form-check-input"
+          type="checkbox"
+          id="admin-contracts-edit"
+        />
+        <label class="form-check-label" for="admin-contracts-edit"
+          >Edit</label
+        >
+      </div>
+    </td>
+    <td>
+      <div class="form-check">
+        <input disabled <% if (dat.vendors == 'Full Access') { %>checked<% } %>
+          class="form-check-input"
+          type="checkbox"
+          id="admin-vendors-fullaccess"
+        />
+        <label
+          class="form-check-label"
+          for="admin-vendors-fullaccess"
+          >Full Access</label
+        >
+      </div>
+      <div class="form-check">
+        <input disabled <% if (dat.vendors == 'View Only') { %>checked<% } %>
+          class="form-check-input"
+          type="checkbox"
+          id="admin-vendors-viewonly"
+        />
+        <label class="form-check-label" for="admin-vendors-viewonly"
+          >View Only</label
+        >
+      </div>
+      <div class="form-check">
+        <input disabled <% if (dat.vendors == 'Delete') { %>checked<% } %>
+          class="form-check-input"
+          type="checkbox"
+          id="admin-vendors-delete"
+        />
+        <label class="form-check-label" for="admin-vendors-delete"
+          >Delete</label
+        >
+      </div>
+      <div class="form-check">
+        <input disabled <% if (dat.vendors == 'Edit') { %>checked<% } %>
+          class="form-check-input"
+          type="checkbox"
+          id="admin-vendors-edit"
+        />
+        <label class="form-check-label" for="admin-vendors-edit"
+          >Edit</label
+        >
+      </div>
+    </td>
+    <td>
+      <div class="form-check">
+        <input disabled <% if (dat.compliance == 'Full Access') { %>checked<% } %>
+          class="form-check-input"
+          type="checkbox"
+          id="admin-compliance-fullaccess"
+        />
+        <label
+          class="form-check-label"
+          for="admin-compliance-fullaccess"
+          >Full Access</label
+        >
+      </div>
+      <div class="form-check">
+        <input disabled <% if (dat.compliance == 'View Only') { %>checked<% } %>
+          class="form-check-input"
+          type="checkbox"
+          id="admin-compliance-viewonly"
+        />
+        <label
+          class="form-check-label"
+          for="admin-compliance-viewonly"
+          >View Only</label
+        >
+      </div>
+      <div class="form-check">
+        <input disabled <% if (dat.compliance == 'Delete') { %>checked<% } %>
+          class="form-check-input"
+          type="checkbox"
+          id="admin-compliance-delete"
+        />
+        <label
+          class="form-check-label"
+          for="admin-compliance-delete"
+          >Delete</label
+        >
+      </div>
+      <div class="form-check">
+        <input disabled <% if (dat.compliance == 'Edit') { %>checked<% } %>
+          class="form-check-input"
+          type="checkbox"
+          id="admin-compliance-edit"
+        />
+        <label class="form-check-label" for="admin-compliance-edit"
+          >Edit</label
+        >
+      </div>
+    </td>
+    <td>
+      <div class="form-check">
+        <input disabled <% if (dat.legal_resources == 'Full Access') { %>checked<% } %>
+          class="form-check-input"
+          type="checkbox"
+          id="admin-legalresources-fullaccess"
+        />
+        <label
+          class="form-check-label"
+          for="admin-legalresources-fullaccess"
+          >Full Access</label
+        >
+      </div>
+      <div class="form-check">
+        <input disabled <% if (dat.legal_resources == 'View Only') { %>checked<% } %>
+          class="form-check-input"
+          type="checkbox"
+          id="admin-legalresources-viewonly"
+        />
+        <label
+          class="form-check-label"
+          for="admin-legalresources-viewonly"
+          >View Only</label
+        >
+      </div>
+      <div class="form-check">
+        <input disabled <% if (dat.legal_resources == 'Delete') { %>checked<% } %>
+          class="form-check-input"
+          type="checkbox"
+          id="admin-legalresources-delete"
+        />
+        <label
+          class="form-check-label"
+          for="admin-legalresources-delete"
+          >Delete</label
+        >
+      </div>
+      <div class="form-check">
+        <input disabled <% if (dat.legal_resources == 'Edit') { %>checked<% } %>
+          class="form-check-input"
+          type="checkbox"
+          id="admin-legalresources-edit"
+        />
+        <label
+          class="form-check-label"
+          for="admin-legalresources-edit"
+          >Edit</label
+        >
+      </div>
+    </td>
+    <td>
+      <div class="form-check">
+        <input disabled <% if (dat.settings == 'Full Access') { %>checked<% } %>
+          class="form-check-input"
+          type="checkbox"
+          id="admin-contracts-fullaccess"
+        />
+        <label
+          class="form-check-label"
+          for="admin-contracts-fullaccess"
+          >Full Access</label
+        >
+      </div>
+      <div class="form-check">
+        <input disabled <% if (dat.settings == 'View Only') { %>checked<% } %>
+          class="form-check-input"
+          type="checkbox"
+          id="admin-settings-viewonly"
+        />
+        <label
+          class="form-check-label"
+          for="admin-settings-viewonly"
+          >View Only</label
+        >
+      </div>
+      <div class="form-check">
+        <input disabled <% if (dat.settings == 'Delete') { %>checked<% } %>
+          class="form-check-input"
+          type="checkbox"
+          id="admin-settings-delete"
+        />
+        <label class="form-check-label" for="admin-settings-delete"
+          >Delete</label
+        >
+      </div>
+      <div class="form-check">
+        <input disabled <% if (dat.settings == 'Edit') { %>checked<% } %>
+          class="form-check-input"
+          type="checkbox"
+          id="admin-settings-edit"
+        />
+        <label class="form-check-label" for="admin-settings-edit"
+          >Edit</label
+        >
+      </div>
+    </td>
+  </tr>
+ <% } %>
+</tbody>
+</table>
+</div>
+</div>
+<div class="row removable">
+<div class="col-12">
+<div class="card-deck">
+    <button style="margin: 50px;" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal1">
+        Edit Roles</button> 
+</div>
+</div>
+</div>
+
+<div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <form action="/update" method="POST">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Edit Roles</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">X</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                 
+  
+  
+                <div class="row mb-3">
+                    <div class="col-md-8">
+                    <label for="role" style="font-weight: bold; font-size: 18px;" class="form-label">Role:</label>
+                    <select class="form-select" id="role" name="role" required style="font-weight: bold; font-size: 18px;">
+                        <option value=""></option>
+                        <option value="Admin">Admin</option>
+                        <option value="Legal Staff">Legal Staff</option>
+                        <option value="Viewer">Viewer</option>
+                      </select>
+                      
+                  </div>
+                  </div>
+                    <br>
+                    <div class="mb-3">
+                    <label for="law_firms" class="form-label">Law Firms:</label>
+                    <select
+                    class="form-select"
+                    id="law_firms"
+                    name="law_firms"
+                    required
+                  >
+                  <option value=""></option>
+                    <option value="Full Access">Full Access</option>
+                    <option value="Edit">Edit</option>
+                    <option value="Delete">Delete</option>
+                    <option value="View Only">View Only</option>
+                  </select>
+                  </div><br>
+                  <div class="mb-3">
+                    <label for="cases" class="form-label">Cases:</label>
+                    <select
+                    class="form-select"
+                    id="cases"
+                    name="cases"
+                    required
+                  >
+                  <option value=""></option>
+                    <option value="Full Access">Full Access</option>
+                    <option value="Edit">Edit</option>
+                    <option value="Delete">Delete</option>
+                    <option value="View Only">View Only</option>
+                  </select></div><br>
+                  <div class="mb-3">
+                    <label for="contracts" class="form-label">Contracts:</label>
+                    <select
+                    class="form-select"
+                    id="contracts"
+                    name="contracts"
+                    required
+                  >
+                  <option value=""></option>
+                    <option value="Full Access">Full Access</option>
+                    <option value="Edit">Edit</option>
+                    <option value="Delete">Delete</option>
+                    <option value="View Only">View Only</option>
+                  </select></div><br>
+                  <div class="mb-3">
+                    <label for="vendors" class="form-label">Vendors:</label>
+                        <select
+                    class="form-select"
+                    id="vendors"
+                    name="vendors"
+                    required
+                  >
+                  <option value=""></option>
+                    <option value="Full Access">Full Access</option>
+                    <option value="Edit">Edit</option>
+                    <option value="Delete">Delete</option>
+                    <option value="View Only">View Only</option>
+                  </select></div><br>
+                  <div class="mb-3">
+                    <label for="compliance" class="form-label">Compliance:</label>
+                    <select
+                    class="form-select"
+                    id="compliance"
+                    name="compliance"
+                    required
+                  >
+                  <option value=""></option>
+                    <option value="Full Access">Full Access</option>
+                    <option value="Edit">Edit</option>
+                    <option value="Delete">Delete</option>
+                    <option value="View Only">View Only</option>
+                  </select></div><br>
+                  <div class="mb-3">
+                    <label for="legal_resources" class="form-label">Legal Resources:</label>
+                    <select
+                    class="form-select"
+                    id="legal_resources"
+                    name="legal_resources"
+                    required
+                  >
+                  <option value=""></option>
+                    <option value="Full Access">Full Access</option>
+                    <option value="Edit">Edit</option>
+                    <option value="Delete">Delete</option>
+                    <option value="View Only">View Only</option>
+                  </select></div><br>
+                  <div class="mb-3">
+                    <label for="settings" class="form-label">Settings:</label>
+                    <select
+                    class="form-select"
+                    id="settings"
+                    name="settings"
+                    required
+                  >
+                  <option value=""></option>
+                    <option value="Full Access">Full Access</option>
+                    <option value="Edit">Edit</option>
+                    <option value="Delete">Delete</option>
+                    <option value="View Only">View Only</option>
+                  </select></div><br>
+                
+                  
+                       
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Update</button>
+            </div>
+        </form> 
+        </div>
+  </div>
+  </div>

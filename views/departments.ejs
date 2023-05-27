@@ -1,0 +1,134 @@
+<div class="container-fluid pt-3">
+    <div class="row removable">
+      <div class="col-lg-4">
+        <button
+          type="button"
+          class="btn btn-primary"
+          data-toggle="modal"
+          data-target="#exampleModal"
+        >
+          Add Department
+        </button>
+        <div
+          class="modal fade"
+          id="exampleModal"
+          tabindex="-1"
+          role="dialog"
+          aria-labelledby="exampleModalLabel"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <form action="/department" method="POST">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">
+                  Add Department
+                </h5>
+                <button
+                  type="button"
+                  class="close"
+                  data-dismiss="modal"
+                  aria-label="Close"
+                >
+                  <span aria-hidden="true">X</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                
+                  <div class="mb-3">
+                    <label for="taskName" class="form-label"
+                      >Department Name</label
+                    >
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="department_name"
+                      name="department_name"
+                      required
+                    />
+                  </div>
+
+                  <div class="mb-3">
+                    <label for="departmentcontact" class="form-label"
+                      >Contact Person</label
+                    >
+                    <input
+                    type="text"
+                      class="form-control"
+                      id="contact_person"
+                      name="contact_person"
+                      required
+                    />
+                  </div>
+                  <div class="mb-3">
+                    <label for="taskName" class="form-label"
+                      >Contact Email</label
+                    >
+                    <input
+                      type="email"
+                      class="form-control"
+                      id="contact_email"
+                      name="contact_email"
+                      required
+                    />
+                  </div>
+                
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  data-dismiss="modal"
+                >
+                  Close
+                </button>
+                <button type="submit" class="btn btn-primary">Submit</button>
+              </div>
+            </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="row">
+        <div class="col">
+          <input
+            class="form-control mb-3"
+            id="searchInput"
+            type="text"
+            placeholder="Search"
+          />
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Department Name</th>
+                <th>Contact Person</th>
+                <th>Contact Email</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Sample data rows -->
+              <% if (data1.length > 0) { %>
+              <% for (let dat of data1) {  %>
+              <tr>
+                <td><%= dat.department_name %></td>
+                <td><%= dat.contact_person %></td>
+                <td><%= dat.contact_email %></td>
+                <td>
+                  <a href="/delete-department?id=<%= dat.id %>" class="btn btn-primary btn-sm"> 
+                    <i class="fa fa-trash"></i> Delete 
+                </a>
+                </td>
+              </tr>
+              <% } %>
+              <% } %>
+              <!-- Add more rows as needed -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
