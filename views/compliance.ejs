@@ -115,15 +115,14 @@
 <div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
-            <form action='compliance-form-part-1' method="POST">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Select Department</h5>
             </div>
             <div class="modal-body">
                 <div class="row">
                     <div class="mb-3">
-                        <label for="department" class="form-label">Department</label>
-                <select class="form-select" id="department" name="department" required="">
+                        <label for="check1" class="form-label">Department</label>
+                <select class="form-select" id="check1" name="department" required="">
                     <% for (let dat of dataB) { %>
                         <option value="<%= dat.department_name %>"><%= dat.department_name %></option>
                         <% } %>
@@ -133,16 +132,14 @@
             </div>
             <div class="modal-footer">
                 <a  href="/compliance" class="btn btn-secondary" data-dismiss="modal">Close</a>
-                <button type="submit" class="btn btn-primary" id="openModal2" >Next</button>
+                <button type="button" onclick="compliance1()" class="btn btn-primary" id="openModal2" >Next</button>
             </div>
-        </form> 
         </div>
   </div>
   </div>
   <div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="static" data-keyboard="false">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
-            <form action='compliance-form-part-2' method="POST">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Select Contact Person</h5>
             </div>
@@ -162,9 +159,8 @@
             </div>
             <div class="modal-footer">
                 <a  href="/compliance" class="btn btn-secondary" data-dismiss="modal">Close</a>
-                <button type="submit" class="btn btn-primary"  id="openModal3">Next</button>
+                <button type="button" onclick="compliance2()" class="btn btn-primary"  id="openModal3">Next</button>
             </div>
-        </form> 
         </div>
   </div>
   </div>  

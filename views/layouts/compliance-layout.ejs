@@ -273,8 +273,8 @@ expandBtns.forEach((btn, index) => {
         }
     });
 });
-function compliance1(a){
-
+function compliance1(){
+  let a = document.getElementById('check1').value
     fetch('/compliance-form-part-1',{
         method: 'POST',
         body: JSON.stringify({
@@ -285,8 +285,10 @@ function compliance1(a){
         },
     })
 }
-function compliance2(a,b){
-    fetch('/compliance-form-part-1',{
+function compliance2(){
+    let a = document.getElementById('contact_name').value
+    let b = document.getElementById('contact_email').value
+    fetch('/compliance-form-part-2',{
         method: 'POST',
         body: JSON.stringify({
           contact_name: a,
