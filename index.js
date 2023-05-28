@@ -23,7 +23,7 @@ const _ = require('lodash');
 
 const HTML_TEMPLATE = require("./mail-template.js");
 const SENDMAIL = require("./mailer.js") 
-const message = "Hi there, you were emailed me through nodemailer"
+
 
 
 const moment = require("moment");
@@ -283,12 +283,14 @@ app.get('/budget', async (req,res) => {
                      
 
                     }
+                    let errors = []
+                    let message = []
                     const page = parseInt(req.query.page) || 1; // Current page number
                     const limit = 10; // Number of items per page
                     const startIndex = (page - 1) * limit;
                     const endIndex = page * limit;
                     const reso = results1.rows.slice(startIndex, endIndex);
-                     res.render('budget',{layout:'./layouts/budget-layout',budget_statement:budget_statement,data:results.rows, data1:reso,page, dollarUS:dollarUS,total_expenditure:total_expenditure,expenditure_left:expenditure_left, current_balance:current_balance})
+                     res.render('budget',{layout:'./layouts/budget-layout',errors:errors,message:message,budget_statement:budget_statement,data:results.rows, data1:reso,page, dollarUS:dollarUS,total_expenditure:total_expenditure,expenditure_left:expenditure_left, current_balance:current_balance})
                 }
             )
         }
@@ -919,6 +921,7 @@ app.get('/resources-cases-and-judgements',  async (req,res) => {
     res.render('resources_gazettes',{layout:'./layouts/resources-results-layout',results: scrapping_results})
 });
 app.get('/settings/users',  async (req,res) => {
+    let errors = []
     pool.query(
         `SELECT * FROM users`,
         [],
@@ -929,7 +932,7 @@ app.get('/settings/users',  async (req,res) => {
                 
             }
            
-             res.render('users',{layout:'./layouts/users-layout',data:results.rows,user:nam})
+             res.render('users',{layout:'./layouts/users-layout',data:results.rows,user:nam, errors:errors})
           
         }
     )
@@ -1657,6 +1660,7 @@ app.post('/compliance-form-part-3', (req, res)=>{
                 )
                }
             })
+            const message = "Email for completing compliance form."
         const options = {
             from: "CASE MANAGEMENT SYSTEM <mochonam19@gmail.com>", // sender address
             to: compliance_contact_email, // receiver email
@@ -1862,17 +1866,106 @@ app.get('/users/logout', (req,res) => {
     
 });
 app.get('/login',checkAuthenticated, (req,res) => {
-   
+    let errors = []
     res.render('login',{layout:'./layouts/login-layout',authed:authed,user:nam, errors:errors});
 });
 app.get('/forgot-password', (req,res) => {
-   
-    res.render('password',{layout:'./layouts/login-layout'});
+    let errors = []
+    res.render('passwordreset',{layout:'./layouts/login-layout',errors:errors});
 });
 app.get('/reset-password', (req,res) => {
-   
-    res.render('passwordreset',{layout:'./layouts/login-layout'});
+   let errors = []
+    res.render('passwordreset',{layout:'./layouts/login-layout',errors:errors});
 });
+app.get('/reset-password-email-sent', (req,res) => {
+   
+    res.render('passwordresetemailsent',{layout:'./layouts/login-layout'});
+});
+app.get('/set-password', (req,res) => {
+    let email= req.query.email
+    let user_name = req.query.user_name
+    let role = req.query.role 
+    let errors = []
+    res.render('password',{layout:'./layouts/login-layout',email:email,errors:errors});
+});
+app.post('/reset-password', async (req,res) => {
+    let email = req.body.email
+    pool.query(
+        'SELECT * FROM users WHERE email = $1',
+       [email], 
+       (err, results) => {
+           if(err){
+            errors.push({message: err});
+            res.render('passwordreset',{layout:'./layouts/login-layout', errors:errors})
+           }
+           if(results.rows.length == 0){
+            errors.push({message: 'Email is not registered in the system!'});
+            res.render('passwordreset',{layout:'./layouts/login-layout', errors:errors})
+           }else{
+            const message = "Email to reset password of your Nust Case Management System account"
+            const options = {
+                from: "CASE MANAGEMENT SYSTEM <mochonam19@gmail.com>", // sender address
+                to: email, // receiver email
+                subject: "Prolegal Case Management System - Account Verification", // Subject line
+                text: message,
+                html: `<div>
+                <p>Hi, <b>${results.rows[0].name}</b>,</p>
+                <p>We received a request to reset your password for your Prolegal Case Management account. If you did not request this, please disregard this email.</p>
+                <p>To reset your password, please click on the following link:</p>
+                <a href="http://localhost:8080/set-password?email=${email}">RESET PASSWORD LINK</a>
+                <p>This link will only be valid for 24 hours.</p>
+                <p>If you are unable to click on the link, please copy and paste it into your browser.</p>
+                <p>Once you have clicked on the link, you will be taken to a page where you can enter a new password for your account. Please choose a strong password that is at least 8 characters long and includes a mix of upper and lowercase letters, numbers, and symbols.</p>
+                <p>After you have entered your new password, you will be able to log in to your account.</p>
+                <p>If you have any questions, please do not hesitate to contact us.</p>
+                <p>Thank you,</p>
+                <p>Prolegal Team</p>
+        </div>`
+            }        
+            // send mail with defined transport object and mail options
+        SENDMAIL(options, (info) => {
+        console.log("Email sent successfully");
+        req.flash('success','Reset Password email sent');
+          console.log("MESSAGE ID: ", info.messageId);
+          res.redirect("/reset-password-email-sent")
+        });
+           }
+       }
+   )
+   
+
+})
+app.post('/set-password', async (req,res) => {
+    let email = req.query.email
+   let password1 = req.body.new_password
+   let password2 = req.body.confirm_password
+   errors = []
+   if(password1 != password2){
+    errors.push({message: "Passwords do not match"});
+   
+    console.log(errors)
+ res.render("password",{layout:'./layouts/login-layout',errors:errors});
+}
+else{
+    let hashedPassword = await bcrypt.hash(password1, 10);
+    console.log(email)
+    pool.query(
+        'UPDATE users SET password = $1, activated = $2 WHERE email = $3',
+       [hashedPassword, true, email], 
+       (err, results) => {
+           if(err){
+            errors.push({message: err});
+        
+      res.render("set-password",{layout:'./layouts/login-layout',errors:errors});
+     
+           }
+           req.flash('success','New User has been created and an email sent to them to activate their account');
+           res.redirect('/login');
+       }
+    )
+}
+
+})
 app.get('/settings/user-roles', (req,res) => {
     pool.query(
         'SELECT * FROM user_roles',
@@ -2005,6 +2098,64 @@ app.post('/department', (req,res) => {
         }
     )
 });
+app.post('/new_user', (req,res) => {
+    let user_name = req.body.user_name
+    let email = req.body.email
+    let role = req.body.role
+    let errors = []
+    pool.query(
+        `INSERT INTO users (email,name,role,activated,archived,password)
+        VALUES ($1, $2, $3, $4, $5, $6)`,
+        [email, user_name, role, false, false,""], 
+        (err, results) => {
+            if(err){
+                    errors.push({message: err});
+                   
+                    pool.query(
+                        `SELECT * FROM users`,
+                        [],
+                        (err, results) => {
+                            if(err){
+                                console.log(err)
+                                errors.push({message: err});
+                                res.render('users',{layout:'./layouts/users-layout',data:results.rows,user:nam, errors:errors})
+                                
+                            }
+                           
+                          
+                        }
+                    )
+
+                   
+            }
+            const message = "Email to activate your Nust Case Management System account"
+            const options = {
+                from: "CASE MANAGEMENT SYSTEM <mochonam19@gmail.com>", // sender address
+                to: email, // receiver email
+                subject: "Prolegal Case Management System - Account Verification", // Subject line
+                text: message,
+                html: `<div>
+                <p>Hi <b>${user_name}</b>,</p>
+        <p>Your account on the Prolegal Case Management System has been created successfully. To verify your account and set your password, please click on the following link:</p>
+        <a href="http://localhost:8080/set-password?email=${email}">ACTIVATION LINK</a>
+        <p>Once you have clicked on the link, you will be prompted to enter a new password for your account. Please choose a strong password that is at least 8 characters long and includes a mix of upper and lowercase letters, numbers, and symbols.</p>
+        <p>After you have entered your new password, you will be able to log in to your account.</p>
+        <p>If you have any questions, please do not hesitate to contact us.</p>
+        <p>Thank you,</p>
+        <p>Prolegal Case Management Team</p>
+        </div>`
+            }        
+            // send mail with defined transport object and mail options
+        SENDMAIL(options, (info) => {
+        console.log("Email sent successfully");
+        req.flash('success','New User has been created and an email sent to them to activate their account');
+          console.log("MESSAGE ID: ", info.messageId);
+          res.redirect("/settings/users")
+        });
+        }
+    )
+  
+})
 app.get('/delete-department', (req,res) => {
     let id = req.query.id
     pool.query(

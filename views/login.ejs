@@ -8,10 +8,20 @@
         <div class="row justify-content-center">
           <div class="col-lg-5 text-center mx-auto">
             <h1 class="text-white mb-2 mt-5">Welcome!</h1>
-            <p class="text-lead text-white">
+            <h4 class="text-lead text-white">
               National University of Science and Technology.<br />
               Prolegal Case Management Platform
-            </p>
+            </h4>
+            <%  for (let error of errors) { %>
+             <div class="alert alert-danger" role="alert">
+               <%= error.message %>
+              </div>
+                <% } %>
+                <% if(message.success){ %>
+                 <div class="alert alert-success" role="alert">
+                      <%= message.success %>
+                  </div>
+                  <% } %>
           </div>
         </div>
       </div>
@@ -77,17 +87,7 @@
                     aria-label="Password"
                   />
                 </div>
-                <div class="form-check form-switch">
-                  <input
-                    class="form-check-input"
-                    type="checkbox"
-                    id="rememberMe"
-                  />
-                  <label class="form-check-label" for="rememberMe"
-                    >Remember me</label
-                  >
-                </div>
-                <a href="passwordreset.html">Forgot password</a>
+                <a href="/forgot-password">Forgot password</a>
                 <div class="text-center">
                   <button
                     type="submit"
