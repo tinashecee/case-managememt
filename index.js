@@ -41,7 +41,7 @@ app.use(cookieParser('NotSoSecret'));
 app.use(
     session({
         secret:'secret',
-        cookie: {secure: false, maxAge: 60000 },
+        cookie: {secure: false },
         resave:true,
         saveUninitialized:true,
     })
