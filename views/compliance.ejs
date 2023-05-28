@@ -119,32 +119,9 @@
                     <div class="mb-3">
                         <label for="department" class="form-label">Department</label>
                 <select class="form-select" id="department" name="department" required="">
-                    <option value="">Select a department</option>
-                    <option value="PPWE">PPWE</option>
-                    <option value="PMU">PMU</option>
-                    <option value="ICTS">ICTS</option>
-                    <option value="Institutional Research and Quality Management">Institutional Research and Quality Management</option>
-                    <option value="cont_educationCentre for Continuing Education">Centre for Continuing Education</option>
-                    <option value="Communication and Marketing">Communication and Marketing</option>
-                    <option value="Faculty of Engineering">Faculty of Engineering</option>
-                    <option value="Faculty of Applied Science">Faculty of Applied Science</option>
-                    <option value="Faculty of Medicine">Faculty of Medicine</option>
-                    <option value="Faculty of Built Environment">Faculty of Built Environment</option>
-                    <option value="Faculty of Commerce">Faculty of Commerce</option>
-                    <option value="Faculty of Communication and Information Science">Faculty of Communication and Information Science</option>
-                    <option value="Faculty of Science and Technology Education">Faculty of Science and Technology Education</option>
-                    <option value="Research and Internationalisation">Research and Internationalisation</option>
-                    <option value="Affiliate Institutions">Affiliate Institutions</option>
-                    <option value="Innovation">Innovation</option>
-                    <option value="Business Development">Business Development</option>
-                    <option value="Human Resources">Human Resources</option>
-                    <option value="Academic/Admissions">Academic/Admissions</option>
-                    <option value="Legal">Legal</option>
-                    <option value="Central Services">Central Services</option>
-                    <option value="Student Affairs">Student Affairs </option>
-                    <option value="Commercial Catering Unit">Commercial Catering Unit </option>
-                    <option value="Bursar">Bursar</option>
-                    <option value="Library">Library</option>
+                    <% for (let dat of dataB) { %>
+                        <option value="<%= dat.department_name %>"><%= dat.department_name %></option>
+                        <% } %>
                 </select> 
                 </div>
                 </div>           

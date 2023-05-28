@@ -376,7 +376,17 @@ app.get('/compliance',  async (req,res) => {
                 
             }
             compliance_data=results.rows
-            res.render('compliance',{layout:'./layouts/compliance-layout',compliance_results:results.rows})
+            pool.query( `SELECT * FROM department`,
+            [],
+            (err, results3) => {
+                if(err){
+                    console.log(err)
+                    throw err;
+                    
+                    
+                }
+            res.render('compliance',{layout:'./layouts/compliance-layout',compliance_results:results.rows,dataB:results3.rows})
+            })
         }
     )
     
@@ -1581,20 +1591,18 @@ app.post('/delete-task', (req, res)=>{
 });
 
 app.post('/compliance-form-part-1', (req, res)=>{
-    res.setTimeout(0);
    let a = req.body.department
    compliance_department = a
    console.log(compliance_department)
    
-})
+}).setTimeout(0);
 app.post('/compliance-form-part-2', (req, res)=>{
-    res.setTimeout(0);
     let a = req.body.contact_name
     let b = req.body.contact_email
     compliance_contact_name = a
     compliance_contact_email = b
     console.log(compliance_contact_name,compliance_contact_email)
-})
+}).setTimeout(0);
 app.post('/compliance-form-part-3', (req, res)=>{
     compliance_survey_questions = []
     for(let i=1;i<compliance_count+1;i++){
