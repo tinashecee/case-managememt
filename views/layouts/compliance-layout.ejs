@@ -413,5 +413,40 @@ expandBtns.forEach((btn, index) => {
         }
     });
 });
+function compliance1(a){
+
+    fetch('/compliance-form-part-1',{
+        method: 'POST',
+        body: JSON.stringify({
+          department: a,
+        }),
+        headers: {
+            'Content-type': 'application/json; charset=UTF-8'
+        },
+    })
+}
+function compliance2(a,b){
+    fetch('/compliance-form-part-1',{
+        method: 'POST',
+        body: JSON.stringify({
+          contact_name: a,
+          contact_email: b
+        }),
+        headers: {
+            'Content-type': 'application/json; charset=UTF-8'
+        },
+    })
+}
+function compliance3(){
+    fetch('/compliance-form-part-1',{
+        method: 'POST',
+        body: JSON.stringify({
+          count: contactCount-1,
+        }),
+        headers: {
+            'Content-type': 'application/json; charset=UTF-8'
+        },
+    })
+}
       </script>
 </body>

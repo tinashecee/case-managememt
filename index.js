@@ -505,7 +505,7 @@ app.get('/contracts',  async (req,res) => {
                         
                         
                     }
-                    pool.query( `SELECT * FROM contract_status`,
+                    pool.query( `SELECT * FROM department`,
                     [],
                     (err, results3) => {
                         if(err){
@@ -1581,12 +1581,14 @@ app.post('/delete-task', (req, res)=>{
 });
 
 app.post('/compliance-form-part-1', (req, res)=>{
+    res.setTimeout(0);
    let a = req.body.department
    compliance_department = a
    console.log(compliance_department)
    
 })
 app.post('/compliance-form-part-2', (req, res)=>{
+    res.setTimeout(0);
     let a = req.body.contact_name
     let b = req.body.contact_email
     compliance_contact_name = a
