@@ -1,6 +1,17 @@
 
   <div class="container-fluid pt-3">
+    <%  for (let error of errors) { %>
+      <div class="alert alert-danger" role="alert">
+      <%= error.message %>
+     </div>
+       <% } %>
+       <% if(message.success){ %>
+         <div class="alert alert-success"  role="alert">
+             <%= message.success %>
+         </div>
+         <% } %>
     <div class="row removable">
+    
       <div class="col-lg-4"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
         New Task
      </button>

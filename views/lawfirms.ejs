@@ -1,5 +1,15 @@
 
   <div class="container-fluid pt-3">
+    <%  for (let error of errors) { %>
+      <div class="alert alert-danger" role="alert">
+      <%= error.message %>
+     </div>
+       <% } %>
+       <% if(message.success){ %>
+         <div class="alert alert-success"  role="alert">
+             <%= message.success %>
+         </div>
+         <% } %>
     <h3 class="">Law Firms Summary&nbsp;</h3>
     <div class="row mt-3 mb-4 mx-0 removable">
       <div class="card-group w-100">

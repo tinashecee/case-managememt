@@ -1,4 +1,14 @@
 <div class="card container-fluid pt-3">
+  <%  for (let error of errors) { %>
+    <div class="alert alert-danger" role="alert">
+    <%= error.message %>
+   </div>
+     <% } %>
+     <% if(message.success){ %>
+       <div class="alert alert-success"  role="alert">
+           <%= message.success %>
+       </div>
+       <% } %>
     <div class="col-lg-12">
 <div class="card"></div>
 <h1>User Roles</h1>

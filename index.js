@@ -177,13 +177,14 @@ app.post('/upload-contract', async (req, res) => {
       res.render("display-message",{layout:'./layouts/index-layout'});
   });
 app.get('', async (req,res) => {
+    let errors = []
     pool.query(
         `SELECT * FROM tasks`,
         [],
         (err, results) => {
             if(err){
                 console.log(err)
-                throw err;
+                errors.push({message: err});
                 
             }
             pool.query(
@@ -192,7 +193,7 @@ app.get('', async (req,res) => {
                 (err, results1) => {
                     if(err){
                         console.log(err)
-                        throw err;
+                        errors.push({message: err});
                         
                     }
                     pool.query(
@@ -201,7 +202,7 @@ app.get('', async (req,res) => {
                         (err, result2) => {
                             if(err){
                                 console.log(err)
-                                throw err;
+                                errors.push({message: err});
                                 
                             }        
                             pool.query(
@@ -212,7 +213,7 @@ app.get('', async (req,res) => {
                                 (err, result3) => {
                                     if(err){
                                         console.log(err)
-                                        throw err;
+                                        errors.push({message: err});
                                         
                                     }
                                     let dollarUS = Intl.NumberFormat("en-US", {
@@ -225,11 +226,14 @@ app.get('', async (req,res) => {
                                         (err, results4) => {
                                             if(err){
                                                 console.log(err)
-                                                throw err;
+                                                errors.push({message: err});
                                                 
                                             }
                                     console.log(result3.rows)
              array1 = results.rows
+             if(errors.length >0 ){
+                res.render('index',{layout:'./layouts/index-layout',dollarUS:dollarUS, expiring_contracts:result3.rows, contracts_length:result2.rows.length ,cases_length:results1.rows.length, tasks:results.rows,authed:authed,user:nam,users:results4.rows})
+            }
              res.render('index',{layout:'./layouts/index-layout',dollarUS:dollarUS, expiring_contracts:result3.rows, contracts_length:result2.rows.length ,cases_length:results1.rows.length, tasks:results.rows,authed:authed,user:nam,users:results4.rows})
                 })
             })
@@ -244,13 +248,15 @@ app.get('/assistant', async (req,res) => {
     res.render('assistant',{layout:'./layouts/assistant-layout'})
 });
 app.get('/budget', async (req,res) => {
+    let errors =[]
+    let message=[]
     pool.query(
         `SELECT * FROM budget`,
         [],
         (err, results) => {
             if(err){
                 console.log(err)
-                throw err;
+                errors.push({message: err});
                 
             }
              pool.query(
@@ -259,7 +265,7 @@ app.get('/budget', async (req,res) => {
                 (err, results1) => {
                     if(err){
                         console.log(err)
-                        throw err;
+                        errors.push({message: err});
                         
                     }
                      budgetLineItems = results1.rows
@@ -283,14 +289,15 @@ app.get('/budget', async (req,res) => {
                      
 
                     }
-                    let errors = []
-                    let message = []
                     const page = parseInt(req.query.page) || 1; // Current page number
                     const limit = 10; // Number of items per page
                     const startIndex = (page - 1) * limit;
                     const endIndex = page * limit;
                     const reso = results1.rows.slice(startIndex, endIndex);
-                     res.render('budget',{layout:'./layouts/budget-layout',errors:errors,message:message,budget_statement:budget_statement,data:results.rows, data1:reso,page, dollarUS:dollarUS,total_expenditure:total_expenditure,expenditure_left:expenditure_left, current_balance:current_balance})
+                    if(errors.length >0 ){
+                        res.render('budget',{layout:'./layouts/budget-layout',user:nam,errors:errors,budget_statement:budget_statement,data:results.rows, data1:reso,page, dollarUS:dollarUS,total_expenditure:total_expenditure,expenditure_left:expenditure_left, current_balance:current_balance})
+                    }
+                     res.render('budget',{layout:'./layouts/budget-layout',user:nam,errors:errors,budget_statement:budget_statement,data:results.rows, data1:reso,page, dollarUS:dollarUS,total_expenditure:total_expenditure,expenditure_left:expenditure_left, current_balance:current_balance})
                 }
             )
         }
@@ -301,13 +308,15 @@ app.get('/calender',  async (req,res) => {
     res.render('calender',{layout:'./layouts/calender-layout'})
 });
 app.get('/cases',  async (req,res) => {
+    let errors =[]
+    let message=[]
     pool.query(
         `SELECT * FROM cases`,
         [],
         (err, results) => {
             if(err){
                 console.log(err)
-                throw err;
+                errors.push({message: err});;
                 
             }
              array3 = results.rows
@@ -317,7 +326,7 @@ app.get('/cases',  async (req,res) => {
                 (err, results1) => {
                     if(err){
                         console.log(err)
-                        throw err;
+                        errors.push({message: err});;
                         
                     }
                     pool.query(
@@ -326,7 +335,7 @@ app.get('/cases',  async (req,res) => {
                         (err, results2) => {
                             if(err){
                                 console.log(err)
-                                throw err;
+                                errors.push({message: err});;
                                 
                             }
                             pool.query( `SELECT * FROM users`,
@@ -334,7 +343,7 @@ app.get('/cases',  async (req,res) => {
                             (err, results3) => {
                                 if(err){
                                     console.log(err)
-                                    throw err;
+                                    errors.push({message: err});;
                                     
                                 }
                                 pool.query( `SELECT * FROM case_status`,
@@ -342,17 +351,22 @@ app.get('/cases',  async (req,res) => {
                                 (err, results4) => {
                                     if(err){
                                         console.log(err)
-                                        throw err;
+                                        errors.push({message: err});;
                                         
                                     }
                      results.rows
                      console.log( results.rows)
+                     
                      const page = parseInt(req.query.page) || 1; // Current page number
                     const limit = 10; // Number of items per page
                     const startIndex = (page - 1) * limit;
                     const endIndex = page * limit;
                     const reso = results.rows.slice(startIndex, endIndex);
-                     res.render('cases',{layout:'./layouts/lawfirms-layout',data:reso,page, dataA:results1.rows,dataB:results2.rows,users:results3.rows,case_status:results4.rows})
+                    if(errors.length >0 ){
+                        res.render('cases',{layout:'./layouts/lawfirms-layout',user:nam,errors:errors,data:reso,page, dataA:results1.rows,dataB:results2.rows,users:results3.rows,case_status:results4.rows})
+
+                    }
+                     res.render('cases',{layout:'./layouts/lawfirms-layout',user:nam,errors:errors,data:reso,page, dataA:results1.rows,dataB:results2.rows,users:results3.rows,case_status:results4.rows})
                             })
                         })
                         })
@@ -366,13 +380,15 @@ app.post('/survey_elems',  async (req,res) => {
    res.send({compliance_survey_questions:compliance_survey_questions})
 })
 app.get('/compliance',  async (req,res) => {
+    let errors =[]
+    let message=[]
     pool.query(
         `SELECT * FROM compliance_results`,
         [],
         (err, results) => {
             if(err){
                 console.log(err)
-                throw err;
+                errors.push({message: err});;
                 
             }
             compliance_data=results.rows
@@ -381,11 +397,14 @@ app.get('/compliance',  async (req,res) => {
             (err, results3) => {
                 if(err){
                     console.log(err)
-                    throw err;
+                    errors.push({message: err});;
                     
                     
                 }
-            res.render('compliance',{layout:'./layouts/compliance-layout',compliance_results:results.rows,dataB:results3.rows})
+                if(errors.length >0 ){
+                    res.render('compliance',{layout:'./layouts/compliance-layout',user:nam,errors:errors,compliance_results:results.rows,dataB:results3.rows}) 
+                }
+            res.render('compliance',{layout:'./layouts/compliance-layout',user:nam,errors:errors,compliance_results:results.rows,dataB:results3.rows})
             })
         }
     )
@@ -398,13 +417,15 @@ app.get('/compliance-survey',  async (req,res) => {
 });
 app.get('/contract_view',  async (req,res) => {
     let query = req.query.id
+    let errors =[]
+    let message=[]
     pool.query(
         `SELECT * FROM contracts WHERE contract_id = $1`,
         [query],
         (err, results) => {
             if(err){
                 console.log(err)
-                throw err;
+                errors.push({message: err});;
                 
             }
             let dollarUS = Intl.NumberFormat("en-US", {
@@ -416,7 +437,7 @@ app.get('/contract_view',  async (req,res) => {
                 (err, results2) => {
                     if(err){
                         console.log(err)
-                        throw err;
+                        errors.push({message: err});;
                         
                     }
             let directory_name = "./public/uploads1";
@@ -426,12 +447,17 @@ app.get('/contract_view',  async (req,res) => {
                     filenames.forEach((file) => {
                         console.log("File:", file);
                     });
-             res.render('contract_view',{layout:'./layouts/contract_view_layout',data:results.rows,dollarUS:dollarUS,id:query,files:filenames,contract_status:results2.rows})
+                    if(errors.length >0 ){
+                        res.render('contract_view',{layout:'./layouts/contract_view_layout',user:nam,errors:errors,data:results.rows,dollarUS:dollarUS,id:query,files:filenames,contract_status:results2.rows})
+                    }
+             res.render('contract_view',{layout:'./layouts/contract_view_layout',user:nam,errors:errors,data:results.rows,dollarUS:dollarUS,id:query,files:filenames,contract_status:results2.rows})
                 })
         }
     )
 });
 app.get('/case_view',  async (req,res) => {
+    let errors =[]
+    let message=[]
     let query = req.query.id
     pool.query(
         `SELECT * FROM cases WHERE case_id = $1`,
@@ -439,7 +465,7 @@ app.get('/case_view',  async (req,res) => {
         (err, results) => {
             if(err){
                 console.log(err)
-                throw err;
+                errors.push({message: err});;
                 
             }
             let dollarUS = Intl.NumberFormat("en-US", {
@@ -452,7 +478,7 @@ app.get('/case_view',  async (req,res) => {
                 (err, results1) => {
                     if(err){
                         console.log(err)
-                        throw err;
+                        errors.push({message: err});;
                         
                     }
                     pool.query( `SELECT * FROM case_status`,
@@ -460,7 +486,7 @@ app.get('/case_view',  async (req,res) => {
                     (err, results2) => {
                         if(err){
                             console.log(err)
-                            throw err;
+                            errors.push({message: err});;
                             
                         }
                     let directory_name = "./public/uploads";
@@ -470,7 +496,10 @@ app.get('/case_view',  async (req,res) => {
                     filenames.forEach((file) => {
                         console.log("File:", file);
                     });
-                    res.render('case_view',{layout:'./layouts/case_view_layout',data:results.rows, dataA:results1.rows,id:query, files:filenames,case_status:results2.rows})
+                    if(errors.length >0 ){ res.render('case_view',{layout:'./layouts/case_view_layout',user:nam,errors:errors,data:results.rows, dataA:results1.rows,id:query, files:filenames,case_status:results2.rows})
+                }
+                    res.render('case_view',{layout:'./layouts/case_view_layout',user:nam,errors:errors,data:results.rows, dataA:results1.rows,id:query, files:filenames,case_status:results2.rows})
+                
                 })
                 }
             )
@@ -479,13 +508,15 @@ app.get('/case_view',  async (req,res) => {
    
 });
 app.get('/contracts',  async (req,res) => {
+    let errors =[]
+    let message=[]
     pool.query(
         `SELECT * FROM contracts`,
         [],
         (err, results) => {
             if(err){
                 console.log(err)
-                throw err;
+                errors.push({message: err});;
                 
             }
             let dollarUS = Intl.NumberFormat("en-US", {
@@ -499,7 +530,7 @@ app.get('/contracts',  async (req,res) => {
             (err, results1) => {
                 if(err){
                     console.log(err)
-                    throw err;
+                    errors.push({message: err});;
                     
                 }
                 let dollarUS = Intl.NumberFormat("en-US", {
@@ -511,7 +542,7 @@ app.get('/contracts',  async (req,res) => {
                 (err, results2) => {
                     if(err){
                         console.log(err)
-                        throw err;
+                        errors.push({message: err});;
                         
                         
                     }
@@ -520,7 +551,7 @@ app.get('/contracts',  async (req,res) => {
                     (err, results3) => {
                         if(err){
                             console.log(err)
-                            throw err;
+                            errors.push({message: err});;
                             
                             
                         }
@@ -529,7 +560,9 @@ app.get('/contracts',  async (req,res) => {
                  const startIndex = (page - 10) * limit;
                  const endIndex = page * limit;
                  const reso = results.rows.slice(startIndex, endIndex);
-                 res.render('contracts',{layout:'./layouts/contracts-layout',data:reso,page,dollarUS:dollarUS,vendors:results1.rows,contract_status:results2.rows,dataB:results3.rows})
+                 if(errors.length >0 ){ res.render('contracts',{layout:'./layouts/contracts-layout',user:nam,errors:errors,data:reso,page,dollarUS:dollarUS,vendors:results1.rows,contract_status:results2.rows,dataB:results3.rows})
+                }
+                 res.render('contracts',{layout:'./layouts/contracts-layout',user:nam,errors:errors,data:reso,page,dollarUS:dollarUS,vendors:results1.rows,contract_status:results2.rows,dataB:results3.rows})
                     })
                 })
             }
@@ -542,6 +575,8 @@ app.post('/user-roles',  async (req,res) => {
    
 })
 app.get('/lawfirm_cases',  async (req,res) => {
+    let errors =[]
+    let message=[]
     let query = req.query.id
     pool.query(
         `SELECT * FROM law_firms WHERE law_firm_id = $1`,
@@ -549,7 +584,7 @@ app.get('/lawfirm_cases',  async (req,res) => {
         (err, results) => {
             if(err){
                 console.log(err)
-                throw err;
+                errors.push({message: err});;
                 
             }
             let dollarUS = Intl.NumberFormat("en-US", {
@@ -562,10 +597,13 @@ app.get('/lawfirm_cases',  async (req,res) => {
                 (err, results1) => {
                     if(err){
                         console.log(err)
-                        throw err;
+                        errors.push({message: err});;
                         
                     }
-                    res.render('lawfir_cases',{layout:'./layouts/lawfir-cases-layout',data:results.rows,dollarUS:dollarUS,cases:results1.rows,law_firm_id:query})
+                    if(errors.length >0 ){res.render('lawfir_cases',{layout:'./layouts/lawfir-cases-layout',user:nam,errors:errors,data:results.rows,dollarUS:dollarUS,cases:results1.rows,law_firm_id:query})
+
+                }
+                    res.render('lawfir_cases',{layout:'./layouts/lawfir-cases-layout',user:nam,errors:errors,data:results.rows,dollarUS:dollarUS,cases:results1.rows,law_firm_id:query})
 
                     
                 }
@@ -575,6 +613,8 @@ app.get('/lawfirm_cases',  async (req,res) => {
     
 });
 app.get('/lawfirm_contracts',  async (req,res) => {
+    let errors =[]
+    let message=[]
     let query = req.query.id
     pool.query(
         `SELECT * FROM law_firms WHERE law_firm_id = $1`,
@@ -582,88 +622,99 @@ app.get('/lawfirm_contracts',  async (req,res) => {
         (err, results) => {
             if(err){
                 console.log(err)
-                throw err;
+                errors.push({message: err});;
                 
             }
             let dollarUS = Intl.NumberFormat("en-US", {
                 style: "currency",
                 currency: "USD", 
             });
-            console.log(results.rows)
-            res.render('lawfirm_contracts',{layout:'./layouts/lawfirm-contracts-layout',data:results.rows,dollarUS:dollarUS,law_firm_id:query})
+            if(errors.length >0 ){ res.render('lawfirm_contracts',{layout:'./layouts/lawfirm-contracts-layout',user:nam,errors:errors,data:results.rows,dollarUS:dollarUS,law_firm_id:query})
+        }
+            res.render('lawfirm_contracts',{layout:'./layouts/lawfirm-contracts-layout',user:nam,errors:errors,data:results.rows,dollarUS:dollarUS,law_firm_id:query})
         }
     )
 });
 app.get('/lawfirm_tasks', async (req,res) => {
     let query = req.query.id
+    let errors =[]
+    let message=[]
     pool.query(
         `SELECT * FROM law_firms WHERE law_firm_id = $1`,
         [query],
         (err, results) => {
             if(err){
                 console.log(err)
-                throw err;
+                errors.push({message: err});;
                 
             }
             let dollarUS = Intl.NumberFormat("en-US", {
                 style: "currency",
                 currency: "USD", 
             });
-            console.log(results.rows)
-            res.render('lawfirm_contracts',{layout:'./layouts/lawfirm-contracts-layout',data:results.rows,dollarUS:dollarUS,law_firm_id:query})
+            if(errors.length >0 ){res.render('lawfirm_contracts',{layout:'./layouts/lawfirm-contracts-layout',user:nam,errors:errors,data:results.rows,dollarUS:dollarUS,law_firm_id:query})
+        }
+            res.render('lawfirm_contracts',{layout:'./layouts/lawfirm-contracts-layout',user:nam,errors:errors,data:results.rows,dollarUS:dollarUS,law_firm_id:query})
         }
     )
 });
 app.get('/lawfirm_contacts',  async (req,res) => {
     let query = req.query.id
+    let errors =[]
+    let message=[]
     pool.query(
         `SELECT * FROM law_firms WHERE law_firm_id = $1`,
         [query],
         (err, results) => {
             if(err){
                 console.log(err)
-                throw err;
+                errors.push({message: err});;
                 
             }
             let dollarUS = Intl.NumberFormat("en-US", {
                 style: "currency",
                 currency: "USD", 
             });
-            console.log(results.rows)
-            res.render('lawfirmcontacts',{layout:'./layouts/lawfirm-contacts-layout',data:results.rows,dollarUS:dollarUS,law_firm_id:query})
+            if(errors.length >0 ){ res.render('lawfirmcontacts',{layout:'./layouts/lawfirm-contacts-layout',user:nam,errors:errors,data:results.rows,dollarUS:dollarUS,law_firm_id:query})
+        }
+            res.render('lawfirmcontacts',{layout:'./layouts/lawfirm-contacts-layout',user:nam,errors:errors,data:results.rows,dollarUS:dollarUS,law_firm_id:query})
         }
     )
 });
 app.get('/lawfirm_notes',  async (req,res) => {
     let query = req.query.id
+    let errors =[]
+    let message=[]
     pool.query(
         `SELECT * FROM law_firms WHERE law_firm_id = $1`,
         [query],
         (err, results) => {
             if(err){
                 console.log(err)
-                throw err;
+                errors.push({message: err});;
                 
             }
             let dollarUS = Intl.NumberFormat("en-US", {
                 style: "currency",
                 currency: "USD", 
             });
-            console.log(results.rows)
-            res.render('lawfirmnotes',{layout:'./layouts/lawfirm-notes-layout',data:results.rows,dollarUS:dollarUS,law_firm_id:query})
+            if(errors.length >0 ){ res.render('lawfirmnotes',{layout:'./layouts/lawfirm-notes-layout',user:nam,errors:errors,data:results.rows,dollarUS:dollarUS,law_firm_id:query})
+        }
+            res.render('lawfirmnotes',{layout:'./layouts/lawfirm-notes-layout',user:nam,errors:errors,data:results.rows,dollarUS:dollarUS,law_firm_id:query})
         }
     )
 });
 
 app.get('/lawfirms', async (req,res) => {
-    
+    let errors =[]
+    let message=[]
     pool.query(
         `SELECT * FROM law_firms`,
         [],
         (err, results) => {
             if(err){
                 console.log(err)
-                throw err;
+                errors.push({message: err});;
                 
             }else{
              array = results.rows
@@ -676,8 +727,9 @@ app.get('/lawfirms', async (req,res) => {
                     not_active += 1
                 }
              })
-             console.log(array)
-             res.render('lawfirms',{layout:'./layouts/lawfirms-layout',data:array, active:active, not_active:not_active})
+             if(errors.length >0 ){res.render('lawfirms',{layout:'./layouts/lawfirms-layout',user:nam,errors:errors,data:array, active:active, not_active:not_active})
+            }
+             res.render('lawfirms',{layout:'./layouts/lawfirms-layout',user:nam,errors:errors,data:array, active:active, not_active:not_active})
             }
         }
     )
@@ -686,40 +738,48 @@ app.get('/lawfirms', async (req,res) => {
 });
 app.get('/lawfirm_statement',  async (req,res) => {
     let query = req.query.id
+    let errors =[]
+    let message=[]
     pool.query(
         `SELECT * FROM law_firms WHERE law_firm_id = $1`,
         [query],
         (err, results) => {
             if(err){
                 console.log(err)
-                throw err;
+                errors.push({message: err});;
                 
             }
             let dollarUS = Intl.NumberFormat("en-US", {
                 style: "currency",
                 currency: "USD", 
             });
-            console.log(results.rows)
-            res.render('lawfirmstatement',{layout:'./layouts/lawfirm-statement-layout',data:results.rows,dollarUS:dollarUS,law_firm_id:query})
+            if(errors.length >0 ){res.render('lawfirmstatement',{layout:'./layouts/lawfirm-statement-layout',user:nam,errors:errors,data:results.rows,dollarUS:dollarUS,law_firm_id:query})
+        }
+            res.render('lawfirmstatement',{layout:'./layouts/lawfirm-statement-layout',user:nam,errors:errors,data:results.rows,dollarUS:dollarUS,law_firm_id:query})
         }
     )
 });
 app.get('/lawfirm_view', async (req,res) => {
     let query = req.query.id
+    let errors =[]
+    let message=[]
     pool.query(
+        
         `SELECT * FROM law_firms WHERE law_firm_id = $1`,
         [query],
         (err, results) => {
             if(err){
                 console.log(err)
-                throw err;
+                errors.push({message: err});;
                 
             }
             let dollarUS = Intl.NumberFormat("en-US", {
                 style: "currency",
                 currency: "USD", 
             });
-            res.render('lawfirmview',{layout:'./layouts/lawfirm-view-layout',data:results.rows,dollarUS:dollarUS,law_firm_id:query})
+            if(errors.length >0 ){res.render('lawfirmview',{layout:'./layouts/lawfirm-view-layout',user:nam,errors:errors,data:results.rows,dollarUS:dollarUS,law_firm_id:query})
+        }
+            res.render('lawfirmview',{layout:'./layouts/lawfirm-view-layout',user:nam,errors:errors,data:results.rows,dollarUS:dollarUS,law_firm_id:query})
         }
     )
 });
@@ -728,8 +788,9 @@ app.get('/learn',  async (req,res) => {
     res.render('learn',{layout:'./layouts/learn-layout'})
 });
 app.get('/resources',  async (req,res) => {
-    
-    res.render('resources',{layout:'./layouts/resources-layout'})
+    let errors =[]
+    let message=[]
+    res.render('resources',{layout:'./layouts/resources-layout',user:nam,errors:errors,message:message})
 });
 app.post('/resources-gazettes', async (req,res) => {
     
@@ -802,6 +863,8 @@ app.get('/resources-results',  async (req,res) => {
    
     let keyword;
     let keyword_url;
+    let errors =[]
+    let message=[]
     console.log(req.query.query)
     if(req.query.query == 'cases_and_judgements'){
         keyword = 'cases and judgements zimbabwe'
@@ -837,7 +900,7 @@ app.get('/resources-results',  async (req,res) => {
             console.log('URL:', legislation.url);
             console.log('----------------------');
           });
-          res.render('resources_legislature',{layout:'./layouts/resources-results-layout',results: legislationList})
+          res.render('resources_legislature',{layout:'./layouts/resources-results-layout',user:nam,errors:errors,results: legislationList})
         } catch (error) {
           console.error('Error:', error);
         } finally {
@@ -882,7 +945,7 @@ app.get('/resources-results',  async (req,res) => {
 
   await browser.close();
 
-  res.render('resources_legislature',{layout:'./layouts/resources-results-layout',results: legislationList})
+  res.render('resources_legislature',{layout:'./layouts/resources-results-layout',user:nam,errors:errors,results: legislationList})
     } 
 
    
@@ -923,12 +986,14 @@ app.post('/resources-search-results',  async (req,res) => {
    res.redirect("/resources-gazettes")
 });
 app.get('/resources-gazettes',  async (req,res) => {
-
-    res.render('resources_gazettes',{layout:'./layouts/resources-results-layout',results: scrapping_results})
+    let errors =[]
+    let message=[]
+    res.render('resources_gazettes',{layout:'./layouts/resources-results-layout',user:nam,errors:errors,results: scrapping_results})
 });
 app.get('/resources-cases-and-judgements',  async (req,res) => {
-
-    res.render('resources_gazettes',{layout:'./layouts/resources-results-layout',results: scrapping_results})
+    let errors =[]
+    let message=[]
+    res.render('resources_gazettes',{layout:'./layouts/resources-results-layout',user:nam,errors:errors,results: scrapping_results})
 });
 app.get('/settings/users',  async (req,res) => {
     let errors = []
@@ -938,24 +1003,27 @@ app.get('/settings/users',  async (req,res) => {
         (err, results) => {
             if(err){
                 console.log(err)
-                throw err;
+                errors.push({message: err});;
                 
             }
-           
-             res.render('users',{layout:'./layouts/users-layout',data:results.rows,user:nam, errors:errors})
+            if(errors.length >0 ){res.render('users',{layout:'./layouts/users-layout',user:nam,errors:errors,data:results.rows,user:nam, errors:errors})
+        }
+             res.render('users',{layout:'./layouts/users-layout',user:nam,errors:errors,data:results.rows,user:nam, errors:errors})
           
         }
     )
    
 });
 app.get('/tasks',  async (req,res) => {
+    let errors =[]
+    let message=[]
     pool.query(
         `SELECT * FROM tasks`,
         [],
         (err, results) => {
             if(err){
                 console.log(err)
-                throw err;
+                errors.push({message: err});;
                 
             }
             pool.query(
@@ -964,7 +1032,7 @@ app.get('/tasks',  async (req,res) => {
                 (err, results1) => {
                     if(err){
                         console.log(err)
-                        throw err;
+                        errors.push({message: err});;
                         
                     }
 
@@ -974,7 +1042,9 @@ app.get('/tasks',  async (req,res) => {
                     const startIndex = (page - 1) * limit;
                     const endIndex = page * limit;
                     const reso = results.rows.slice(startIndex, endIndex);
-                    res.render('tasks',{layout:'./layouts/tasks-layout',data:reso,page,users:results1.rows})
+                    if(errors.length >0 ){ res.render('tasks',{layout:'./layouts/tasks-layout',user:nam,errors:errors,data:reso,page,users:results1.rows})
+                }
+                    res.render('tasks',{layout:'./layouts/tasks-layout',user:nam,errors:errors,data:reso,page,users:results1.rows})
                 })
             
              
@@ -985,13 +1055,15 @@ app.get('/tasks',  async (req,res) => {
     
 });
 app.get('/vendors', async (req,res) => {
+    let errors =[]
+    let message=[]
     pool.query(
         `SELECT * FROM vendors`,
         [],
         (err, results) => {
             if(err){
                 console.log(err)
-                throw err;
+                errors.push({message: err});;
                 
             }
             pool.query(
@@ -1000,7 +1072,7 @@ app.get('/vendors', async (req,res) => {
                 (err, results2) => {
                     if(err){
                         console.log(err)
-                        throw err;
+                        errors.push({message: err});;
                         
                     }
              const page = parseInt(req.query.page) || 1; // Current page number
@@ -1008,7 +1080,9 @@ app.get('/vendors', async (req,res) => {
                     const startIndex = (page - 1) * limit;
                     const endIndex = page * limit;
                     const reso = results.rows.slice(startIndex, endIndex);
-             res.render('vendors',{layout:'./layouts/vendors-layout',data:reso,page,dataB:results2.rows})
+                    if(errors.length >0 ){ res.render('vendors',{layout:'./layouts/vendors-layout',user:nam,errors:errors,data:reso,page,dataB:results2.rows})
+                }
+             res.render('vendors',{layout:'./layouts/vendors-layout',user:nam,errors:errors,data:reso,page,dataB:results2.rows})
                 })
           
         }
@@ -1059,7 +1133,7 @@ app.post('/update-lawfirm-profile', (req, res)=>{
    [lawfirm_name,email,address,phone_number, query], 
    (err, results) => {
        if(err){
-           throw err;
+           errors.push({message: err});;
        }
        res.redirect('/lawfirm_view?id='+query);
    }
@@ -1078,7 +1152,7 @@ app.post('/update-lawfirm-contact', (req, res)=>{
         (err, result) => {
             if(err){
                 console.log(err)
-                throw err;
+                errors.push({message: err});;
                 
             }
           result.rows[0].contacts.push({name:name1,email:email1,position:position1,phone:phone1})
@@ -1088,7 +1162,7 @@ app.post('/update-lawfirm-contact', (req, res)=>{
            [ result.rows[0].contacts, query], 
            (err, results) => {
                if(err){
-                   throw err;
+                   errors.push({message: err});;
                }
                res.redirect('/lawfirm_contacts?id='+query);
            }
@@ -1120,9 +1194,9 @@ app.post('/add-lawfirm', (req, res)=>{
         [law_firm, address, phone_number, contacts, true, "groups", date_created, email, vat_number, website], 
         (err, results) => {
             if(err){
-                throw err;
+                errors.push({message: err});;
             }
-            req.flash('success_msg','You have successfully added a law firm');
+            req.flash('success','You have successfully added a law firm');
             res.redirect('/lawfirms');
         }
     )
@@ -1137,7 +1211,7 @@ app.post('/update-lawfirm', (req, res)=>{
         [law_firm, query], 
         (err, results) => {
             if(err){
-                throw err;
+                errors.push({message: err});;
             }
             res.redirect('/case_view?id='+query);
         }
@@ -1153,7 +1227,7 @@ app.post('/update-case-status', (req, res)=>{
         [status, query], 
         (err, results) => {
             if(err){
-                throw err;
+                errors.push({message: err});;
             }
             res.redirect('/case_view?id='+query);
         }
@@ -1169,7 +1243,7 @@ app.post('/update-case-startdate', (req, res)=>{
         [start_date, query], 
         (err, results) => {
             if(err){
-                throw err;
+                errors.push({message: err});;
             }
             res.redirect('/case_view?id='+query);
         }
@@ -1186,7 +1260,7 @@ app.post('/update-case-description', (req, res)=>{
         [description, query], 
         (err, results) => {
             if(err){
-                throw err;
+                errors.push({message: err});;
             }
             res.redirect('/case_view?id='+query);
         }
@@ -1203,7 +1277,7 @@ app.post('/update-contract-value', (req, res)=>{
         [contract_value, query], 
         (err, results) => {
             if(err){
-                throw err;
+                errors.push({message: err});;
             }
             res.redirect('/contract_view?id='+query);
         }
@@ -1221,7 +1295,7 @@ app.post('/update-contract-duration', (req, res)=>{
         [start_date, end_date, query], 
         (err, results) => {
             if(err){
-                throw err;
+                errors.push({message: err});;
             }
             res.redirect('/contract_view?id='+query);
         }
@@ -1238,7 +1312,7 @@ app.post('/update-contract-terms', (req, res)=>{
         [payment_terms, query], 
         (err, results) => {
             if(err){
-                throw err;
+                errors.push({message: err});;
             }
             res.redirect('/contract_view?id='+query);
         }
@@ -1255,7 +1329,7 @@ app.post('/update-contract-status', (req, res)=>{
         [status, query], 
         (err, results) => {
             if(err){
-                throw err;
+                errors.push({message: err});;
             }
             res.redirect('/contract_view?id='+query);
         }
@@ -1272,7 +1346,7 @@ app.post('/update-contract-description', (req, res)=>{
         [description, query], 
         (err, results) => {
             if(err){
-                throw err;
+                errors.push({message: err});;
             }
             res.redirect('/contract_view?id='+query);
         }
@@ -1291,10 +1365,10 @@ app.post('/change-lawfirm-status', (req, res)=>{
         [active_status,law_firm_id], 
         (err, results) => {
             if(err){
-                throw err;
+                errors.push({message: err});;
             }
             console.log(results)
-            req.flash('success_msg','You have successfully updated status of law firm');
+            req.flash('success','You have successfully updated status of law firm');
             res.redirect('/lawfirms');
         }
     )
@@ -1319,9 +1393,9 @@ app.post('/add-case', (req, res)=>{
         [description, start_date, end_date, notes, department, case_name, law_firm, tag, staff_members, progress], 
         (err, results) => {
             if(err){
-                throw err;
+                errors.push({message: err});;
             }
-            req.flash('success_msg','You have successfully added a law firm');
+            req.flash('success','You have successfully added a law firm');
             res.redirect('/cases');
         }
     )
@@ -1349,10 +1423,10 @@ app.post('/add-contract', (req, res)=>{
             payment_cycle, payment_terms, status, contract_value], 
         (err, results) => {
             if(err){
-                throw err;
+                errors.push({message: err});;
             }
             console.log(results.row);
-            req.flash('success_msg','You have successfully added a contract');
+            req.flash('success','You have successfully added a contract');
             res.redirect('/contracts');
         }
     )
@@ -1373,10 +1447,10 @@ app.post('/add-vendor', (req, res)=>{
         [ phone_number, contact_person, company_name, vat_number, physical_address, date_created, 'false', email], 
         (err, results) => {
             if(err){
-                throw err;
+                errors.push({message: err});;
             }
             console.log(results.row);
-            req.flash('success_msg','You have successfully added a vendor');
+            req.flash('success','You have successfully added a vendor');
             res.redirect('/vendors');
         }
     )
@@ -1394,10 +1468,10 @@ app.post('/edit-vendor', (req, res)=>{
         [ phone_number, contact_person, company_name, vat_number, physical_address, email, current_vendor], 
         (err, results) => {
             if(err){
-                throw err;
+                errors.push({message: err});;
             }
             console.log(results.row);
-            req.flash('success_msg','You have successfully updated a vendor');
+            req.flash('message','You have successfully updated a vendor');
             res.redirect('/vendors');
         }
     )
@@ -1409,9 +1483,9 @@ app.post('/delete-vendor', (req, res)=>{
         [current_vendor], 
         (err, results) => {
             if(err){
-                throw err;
+                errors.push({message: err});;
             }
-            req.flash('success_msg','You have successfully deleted a vendor');
+            req.flash('success','You have successfully deleted a vendor');
             res.redirect('/vendors');
         }
     )
@@ -1428,10 +1502,10 @@ app.post('/add-budget', (req, res)=>{
         [ amount, start_date, end_date, notes, amount], 
         (err, results) => {
             if(err){
-                throw err;
+                errors.push({message: err});;
             }
             console.log(results.row);
-            req.flash('success_msg','You have successfully added a line budget');
+            req.flash('success','You have successfully added a line budget');
             res.redirect('/budget');
         }
     )
@@ -1449,7 +1523,7 @@ app.post('/add-line-budget', (req, res)=>{
                 [req.body[`budget_name${i}`],req.body[`budget${i}`],0,0,[]], 
                 (err, results) => {
                     if(err){
-                        throw err;
+                        errors.push({message: err});;
                     }
                     budget_balance-=req.body[`budget${i}`]
                     console.log(budget_balance,"     ",budget_id)
@@ -1457,7 +1531,7 @@ app.post('/add-line-budget', (req, res)=>{
                     [budget_balance, budget_id],
                     (err, result) => {
                         if(err){
-                            throw err;
+                            errors.push({message: err});;
                         }
                         console.log(result)
                     })
@@ -1468,7 +1542,7 @@ app.post('/add-line-budget', (req, res)=>{
         }
           
     
-    req.flash('success_msg','You have successfully added a line budget item');
+    req.flash('success','You have successfully added a line budget item');
     res.redirect('/budget');
 })
 app.post('/edit-budget', (req, res)=>{
@@ -1482,9 +1556,9 @@ app.post('/edit-budget', (req, res)=>{
         [edit_amount, edit_start_date, edit_end_date,edit_notes, query],
         (err, results) => {
             if(err){
-                throw err;
+                errors.push({message: err});;
             }
-            req.flash('success_msg','You have successfully edited a budget');
+            req.flash('success','You have successfully edited a budget');
             res.redirect('/budget');
         }
     )
@@ -1502,7 +1576,7 @@ app.post('/add-expenditure', (req, res)=>{
        [parseFloat(expenditure_budget_id)], 
        (err, results) => {
            if(err){
-               throw err;
+               errors.push({message: err});;
            }
            let array = results.rows[0].expenditure
            if(array == null){
@@ -1515,7 +1589,7 @@ app.post('/add-expenditure', (req, res)=>{
      [a,b,array,expenditure_budget_id], 
      (err, results) => {
          if(err){
-             throw err;
+             errors.push({message: err});;
          }
          res.redirect('/budget');
      }
@@ -1545,9 +1619,9 @@ app.post('/edit-task', (req, res)=>{
         [task_name, start_date, due_date, priority, frequency, assigness, task_description, statuss,current_task], 
         (err, results) => {
             if(err){
-                throw err;
+                errors.push({message: err});;
             }
-            req.flash('success_msg','You have successfully edited task');
+            req.flash('success','You have successfully edited task');
             res.redirect('/tasks');
         }
     )
@@ -1568,9 +1642,9 @@ app.post('/add-tasks', (req, res)=>{
         [task_name, start_date, due_date, priority, frequency, assigness, task_description, date_created, 'ACTIVE'], 
         (err, results) => {
             if(err){
-                throw err;
+                errors.push({message: err});;
             }
-            req.flash('success_msg','You have successfully added a task');
+            req.flash('success','You have successfully added a task');
             res.redirect('/tasks');
         }
     )
@@ -1582,27 +1656,29 @@ app.post('/delete-task', (req, res)=>{
         [current_task], 
         (err, results) => {
             if(err){
-                throw err;
+                errors.push({message: err});;
             }
-            req.flash('success_msg','You have successfully deleted a task');
+            req.flash('success','You have successfully deleted a task');
             res.redirect('/tasks');
         }
     )
 });
 
 app.post('/compliance-form-part-1', (req, res)=>{
+    res.setTimeout(0);
    let a = req.body.department
    compliance_department = a
    console.log(compliance_department)
    
-}).setTimeout(0);
+})
 app.post('/compliance-form-part-2', (req, res)=>{
+    res.setTimeout(0);
     let a = req.body.contact_name
     let b = req.body.contact_email
     compliance_contact_name = a
     compliance_contact_email = b
     console.log(compliance_contact_name,compliance_contact_email)
-}).setTimeout(0);
+})
 app.post('/compliance-form-part-3', (req, res)=>{
     compliance_survey_questions = []
     for(let i=1;i<compliance_count+1;i++){
@@ -1641,7 +1717,7 @@ app.post('/compliance-form-part-3', (req, res)=>{
            [compliance_department], 
            (err, results) => {
                if(err){
-                   throw err;
+                   errors.push({message: err});;
                }
                let yourDate = new Date()
                date_created = formatDate(yourDate)
@@ -1652,7 +1728,7 @@ app.post('/compliance-form-part-3', (req, res)=>{
                    [compliance_survey_questions, {}, 0, compliance_contact_name, compliance_contact_email,date_created,compliance_department], 
                    (err, results) => {
                        if(err){
-                           throw err;
+                           errors.push({message: err});;
                        }
                        res.redirect('/budget');
                    }
@@ -1664,7 +1740,7 @@ app.post('/compliance-form-part-3', (req, res)=>{
                     [compliance_department, compliance_survey_questions, [], 0, compliance_contact_name, compliance_contact_email,date_created], 
                     (err, results1) => {
                         if(err){
-                            throw err;
+                            errors.push({message: err});;
                         }
                     }
                 )
@@ -1858,7 +1934,7 @@ app.post('/compliance_results',(req,res) =>{
        [responses, date_created, compliance_survey_questions, y, compliance_department], 
        (err, results) => {
            if(err){
-               throw err;
+               errors.push({message: err});;
            }
            res.redirect('/budget');
        }
@@ -1977,48 +2053,53 @@ else{
 
 })
 app.get('/settings/user-roles', (req,res) => {
+    let errors=[]
+    let message=[]
     pool.query(
         'SELECT * FROM user_roles',
        [], 
        (err, results) => {
            if(err){
-               throw err;
+               errors.push({message: err});;
            }
-           res.render('user-roles',{layout:'./layouts/users-layout',authed:authed,user:nam,data1:results.rows});
+           res.render('user-roles',{layout:'./layouts/users-layout',authed:authed,user:nam,errors:errors,data1:results.rows});
        }
     )
     
     
 });
 app.get('/settings/departments', (req,res) => {
-   
+   let errors=[]
+   let message=[]
     pool.query(
         `SELECT * FROM department`,
         [], 
         (err, results1) => {
             if(err){
-                throw err;
+                errors.push({message: err});;
             }
-            res.render('departments',{layout:'./layouts/users-layout',authed:authed,user:nam,data1:results1.rows});
+            res.render('departments',{layout:'./layouts/users-layout',authed:authed,user:nam,errors:errors,data1:results1.rows});
         }
     );
 });
 app.get('/settings/case-status', (req,res) => {
+    let errors=[]
+    let message=[]
     pool.query(
         `SELECT * FROM case_status`,
         [], 
         (err, results1) => {
             if(err){
-                throw err;
+                errors.push({message: err});;
             }
             pool.query(
                 `SELECT * FROM contract_status`,
                 [], 
                 (err, results2) => {
                     if(err){
-                        throw err;
+                        errors.push({message: err});;
                     }
-                    res.render('case-status',{layout:'./layouts/users-layout',authed:authed,user:nam,data1:results1.rows,data2:results2.rows});
+                    res.render('case-status',{layout:'./layouts/users-layout',authed:authed,user:nam,errors:errors,data1:results1.rows,data2:results2.rows});
                 }
             );
            
@@ -2068,9 +2149,9 @@ app.post('/case_status', (req,res) => {
         [case_status_name, description], 
         (err, results) => {
             if(err){
-                throw err;
+                errors.push({message: err});;
             }
-            req.flash('success_msg','You have successfully added a Case Status');
+            req.flash('success','You have successfully added a Case Status');
             res.redirect('/settings/case-status');
         }
     )
@@ -2084,9 +2165,9 @@ app.post('/contract_status', (req,res) => {
         [contract_status_name, description], 
         (err, results) => {
             if(err){
-                throw err;
+                errors.push({message: err});;
             }
-            req.flash('success_msg','You have successfully added a Contract Status');
+            req.flash('success','You have successfully added a Contract Status');
             res.redirect('/settings/case-status');
         }
     )
@@ -2101,9 +2182,9 @@ app.post('/department', (req,res) => {
         [department_name, contact_person, contact_email], 
         (err, results) => {
             if(err){
-                throw err;
+                errors.push({message: err});;
             }
-            req.flash('success_msg','You have successfully added a Department');
+            req.flash('success','You have successfully added a Department');
             res.redirect('/settings/departments');
         }
     )
@@ -2113,6 +2194,7 @@ app.post('/new_user', (req,res) => {
     let email = req.body.email
     let role = req.body.role
     let errors = []
+    let message=[]
     pool.query(
         `INSERT INTO users (email,name,role,activated,archived,password)
         VALUES ($1, $2, $3, $4, $5, $6)`,
@@ -2128,7 +2210,7 @@ app.post('/new_user', (req,res) => {
                             if(err){
                                 console.log(err)
                                 errors.push({message: err});
-                                res.render('users',{layout:'./layouts/users-layout',data:results.rows,user:nam, errors:errors})
+                                res.render('users',{layout:'./layouts/users-layout',data:results.rows,user:nam,errors:errors,message:messge})
                                 
                             }
                            
@@ -2173,9 +2255,9 @@ app.get('/delete-department', (req,res) => {
         [id], 
         (err, results) => {
             if(err){
-                throw err;
+                errors.push({message: err});;
             }
-            req.flash('success_msg','You have successfully deleted a Department');
+            req.flash('success','You have successfully deleted a Department');
             res.redirect('/settings/departments');
         }
     )
@@ -2187,9 +2269,9 @@ app.get('/delete-case-status', (req,res) => {
         [id], 
         (err, results) => {
             if(err){
-                throw err;
+                errors.push({message: err});;
             }
-            req.flash('success_msg','You have successfully deleted a Case Status');
+            req.flash('success','You have successfully deleted a Case Status');
             res.redirect('/settings/case-status');
         }
     )
@@ -2201,9 +2283,9 @@ app.get('/delete-contract-status', (req,res) => {
         [id], 
         (err, results) => {
             if(err){
-                throw err;
+                errors.push({message: err});;
             }
-            req.flash('success_msg','You have successfully deleted a Contract Status');
+            req.flash('success','You have successfully deleted a Contract Status');
             res.redirect('/settings/case-status');
         }
     )
@@ -2213,7 +2295,7 @@ app.get('/users/logout', (req,res) => {
     authed =false;
     usrId=''
     nam=''
-    req.flash('success_msg', 'You logged out');
+    req.flash('success', 'You logged out');
     res.redirect('/login');
 });
 app.post('/users/register', async (req,res) => {
@@ -2244,7 +2326,7 @@ app.post('/users/register', async (req,res) => {
            [email],
            (err, results) => {
                if(err){
-                   throw err;
+                   errors.push({message: err});;
                }
                console.log(results.rows);
                if(results.rows.length >0){
@@ -2258,10 +2340,10 @@ app.post('/users/register', async (req,res) => {
                       [name, email, hashedPassword, 'ADMIN'], 
                       (err, results) => {
                           if(err){
-                              throw err;
+                              errors.push({message: err});;
                           }
                           console.log(results.row);
-                          req.flash('success_msg','You are now registered. Please log in');
+                          req.flash('success','You are now registered. Please log in');
                           res.render('login',{layout:'./layouts/login-layout',authed:authed,user:nam, errors:errors});
                       }
                   )
@@ -2316,7 +2398,7 @@ app.post('/budget_statement', async (req,res) => {
        [id], 
        (err, results) => {
            if(err){
-               throw err;
+               errors.push({message: err});;
            }
            budget_statement = results.rows[0].expenditure
            console.log(budget_statement)
