@@ -110,68 +110,53 @@ app.post('/upload-case', async (req, res) => {
             //Use the mv() method to place the file in the upload directory (i.e. "uploads")
             avatar.mv('./public/uploads/' + avatar.name);
             let errors =[]
-    let message=[]
-    pool.query(
-        `SELECT * FROM cases`,
-        [],
-        (err, results) => {
-            if(err){
-                console.log(err)
-                errors.push({message: err});;
-                
-            }
-             array3 = results.rows
-             pool.query(
-                `SELECT name FROM law_firms`,
-                [],
-                (err, results1) => {
+            let message=[]
+            let query = req.query.id
+            pool.query(
+                `SELECT * FROM cases WHERE case_id = $1`,
+                [query],
+                (err, results) => {
                     if(err){
                         console.log(err)
                         errors.push({message: err});;
                         
                     }
+                    let dollarUS = Intl.NumberFormat("en-US", {
+                        style: "currency",
+                        currency: "USD",
+                    });
                     pool.query(
-                        `SELECT * FROM department`,
+                        `SELECT name FROM law_firms`,
                         [],
-                        (err, results2) => {
+                        (err, results1) => {
                             if(err){
                                 console.log(err)
                                 errors.push({message: err});;
                                 
                             }
-                            pool.query( `SELECT * FROM users`,
+                            pool.query( `SELECT * FROM case_status`,
                             [],
-                            (err, results3) => {
+                            (err, results2) => {
                                 if(err){
                                     console.log(err)
                                     errors.push({message: err});;
                                     
                                 }
-                                pool.query( `SELECT * FROM case_status`,
-                                [],
-                                (err, results4) => {
-                                    if(err){
-                                        console.log(err)
-                                        errors.push({message: err});;
-                                        
-                                    }
-                     results.rows
-                     console.log( results.rows)
-                     
-                     const page = parseInt(req.query.page) || 1; // Current page number
-                    const limit = 10; // Number of items per page
-                    const startIndex = (page - 1) * limit;
-                    const endIndex = page * limit;
-                    const reso = results.rows.slice(startIndex, endIndex);
-                   
-                     res.render('cases',{layout:'./layouts/lawfirms-layout',user:nam,errors:errors,data:reso,page, dataA:results1.rows,dataB:results2.rows,users:results3.rows,case_status:results4.rows})
-                            })
+                            let directory_name = "./public/uploads";
+                            let filenames = fs.readdirSync(directory_name);
+                              
+                            console.log("\nFilenames in directory:");
+                            filenames.forEach((file) => {
+                                console.log("File:", file);
+                            });
+                          
+                            res.render('case_view',{layout:'./layouts/case_view_layout',user:nam,errors:errors,data:results.rows, dataA:results1.rows,id:query, files:filenames,case_status:results2.rows,id:query})
+                        
                         })
-                        })
+                        }
+                    )
                 }
             )
-        }
-    )
             
         }
     } catch (err) {
@@ -192,41 +177,41 @@ app.post('/upload-contract', async (req, res) => {
             //Use the mv() method to place the file in the upload directory (i.e. "uploads")
             avatar.mv('./public/uploads1/' + avatar.name);
             let query = req.query.id
-    let errors =[]
-    let message=[]
-    pool.query(
-        `SELECT * FROM contracts WHERE contract_id = $1`,
-        [query],
-        (err, results) => {
-            if(err){
-                console.log(err)
-                errors.push({message: err});;
-                
-            }
-            let dollarUS = Intl.NumberFormat("en-US", {
-                style: "currency",
-                currency: "USD", 
-            });
-            pool.query( `SELECT * FROM contract_status`,
-                [],
-                (err, results2) => {
+            let errors =[]
+            let message=[]
+            pool.query(
+                `SELECT * FROM contracts WHERE contract_id = $1`,
+                [query],
+                (err, results) => {
                     if(err){
                         console.log(err)
                         errors.push({message: err});;
                         
                     }
-            let directory_name = "./public/uploads1";
-                    let filenames = fs.readdirSync(directory_name);
-                      
-                    console.log("\nFilenames in directory:");
-                    filenames.forEach((file) => {
-                        console.log("File:", file);
+                    let dollarUS = Intl.NumberFormat("en-US", {
+                        style: "currency",
+                        currency: "USD", 
                     });
-                 
-             res.render('contract_view',{layout:'./layouts/contract_view_layout',user:nam,errors:errors,data:results.rows,dollarUS:dollarUS,id:query,files:filenames,contract_status:results2.rows,id:query})
-                })
-        }
-    )
+                    pool.query( `SELECT * FROM contract_status`,
+                        [],
+                        (err, results2) => {
+                            if(err){
+                                console.log(err)
+                                errors.push({message: err});;
+                                
+                            }
+                    let directory_name = "./public/uploads1";
+                            let filenames = fs.readdirSync(directory_name);
+                              
+                            console.log("\nFilenames in directory:");
+                            filenames.forEach((file) => {
+                                console.log("File:", file);
+                            });
+                         
+                     res.render('contract_view',{layout:'./layouts/contract_view_layout',user:nam,errors:errors,data:results.rows,dollarUS:dollarUS,id:query,files:filenames,contract_status:results2.rows,id:query})
+                        })
+                }
+            )
         }
     } catch (err) {
         res.status(500).send(err);
