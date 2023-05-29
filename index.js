@@ -1435,7 +1435,7 @@ app.post('/add-contract', (req, res)=>{
     let notes = req.body.description1
     let yourDate = new Date()
     date_created = formatDate(yourDate)
-    pool.query(
+    pool.query(  
         `INSERT INTO contracts (  name, description, start_date, end_date, notes,  vendor, department, payment_cycle, payment_terms, status, contract_value)
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
         [  contract_name, description, start_date, end_date, notes, vendor, department, 
