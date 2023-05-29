@@ -109,9 +109,70 @@ app.post('/upload-case', async (req, res) => {
             
             //Use the mv() method to place the file in the upload directory (i.e. "uploads")
             avatar.mv('./public/uploads/' + avatar.name);
-
+            let errors =[]
+    let message=[]
+    pool.query(
+        `SELECT * FROM cases`,
+        [],
+        (err, results) => {
+            if(err){
+                console.log(err)
+                errors.push({message: err});;
+                
+            }
+             array3 = results.rows
+             pool.query(
+                `SELECT name FROM law_firms`,
+                [],
+                (err, results1) => {
+                    if(err){
+                        console.log(err)
+                        errors.push({message: err});;
+                        
+                    }
+                    pool.query(
+                        `SELECT * FROM department`,
+                        [],
+                        (err, results2) => {
+                            if(err){
+                                console.log(err)
+                                errors.push({message: err});;
+                                
+                            }
+                            pool.query( `SELECT * FROM users`,
+                            [],
+                            (err, results3) => {
+                                if(err){
+                                    console.log(err)
+                                    errors.push({message: err});;
+                                    
+                                }
+                                pool.query( `SELECT * FROM case_status`,
+                                [],
+                                (err, results4) => {
+                                    if(err){
+                                        console.log(err)
+                                        errors.push({message: err});;
+                                        
+                                    }
+                     results.rows
+                     console.log( results.rows)
+                     
+                     const page = parseInt(req.query.page) || 1; // Current page number
+                    const limit = 10; // Number of items per page
+                    const startIndex = (page - 1) * limit;
+                    const endIndex = page * limit;
+                    const reso = results.rows.slice(startIndex, endIndex);
+                   
+                     res.render('cases',{layout:'./layouts/lawfirms-layout',user:nam,errors:errors,data:reso,page, dataA:results1.rows,dataB:results2.rows,users:results3.rows,case_status:results4.rows})
+                            })
+                        })
+                        })
+                }
+            )
+        }
+    )
             
-            res.redirect('/case_view')
         }
     } catch (err) {
         res.status(500).send(err);
@@ -130,8 +191,42 @@ app.post('/upload-contract', async (req, res) => {
             
             //Use the mv() method to place the file in the upload directory (i.e. "uploads")
             avatar.mv('./public/uploads1/' + avatar.name);
-
-            res.redirect('/case_view')
+            let query = req.query.id
+    let errors =[]
+    let message=[]
+    pool.query(
+        `SELECT * FROM contracts WHERE contract_id = $1`,
+        [query],
+        (err, results) => {
+            if(err){
+                console.log(err)
+                errors.push({message: err});;
+                
+            }
+            let dollarUS = Intl.NumberFormat("en-US", {
+                style: "currency",
+                currency: "USD", 
+            });
+            pool.query( `SELECT * FROM contract_status`,
+                [],
+                (err, results2) => {
+                    if(err){
+                        console.log(err)
+                        errors.push({message: err});;
+                        
+                    }
+            let directory_name = "./public/uploads1";
+                    let filenames = fs.readdirSync(directory_name);
+                      
+                    console.log("\nFilenames in directory:");
+                    filenames.forEach((file) => {
+                        console.log("File:", file);
+                    });
+                 
+             res.render('contract_view',{layout:'./layouts/contract_view_layout',user:nam,errors:errors,data:results.rows,dollarUS:dollarUS,id:query,files:filenames,contract_status:results2.rows,id:query})
+                })
+        }
+    )
         }
     } catch (err) {
         res.status(500).send(err);
@@ -404,7 +499,7 @@ app.get('/contract_view',checkNotAuthenticated,  async (req,res) => {
                         console.log("File:", file);
                     });
                  
-             res.render('contract_view',{layout:'./layouts/contract_view_layout',user:nam,errors:errors,data:results.rows,dollarUS:dollarUS,id:query,files:filenames,contract_status:results2.rows})
+             res.render('contract_view',{layout:'./layouts/contract_view_layout',user:nam,errors:errors,data:results.rows,dollarUS:dollarUS,id:query,files:filenames,contract_status:results2.rows,id:query})
                 })
         }
     )
@@ -451,7 +546,7 @@ app.get('/case_view',checkNotAuthenticated,  async (req,res) => {
                         console.log("File:", file);
                     });
                   
-                    res.render('case_view',{layout:'./layouts/case_view_layout',user:nam,errors:errors,data:results.rows, dataA:results1.rows,id:query, files:filenames,case_status:results2.rows})
+                    res.render('case_view',{layout:'./layouts/case_view_layout',user:nam,errors:errors,data:results.rows, dataA:results1.rows,id:query, files:filenames,case_status:results2.rows,id:query})
                 
                 })
                 }
@@ -1334,7 +1429,7 @@ app.post('/add-case', (req, res)=>{
             if(err){
                 errors.push({message: err});;
             }
-            req.flash('success','You have successfully added a law firm');
+            req.flash('success','You have successfully added a case');
             res.redirect('/cases');
         }
     )
@@ -1444,7 +1539,7 @@ app.post('/add-budget', (req, res)=>{
                 errors.push({message: err});;
             }
             console.log(results.row);
-            req.flash('success','You have successfully added a line budget');
+            req.flash('success','You have successfully added budget');
             res.redirect('/budget');
         }
     )
@@ -1937,7 +2032,7 @@ app.post('/reset-password', async (req,res) => {
                 <p>Hi, <b>${results.rows[0].name}</b>,</p>
                 <p>We received a request to reset your password for your Prolegal Case Management account. If you did not request this, please disregard this email.</p>
                 <p>To reset your password, please click on the following link:</p>
-                <a href="http://localhost:8080/set-password?email=${email}">RESET PASSWORD LINK</a>
+                <a href="https://case-management.herokuapp.com/set-password?email=${email}">RESET PASSWORD LINK</a>
                 <p>This link will only be valid for 24 hours.</p>
                 <p>If you are unable to click on the link, please copy and paste it into your browser.</p>
                 <p>Once you have clicked on the link, you will be taken to a page where you can enter a new password for your account. Please choose a strong password that is at least 8 characters long and includes a mix of upper and lowercase letters, numbers, and symbols.</p>
@@ -2168,7 +2263,7 @@ app.post('/new_user', (req,res) => {
                 html: `<div>
                 <p>Hi <b>${user_name}</b>,</p>
         <p>Your account on the Prolegal Case Management System has been created successfully. To verify your account and set your password, please click on the following link:</p>
-        <a href="http://localhost:8080/set-password?email=${email}">ACTIVATION LINK</a>
+        <a href="https://case-management.herokuapp.com/set-password?email=${email}">ACTIVATION LINK</a>
         <p>Once you have clicked on the link, you will be prompted to enter a new password for your account. Please choose a strong password that is at least 8 characters long and includes a mix of upper and lowercase letters, numbers, and symbols.</p>
         <p>After you have entered your new password, you will be able to log in to your account.</p>
         <p>If you have any questions, please do not hesitate to contact us.</p>

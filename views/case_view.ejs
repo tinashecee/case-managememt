@@ -38,7 +38,7 @@
                     <div
                       id="collapseOne"
                       class="collapse show"
-                      aria-labelledby="headingOne"
+                      aria-labelledby="headingOne" 
                       data-parent="#accordionExample"
                       style=""
                     >
@@ -231,7 +231,7 @@
         <div class="card">
           <div class="card-header">
             <h5 class="card-title">Attachements</h5>
-            <form action="upload-case" method="post" enctype="multipart/form-data">
+            <form action="/upload-case?id=<%= id %>" method="post" enctype="multipart/form-data">
             <input id='files' name="avatar" class="btn btn-primary" type="file" >
             <input class="btn btn-primary" type="submit">
           </form>
