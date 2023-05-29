@@ -589,7 +589,7 @@ app.get('/contracts',checkNotAuthenticated,  async (req,res) => {
                             
                         }
                  const page = parseInt(req.query.page) || 1; // Current page number
-                 const limit = 1; // Number of items per page
+                 const limit = 10; // Number of items per page
                  const startIndex = (page - 10) * limit;
                  const endIndex = page * limit;
                  const reso = results.rows.slice(startIndex, endIndex);
@@ -1444,7 +1444,7 @@ app.post('/add-contract', (req, res)=>{
             if(err){
                 errors.push({message: err});;
             }
-            console.log(results.row);
+            console.log(results.rows);
             req.flash('success','You have successfully added a contract');
             res.redirect('/contracts');
         }
