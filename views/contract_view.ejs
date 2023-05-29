@@ -143,26 +143,28 @@
                   <input class="btn btn-primary" type="submit">
                 </form>
               </div>
-                        <ul class="list-group list-group-flush">
-                          <% for (let dat of files) { %>
-                            <li class="list-group-item">
-                              <div class="row align-items-center">
-                                
-                                <div class="col-md-3">
-                                  <button type="button" class="btn btn-primary" onclick="changeSrc('<%= dat %>')"
-                                  ><i class="fa fa-eye"></i
-                                ></button>
-                              </div>
-                              
-                                <div class="col-md-9">
-                                  <h6 class="card-subtitle mb-2 text-muted">File Name</h6>
-                                  <p class="card-text"><%= dat %></p>
-                                </div>
-                              
-                              </div>
-                            </li>
-                            <% } %>
-              </ul>
+              <% if(data[0].attachments.length != 0) { %>
+                <ul class="list-group list-group-flush">
+                  <% for (let dat of data[0].attachments) { %>
+        <li class="list-group-item">
+          <div class="row align-items-center">
+            
+            <div class="col-md-3">
+              <button type="button" class="btn btn-primary" onclick="changeSrc('<%= dat %>')"
+              ><i class="fa fa-eye"></i
+            ></button>
+          </div>
+          
+            <div class="col-md-9">
+              <h6 class="card-subtitle mb-2 text-muted">File Name</h6>
+              <p class="card-text"><%= dat %></p>
+            </div>
+          
+          </div>
+        </li>
+        <% } %>
+      </ul>
+      <% } %>
             </div>
           </div>
         </div>

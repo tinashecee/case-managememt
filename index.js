@@ -112,6 +112,31 @@ app.post('/upload-case', async (req, res) => {
             let errors =[]
             let message=[]
             let query = req.query.id
+            let attachments = []
+            pool.query(
+                'SELECT * FROM cases WHERE case_id = $1',
+               [query], 
+               (err, resulto) => {
+                   if(err){
+                       errors.push({message: err});;
+                   }
+                  
+                   attachments = resulto.rows[0].attachments
+                   
+                   attachments.push(avatar.name)
+                   
+                   pool.query(
+                    'UPDATE cases SET attachments = $1 WHERE case_id = $2',
+                   [attachments, query], 
+                   (err, results) => {
+                       if(err){
+                           errors.push({message: err});;
+                       }
+                   }
+                )
+               }
+            )
+           
             pool.query(
                 `SELECT * FROM cases WHERE case_id = $1`,
                 [query],
@@ -143,14 +168,14 @@ app.post('/upload-case', async (req, res) => {
                                     
                                 }
                             let directory_name = "./public/uploads";
-                            let filenames = fs.readdirSync(directory_name);
+                            //let filenames = fs.readdirSync(directory_name);
                               
                             console.log("\nFilenames in directory:");
-                            filenames.forEach((file) => {
+                            attachments.forEach((file) => {
                                 console.log("File:", file);
                             });
                           
-                            res.render('case_view',{layout:'./layouts/case_view_layout',user:nam,errors:errors,data:results.rows, dataA:results1.rows,id:query, files:filenames,case_status:results2.rows,id:query})
+                            res.render('case_view',{layout:'./layouts/case_view_layout',user:nam,errors:errors,data:results.rows, dataA:results1.rows,id:query, case_status:results2.rows,id:query})
                         
                         })
                         }
@@ -178,7 +203,30 @@ app.post('/upload-contract', async (req, res) => {
             avatar.mv('./public/uploads1/' + avatar.name);
             let query = req.query.id
             let errors =[]
-            let message=[]
+            let attachments = []
+            pool.query(
+                'SELECT * FROM contracts WHERE contact_id = $1',
+               [query], 
+               (err, resulto) => {
+                   if(err){
+                       errors.push({message: err});;
+                   }
+                  
+                   attachments = resulto.rows[0].attachments
+                   
+                   attachments.push(avatar.name)
+                   
+                   pool.query(
+                    'UPDATE contracts SET attachments = $1 WHERE contract_id = $2',
+                   [attachments, query], 
+                   (err, results) => {
+                       if(err){
+                           errors.push({message: err});;
+                       }
+                   }
+                )
+               }
+            )
             pool.query(
                 `SELECT * FROM contracts WHERE contract_id = $1`,
                 [query],
@@ -200,15 +248,9 @@ app.post('/upload-contract', async (req, res) => {
                                 errors.push({message: err});;
                                 
                             }
-                    let directory_name = "./public/uploads1";
-                            let filenames = fs.readdirSync(directory_name);
-                              
-                            console.log("\nFilenames in directory:");
-                            filenames.forEach((file) => {
-                                console.log("File:", file);
-                            });
+                   
                          
-                     res.render('contract_view',{layout:'./layouts/contract_view_layout',user:nam,errors:errors,data:results.rows,dollarUS:dollarUS,id:query,files:filenames,contract_status:results2.rows,id:query})
+                     res.render('contract_view',{layout:'./layouts/contract_view_layout',user:nam,errors:errors,data:results.rows,dollarUS:dollarUS,id:query,fcontract_status:results2.rows,id:query})
                         })
                 }
             )
@@ -277,7 +319,7 @@ app.get('',checkNotAuthenticated,  async (req,res) => {
                                     console.log(result3.rows)
              array1 = results.rows
            
-             res.render('index',{layout:'./layouts/index-layout',dollarUS:dollarUS, expiring_contracts:result3.rows, contracts_length:result2.rows.length ,cases_length:results1.rows.length, tasks:results.rows,authed:authed,user:nam,users:results4.rows})
+             res.render('index',{layout:'./layouts/index-layout',dollarUS:dollarUS, expiring_contracts:result3.rows, contracts_length:result2.rows.length ,contract_expiring_length:result3.rows.length ,cases_length:results1.rows.length, tasks:results.rows,authed:authed,user:nam,users:results4.rows})
                 })
             })
             })
@@ -395,8 +437,7 @@ app.get('/cases',checkNotAuthenticated,  async (req,res) => {
                                         errors.push({message: err});;
                                         
                                     }
-                     results.rows
-                     console.log( results.rows)
+                                   
                      
                      const page = parseInt(req.query.page) || 1; // Current page number
                     const limit = 10; // Number of items per page
@@ -476,15 +517,8 @@ app.get('/contract_view',checkNotAuthenticated,  async (req,res) => {
                         errors.push({message: err});;
                         
                     }
-            let directory_name = "./public/uploads1";
-                    let filenames = fs.readdirSync(directory_name);
-                      
-                    console.log("\nFilenames in directory:");
-                    filenames.forEach((file) => {
-                        console.log("File:", file);
-                    });
-                 
-             res.render('contract_view',{layout:'./layouts/contract_view_layout',user:nam,errors:errors,data:results.rows,dollarUS:dollarUS,id:query,files:filenames,contract_status:results2.rows,id:query})
+           
+             res.render('contract_view',{layout:'./layouts/contract_view_layout',user:nam,errors:errors,data:results.rows,dollarUS:dollarUS,id:query,contract_status:results2.rows,id:query})
                 })
         }
     )
@@ -1400,6 +1434,7 @@ app.post('/add-case', (req, res)=>{
     let end_date = req.body.deadline
     let notes = req.body.comments
     let case_name = req.body.case_name
+    let status = req.body.status
     let law_firm = req.body.law_firm
     let tag = req.body.tag
     let staff_members = req.body.members
@@ -1407,9 +1442,9 @@ app.post('/add-case', (req, res)=>{
     let yourDate = new Date()
     date_created = formatDate(yourDate)
     pool.query(
-        `INSERT INTO cases (description, start_date, end_date, notes, department, case_name, law_firm, tag, staff_members, progress)
+        `INSERT INTO cases (description, start_date, end_date, notes, department, case_name, law_firm, tag, staff_members, progress,attachments,status)
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
-        [description, start_date, end_date, notes, department, case_name, law_firm, tag, staff_members, progress], 
+        [description, start_date, end_date, notes, department, case_name, law_firm, tag, staff_members, progress,[],status], 
         (err, results) => {
             if(err){
                 errors.push({message: err});;
@@ -1436,10 +1471,10 @@ app.post('/add-contract', (req, res)=>{
     let yourDate = new Date()
     date_created = formatDate(yourDate)
     pool.query(  
-        `INSERT INTO contracts (  name, description, start_date, end_date, notes,  vendor, department, payment_cycle, payment_terms, status, contract_value)
+        `INSERT INTO contracts (  name, description, start_date, end_date, notes,  vendor, department, payment_cycle, payment_terms, status, contract_value,attachments)
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
         [  contract_name, description, start_date, end_date, notes, vendor, department, 
-            payment_cycle, payment_terms, status, contract_value], 
+            payment_cycle, payment_terms, status, contract_value,[]], 
         (err, results) => {
             if(err){
                 errors.push({message: err});;

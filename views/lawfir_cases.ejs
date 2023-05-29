@@ -92,41 +92,12 @@
           </div>
         <div class="col-lg-8">
             <div class="card">
-                <div class="row align-items-center">
-                    <div class="col text-right">
-                        <a href="#" class="btn btn-sm btn-neutral btn-round btn-icon" data-toggle="tooltip" data-original-title="Add New Asset Type">
-                            <span class="btn-inner--icon"><i class="fas fa-plus"></i></span>
-                            <span class="btn-inner--text">Add New</span>
-                        </a>
-                        <a href="#" class="btn btn-sm btn-neutral btn-round btn-icon" data-toggle="tooltip" data-original-title="Export list">
-                            <span class="btn-inner--icon"><i class="fas fa-upload"></i></span>
-                            <span class="btn-inner--text">Export</span>
-                        </a>
-                        <a href="#" class="btn btn-sm btn-neutral btn-round btn-icon" data-toggle="tooltip" data-original-title="Import Asset">
-                            <span class="btn-inner--icon"><i class="fas fa-download"></i></span>
-                            <span class="btn-inner--text">Import</span>
-                        </a>
-                        <a href="#" class="btn btn-sm btn-neutral btn-round btn-icon" data-toggle="tooltip" data-original-title="Print list">
-                            <span class="btn-inner--icon"><i class="fas fa-print"></i></span>
-                            <span class="btn-inner--text">Print</span>
-                        </a>
-                    </div>
-
-                    <div class="col text-left">
-                        <div class="input-group mb-3">
-                            <input type="text" class="form-control" placeholder="Search" id="search-input">
-                            <button class="btn btn-primary" type="button" id="search-btn">Search</button>
-                        </div>
-
-
-                    </div>
-                </div>
                 <div class="table-responsive">
                     <table class="table align-items-center table-flush">
                         <thead class="thead-light">
                             <tr>
-                                <th scope="col">Case #</th>
-                                <th scope="col">Law Firm</th>
+                                <th scope="col">Case Name</th>
+                                <th scope="col">Status</th>
                                 <th scope="col">Start Date</th>
                                 <th scope="col">Deadline</th>
                                 <th scope="col">Members</th>
@@ -135,10 +106,8 @@
                         <tbody>
                             <% for (let dat of cases) { %>
                             <tr>
-                                <th scope="row">
-                                    <%= dat.case_id %>
-                                </th>
-                                <td>In House&nbsp;</td>
+                              <td><a href='/case_view?id=<%= dat.case_id %>'><%= dat.case_name %></a></td>
+                                <td><%= dat.status %></td>
                                 <td>
                                     <%= moment(dat.start_date).format('Do MMMM, YYYY') %></td>
                                 <td>
