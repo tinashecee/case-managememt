@@ -1444,7 +1444,6 @@ app.post('/add-contract', (req, res)=>{
             if(err){
                 errors.push({message: err});;
             }
-            console.log(results.rows);
             req.flash('success','You have successfully added a contract');
             res.redirect('/contracts');
         }
