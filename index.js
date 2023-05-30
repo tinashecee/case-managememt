@@ -400,7 +400,8 @@ app.get('/cases',checkNotAuthenticated,  async (req,res) => {
             if(err){
                 console.log(err)
                 errors.push({message: err});;
-                
+                return res.render('cases', { layout: './layouts/cases-layout', errors });
+
             }
              array3 = results.rows
              pool.query(
@@ -410,7 +411,8 @@ app.get('/cases',checkNotAuthenticated,  async (req,res) => {
                     if(err){
                         console.log(err)
                         errors.push({message: err});;
-                        
+                        return res.render('cases', { layout: './layouts/cases-layout', errors });
+
                     }
                     pool.query(
                         `SELECT * FROM department`,
@@ -419,7 +421,8 @@ app.get('/cases',checkNotAuthenticated,  async (req,res) => {
                             if(err){
                                 console.log(err)
                                 errors.push({message: err});;
-                                
+                                return res.render('cases', { layout: './layouts/cases-layout', errors });
+
                             }
                             pool.query( `SELECT * FROM users`,
                             [],
@@ -427,7 +430,8 @@ app.get('/cases',checkNotAuthenticated,  async (req,res) => {
                                 if(err){
                                     console.log(err)
                                     errors.push({message: err});;
-                                    
+                                    return res.render('cases', { layout: './layouts/cases-layout', errors });
+
                                 }
                                 pool.query( `SELECT * FROM case_status`,
                                 [],
@@ -435,17 +439,21 @@ app.get('/cases',checkNotAuthenticated,  async (req,res) => {
                                     if(err){
                                         console.log(err)
                                         errors.push({message: err});;
-                                        
+                                        return res.render('cases', { layout: './layouts/cases-layout', errors });
+
                                     }
                                    
                      
-                     const page = parseInt(req.query.page) || 1; // Current page number
-                    const limit = 10; // Number of items per page
-                    const startIndex = (page - 1) * limit;
-                    const endIndex = page * limit;
-                    const reso = results.rows.slice(startIndex, endIndex);
+                                    const page = parseInt(req.query.page) || 1; // Current page number
+                                    const limit = 10; // Number of items per page
+                                    const startIndex = (page - 1) * limit;
+                                    const endIndex = page * limit;
+                                    const reso = results.rows.slice(startIndex, endIndex);
                    
-                     res.render('cases',{layout:'./layouts/lawfirms-layout',user:nam,errors:errors,data:reso,page, dataA:results1.rows,dataB:results2.rows,users:results3.rows,case_status:results4.rows})
+                     res.render('cases',{layout:'./layouts/cases-layout',unfilteredRows:results.rows, user:nam,errors:errors,data: reso,
+                     page,
+                     totalItems: results.rows.length,
+                     totalPages: Math.ceil(results.rows.length / limit), dataA:results1.rows,dataB:results2.rows,users:results3.rows,case_status:results4.rows})
                             })
                         })
                         })
@@ -624,9 +632,10 @@ app.get('/contracts',checkNotAuthenticated,  async (req,res) => {
                         }
                  const page = parseInt(req.query.page) || 1; // Current page number
                  const limit = 10; // Number of items per page
-                 const startIndex = (page - 10) * limit;
+                 const startIndex = (page - 1) * limit;
                  const endIndex = page * limit;
                  const reso = results.rows.slice(startIndex, endIndex);
+             
                 
                  res.render('contracts',{layout:'./layouts/contracts-layout',user:nam,errors:errors,data:reso,page,dollarUS:dollarUS,vendors:results1.rows,contract_status:results2.rows,dataB:results3.rows})
                     })
@@ -787,8 +796,13 @@ app.get('/lawfirms',checkNotAuthenticated, async (req,res) => {
                     not_active += 1
                 }
              })
+             const page = parseInt(req.query.page) || 1; // Current page number
+                    const limit = 10; // Number of items per page
+                    const startIndex = (page - 1) * limit;
+                    const endIndex = page * limit;
+                    const reso = results.rows.slice(startIndex, endIndex);
              
-             res.render('lawfirms',{layout:'./layouts/lawfirms-layout',user:nam,errors:errors,data:array, active:active, not_active:not_active})
+             res.render('lawfirms',{layout:'./layouts/lawfirms-layout',user:nam,errors:errors,data:reso,page, active:active, not_active:not_active})
             }
         }
     )
@@ -1463,13 +1477,19 @@ app.post('/add-contract', (req, res)=>{
     let contract_name = req.body.contract_name
     let vendor = req.body.vendor
     let department = req.body.department
-    let payment_cycle = req.body.signedStatus1
+    let payment_cycle;
     let payment_terms = req.body.payment_terms
     let status = req.body.signed_status
     let contract_value = req.body.contract_value
     let notes = req.body.description1
     let yourDate = new Date()
     date_created = formatDate(yourDate)
+    if(req.body.signedStatus1 == 'Other'){
+        payment_cycle = req.body.otherOption
+    }
+    else{
+        payment_cycle= req.body.signedStatus1
+    }
     pool.query(  
         `INSERT INTO contracts (  name, description, start_date, end_date, notes,  vendor, department, payment_cycle, payment_terms, status, contract_value,attachments)
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
@@ -1484,6 +1504,42 @@ app.post('/add-contract', (req, res)=>{
         }
     )
 });
+app.post('/edit-expenditure', (req, res)=>{
+    let id = req.query.id
+    let expe = req.query.expenditure_desc
+    let expenditure = req.body.expenditure
+    let expenditure_date = req.body.expenditure_date
+    let expenditure_desc = req.body.expenditure_desc
+    let expenditureArray  = []
+    pool.query( 'SELECT * from budget_items WHERE budget_id = $1',
+    [id], 
+    (err, results) => {
+        if(err){
+            errors.push({message: err});;
+        }
+        expenditureArray = results.rows[0].expenditure
+        
+        let count = 0
+        expenditureArray.forEach(elem=>{
+            console.log(elem.expenditure_desc,expe)
+            if(elem.expenditure_desc  == expe){
+               expenditureArray[count]={"expenditure":expenditure,"expenditure_desc":expenditure_desc,"expenditure_date":expenditure_date,"balance":(parseFloat(elem.expenditure)+elem.balance-expenditure)}
+            }
+            count+=1
+        })
+        console.log(expenditureArray)
+        pool.query( 'UPDATE budget_items SET expenditure = $1  WHERE budget_id = $2',
+        [expenditureArray, id], 
+        (err, results) => {
+            if(err){
+                errors.push({message: err});;
+            }
+            req.flash('success','You have successfully edited Expenditure');
+            res.redirect('/budget');
+        })
+    })
+
+})
 app.post('/add-vendor', (req, res)=>{
     console.log(req.body)
     let contact_person = req.body.contactPerson
@@ -1543,6 +1599,65 @@ app.post('/delete-vendor', (req, res)=>{
         }
     )
 });
+app.post('/delete-budget-item-expenses', (req, res)=>{
+    let id = req.query.budget_id
+    let expenditure_desc = req.query.expenditure_desc
+    let expenditureArray  = []
+    pool.query( 'SELECT * from budget_items WHERE budget_id = $1',
+    [id], 
+    (err, results) => {
+        if(err){
+            errors.push({message: err});;
+        }
+        expenditureArray = results.rows[0].expenditure
+        
+        let count = 0
+        let totalExp = 0
+        let budgeted = results.rows[0].budget
+        expenditureArray.forEach(elem=>{
+            if(elem.expenditure_desc  == expenditure_desc){
+                expenditureArray.splice(count, 1);             
+            }else{
+                totalExp+=parseFloat(elem.expenditure)
+            }
+            count+=1
+        })
+        console.log(expenditureArray)
+        
+        pool.query( 'UPDATE budget_items SET expenditure = $1, actual = $2, variance = $3 WHERE budget_id = $4',
+        [expenditureArray, totalExp,budgeted-totalExp, id], 
+        (err, results) => {
+            if(err){
+                errors.push({message: err});;
+            }
+            req.flash('success','You have successfully deleted Expenditure');
+            res.redirect('/budget');
+        })
+    })
+})
+app.post('/delete-budget-item', (req, res)=>{
+    let id = req.query.id
+    let budget = req.query.budget
+    console.log(id,budget)
+    pool.query('DELETE from budget_items WHERE budget_id = $1',
+    [id]
+    , (err, results) => {
+        if(err){
+            errors.push({message: err});;
+        }
+        pool.query(
+            'UPDATE budget SET balance = $1 WHERE budget_id = $2',
+            [budget_balance+budget,budget_id],
+            (err, results) => {
+                if(err){
+                    errors.push({message: err});;
+                }
+                req.flash('success','You have successfully deleted a budget line item');
+                res.redirect('/budget');
+            }
+        )
+    })
+})
 app.post('/add-budget', (req, res)=>{
     let amount = req.body.amount
     let start_date = req.body.start_date
@@ -1620,26 +1735,31 @@ app.post('/add-expenditure', (req, res)=>{
     let expenditure = req.body.expenditure
     let expenditure_date = req.body.expenditure_date
     let expenditure_desc = req.body.expenditure_desc
-    let a = parseFloat(expenditure_actual) + parseFloat(expenditure)
+    let a = parseFloat(expenditure)
     let b = parseFloat( expenditure_budget) - a
     expenditure_budget -= parseFloat(expenditure_actual)
     console.log(expenditure_budget_id)
     pool.query(
-        'SELECT expenditure FROM budget_items WHERE budget_id = $1',
+        'SELECT * FROM budget_items WHERE budget_id = $1',
        [parseFloat(expenditure_budget_id)], 
        (err, results) => {
            if(err){
                errors.push({message: err});;
            }
            let array = results.rows[0].expenditure
+           let budgeted = results.rows[0].budget
            if(array == null){
               array = []
            }
+           let totalExp = 0
            array.push({expenditure_date:expenditure_date,expenditure_desc:expenditure_desc,expenditure:expenditure,balance:expenditure_budget})
-           console.log(array)
+           array.forEach(el=>{
+            totalExp+=parseFloat(el.expenditure)
+           })
+           console.log(totalExp)
    pool.query(
       'UPDATE budget_items SET actual = $1, variance = $2, expenditure = $3 WHERE budget_id = $4',
-     [a,b,array,expenditure_budget_id], 
+     [totalExp,budgeted-totalExp,array,expenditure_budget_id], 
      (err, results) => {
          if(err){
              errors.push({message: err});;

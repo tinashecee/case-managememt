@@ -179,6 +179,9 @@
                                     <button class="table-action btn btn-sm btn-block btn-neutral expandBtn"  >
                                         <i class="fas fa-file"></i>
                                     </button>
+                                    <button class="table-action btn btn-sm btn-block btn-danger" onclick="deleteBudgetItem('<%= dat.budget_id %>', '<%= dat.budget %>','<%= dat.budget_name %>')"  data-toggle="modal" data-target="#exampleModal6" data-original-title="Edit product">
+                                      <i class="fas fa-trash"></i>
+                                  </button>
                                     <button class="table-action btn btn-sm btn-block btn-neutral"  onclick="expenditure('<%= dat.budget %>','<%= dat.budget_id %>','<%= dat.actual %>')" data-toggle="modal" data-target="#exampleModal3" data-original-title="Edit product">
                                         <i class="fas fa-edit"></i>
                                     </button>
@@ -193,7 +196,7 @@
                                             <th>Date</th>
                                             <th>Description</th>
                                             <th>Expense</th>
-                                            <th>Balance</th>
+                                            <th></th>
                                           </tr>
                                         </thead>
                                         <tbody>
@@ -201,10 +204,19 @@
                                           <tr>
                                             <td><%= moment(da.expenditure_date).format('Do MMMM, YYYY') %></td>
                                             <td><%= da.expenditure_desc %></td>
-                                            <td> <%= dollarUS.format(da.expenditure) %></td>
-                                            <td> <%= dollarUS.format(da.balance) %></td>
+                                            <td><%= dollarUS.format(da.expenditure) %></td>
+                                            <td class="table-actions">
+                                              <button class="table-action btn btn-sm btn-block btn-danger" onclick="deleteBudgetItem1('<%= dat.budget_id %>', '<%= da.expenditure %>','<%= da.expenditure_desc %>','<%= da.expenditure %>')"  data-toggle="modal" data-target="#exampleModal7" data-original-title="Edit product">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                              <button class="table-action btn btn-sm btn-block btn-neutral"   onclick="editExpenditure('<%= dat.budget_id %>', '<%= da.expenditure_desc %>','<%= da.expenditure %>')"
+                                               data-toggle="modal" data-target="#exampleModal5" data-original-title="Edit product">
+                                                  <i class="fas fa-edit"></i>
+                                              </button>
+                                          </td>
                                           </tr>
-                                         
+                                          
+                                        
                                             <% } %>
                                         
                                         </tbody>
@@ -482,3 +494,51 @@
                 </div>
             </div>
         </div>    
+        <div class="modal fade" id="exampleModal5" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content">
+                  <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">Edit Expenditure</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">X</span>
+                      </button>
+                  </div>
+                  <div class="modal-body">
+                     
+                  </div>
+                
+              </div>
+          </div>
+      </div>    
+      <div class="modal fade" id="exampleModal6" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Delete Budget Line Item</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">X</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                   
+                </div>
+              
+            </div>
+        </div>
+    </div>    
+    <div class="modal fade" id="exampleModal7" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Delete Budget Line Item Expense</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">X</span>
+                  </button>
+              </div>
+              <div class="modal-body">
+                 
+              </div>
+            
+          </div>
+      </div>
+  </div>   

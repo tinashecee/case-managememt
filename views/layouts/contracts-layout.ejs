@@ -243,6 +243,18 @@ function filterTableRows(filter) {
     row.style.display = shouldDisplay ? '' : 'none';
   }
 }
+var signedStatusSelect = document.getElementById('signedStatus1');
+  var otherOptionInput = document.getElementById('otherOptionInput');
+
+  signedStatusSelect.addEventListener('change', function() {
+    if (signedStatusSelect.value === 'Other') {
+      otherOptionInput.style.display = 'block';
+    } else {
+      otherOptionInput.style.display = 'none';
+    }
+  });
+
+
     </script>
   </body>
   

@@ -197,7 +197,7 @@
     <script src="https://rawcdn.githack.com/Loopple/loopple-public-assets/7bb803d2af2ab6d71d429b0cb459c24a4cd0fbb4/argon-dashboard/js/argon.min.js"></script>
     <script src="/js/loopple/loopple.js"></script>
     <script>
-         var input = document.getElementById('searchInput');
+       /*  var input = document.getElementById('searchInput');
 var table = document.getElementById('table');
 
 // Add event listener to input
@@ -230,6 +230,83 @@ function filterTableRows(filter) {
     // Set the display style of the row based on the filter
     row.style.display = shouldDisplay ? '' : 'none';
   }
+}*/
+var input = document.getElementById('searchInput');
+var table = document.getElementById('table');
+
+// Add event listener to input
+input.addEventListener('input', function () {
+  filterTableRows(input.value);
+});
+
+// Function to filter table rows
+function filterTableRows(filter) {
+  // Make an AJAX request to the server to fetch filtered data
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', '/cases?filter=' + encodeURIComponent(filter));
+  xhr.onload = function () {
+    if (xhr.status === 200) {
+      var response = JSON.parse(xhr.responseText);
+      updateTableRows(response.data);
+    }
+  };
+  xhr.send();
 }
+
+// Function to update table rows with the filtered data
+function updateTableRows(data) {
+  var rows = table.getElementsByTagName('tr');
+
+  // Hide all rows except the header row
+  for (var i = 1; i < rows.length; i++) {
+    rows[i].style.display = 'none';
+  }
+
+  // Display only the rows that match the filter
+  for (var j = 0; j < data.length; j++) {
+    var caseId = data[j].case_id;
+    var row = table.querySelector('tr[data-case-id="' + caseId + '"]');
+    if (row) {
+      row.style.display = '';
+    }
+  }
+}
+function togglePagination() {
+  const toggleButton = document.getElementById('toggleButton');
+  const tableContainer = document.getElementById('tableContainer');
+  const pagination = document.querySelector('.pagination');
+
+  // Check if the table container has a CSS class indicating pagination is enabled
+  const isPaginated = tableContainer.classList.contains('paginated');
+
+  if (isPaginated) {
+    // Remove the paginated class to show all rows
+    tableContainer.classList.remove('paginated');
+    pagination.style.display = 'none';
+    toggleButton.textContent = 'Enable Pagination';
+
+    // Update the URL query parameter to show all rows
+    history.replaceState(null, '', updateQueryParam('showAll', true));
+  } else {
+    // Add the paginated class to enable pagination
+    tableContainer.classList.add('paginated');
+    pagination.style.display = 'block';
+    toggleButton.textContent = 'Disable Pagination';
+
+    // Update the URL query parameter to enable pagination
+    history.replaceState(null, '', updateQueryParam('showAll', false));
+  }
+
+  // Reload the page with the updated query parameter
+  window.location.href = window.location.href;
+}
+
+function updateQueryParam(key, value) {
+  const url = new URL(window.location.href);
+  url.searchParams.set(key, value);
+  return url.toString();
+}
+
+
     </script>
 </body>

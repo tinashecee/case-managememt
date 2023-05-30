@@ -309,3 +309,50 @@
     </div>
     
   </div>
+  <div class="row removable">
+    <div class="col-lg-12">
+        <div class="row removable">
+            <div class="col-lg-12">
+                <div class="row removable">
+                    <div class="col-lg-4">
+                        <div class="row removable">
+                            <div class="col-lg-4">
+                                <nav aria-label="..." class="">
+                                    <ul class="pagination">
+                                        <li class="page-item">
+                            
+                                            <% if (page > 1) { %>
+                                              <a class="page-link" href="/lawfirms?page=<%= page - 1 %>">
+                                                <i class="fa fa-angle-left"></i>
+                                                <span class="sr-only">Previous</span>
+                                              </a>
+                                          <% } %>
+                                        </li>
+                                        <li class="page-item">
+                                           
+                                            <% if (data.length === 10) { %>
+                                              <a class="page-link" href="/lawfirms?page=<%= page + 1 %>">
+                                                <i class="fa fa-angle-right"></i>
+                                                <span class="sr-only">Next</span>
+                                              </a>
+                                          <% } %>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </div>
+                            <div class="col-lg-4"></div>
+                            <div class="col-lg-4"></div>
+                        </div>
+                    </div>
+                   
+                    <div class="col-lg-4">
+                        <div class="row removable">
+                            <div class="col-lg-6"></div>
+                            <div class="col-lg-6"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

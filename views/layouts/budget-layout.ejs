@@ -286,5 +286,97 @@ expandBtns.forEach((btn, index) => {
         }
     });
 });
+
+function editExpenditure(params1,params2,params3,params4) {
+    var modal = document.getElementById('exampleModal5');
+var modalTitle = modal.querySelector('.modal-title');
+var modalBody = modal.querySelector('.modal-body');
+  // Set the modal title and body content
+  modalTitle.textContent = 'Edit Expenditure'; // Replace with your desired title
+  modalBody.innerHTML = `
+  <form  action="/edit-expenditure?id=${params1}&expenditure_desc=${params3}" method="POST">
+    <div class="mb-3">
+                            <label for="expenditure_date" class="form-label"
+                              >Expenditure Date</label
+                            >
+                            <input
+                              type="date"
+                              class="form-control"
+                              id="expenditure_date"
+                              value="${params2}"
+                              name="expenditure_date"
+                              required
+                            />
+                        </div>  
+                        <div class="mb-3">
+                            <label for="expenditure_desc" class="form-label"
+                              >Expenditure Description</label
+                            >
+                            <input
+                              type="text"
+                              class="form-control"
+                              id="expenditure_desc"
+                              value="${params3}"
+                              name="expenditure_desc"
+                              required
+                            />
+                        </div>  
+                      <div class="mb-3">
+                        <label for="expenditure" class="form-label"
+                          >Amount</label
+                        >
+                        <input
+                          type="number"
+                          class="form-control"
+                          id="expenditure"
+                          value="${params4}"
+                          name="expenditure"
+                          required
+                        />
+                    </div>  
+                    <div class="mb-3">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </form>             
+  `;
+            }
+function deleteBudgetItem(params1,params2,params3) {
+    var modal = document.getElementById('exampleModal6');
+var modalTitle = modal.querySelector('.modal-title');
+var modalBody = modal.querySelector('.modal-body');
+  // Set the modal title and body content
+  modalTitle.textContent = `Are you sure you want to Delete:  ${params3} ?`; // Replace with your desired title
+  modalBody.innerHTML = `
+  <form  action="/delete-budget-item?id=${params1}&budget=${params2}" method="POST">
+    <div class="mb-3">
+                         
+                    <div class="mb-3">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Delete</button>
+                    </div>
+                </form>             
+  `;
+            }
+
+
+            
+            function deleteBudgetItem1(params1,params2,params3) {
+    var modal = document.getElementById('exampleModal7');
+var modalTitle = modal.querySelector('.modal-title');
+var modalBody = modal.querySelector('.modal-body');
+  // Set the modal title and body content
+  modalTitle.textContent = `Are you sure you want to Delete Budget Line Item Expense:  ${params3} ?`; // Replace with your desired title
+  modalBody.innerHTML = `
+  <form  action="/delete-budget-item-expenses?budget_id=${params1}&expenditure_desc=${params3}&expenditure=${params3}" method="POST">
+    <div class="mb-3">
+                         
+                    <div class="mb-3">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Delete</button>
+                    </div>
+                </form>             
+  `;
+            }
       </script>
 </body>
