@@ -124,6 +124,7 @@
                                     <th scope="col">Case #</th>
                                     <th scope="col">Case Name</th>
                                     <th scope="col">Law Firm</th>
+                                    <th scope="col">Case Status</th>
                                     <th scope="col">Start Date</th>
                                     <th scope="col">Deadline</th>
                                     <th scope="col">Members</th>
@@ -139,7 +140,7 @@
                                     </th>
                                     <td><a href='/case_view?id=<%= dat.case_id %>'><%= dat.case_name %></a></td>
                                     <td><%= dat.law_firm %></td>
-                                   
+                                    <td><%= dat.status %></td>
                                     <td>
                                         <%= moment(dat.start_date).format('Do MMMM, YYYY') %></td>
                                     <td>
@@ -234,6 +235,7 @@
                                         <th scope="col">Case #</th>
                                         <th scope="col">Case Name</th>
                                         <th scope="col">Law Firm</th>
+                                        <th scope="col">Case Status</th>
                                         <th scope="col">Start Date</th>
                                         <th scope="col">Deadline</th>
                                         <th scope="col">Members</th>
@@ -249,7 +251,7 @@
                                         </th>
                                         <td><a href='/case_view?id=<%= dat.case_id %>'><%= dat.case_name %></a></td>
                                         <td><%= dat.law_firm %></td>
-                                       
+                                        <td><%= dat.status %></td>
                                         <td>
                                             <%= moment(dat.start_date).format('Do MMMM, YYYY') %></td>
                                         <td>

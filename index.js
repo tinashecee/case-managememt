@@ -332,7 +332,7 @@ app.get('/assistant', async (req,res) => {
     
     res.render('assistant',{layout:'./layouts/assistant-layout'})
 });
-app.get('/budget',checkNotAuthenticated, async (req,res) => {
+app.get('/budget', async (req,res) => {
     let errors =[]
     let message=[]
     pool.query(
@@ -370,9 +370,13 @@ app.get('/budget',checkNotAuthenticated, async (req,res) => {
                         })
                      let wer =   ( parseFloat(results.rows[0].amount) - total_expenditure)/parseFloat(results.rows[0].amount) * 100
                                           expenditure_left = wer.toFixed(2)
-                     current_balance = parseFloat(results.rows[0].amount) - total_expenditure
+                     
                      
 
+                    }
+                    if(results.rows[0]){
+                    current_balance = parseFloat(results.rows[0].amount) - total_expenditure
+                    console.log(parseFloat(results.rows[0].amount))
                     }
                     const page = parseInt(req.query.page) || 1; // Current page number
                     const limit = 10; // Number of items per page
