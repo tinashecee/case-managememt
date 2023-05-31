@@ -332,7 +332,7 @@ app.get('/assistant', async (req,res) => {
     
     res.render('assistant',{layout:'./layouts/assistant-layout'})
 });
-app.get('/budget', async (req,res) => {
+app.get('/budget',checkNotAuthenticated,  async (req,res) => {
     let errors =[]
     let message=[]
     pool.query(
