@@ -143,6 +143,7 @@
                   <input class="btn btn-primary" type="submit">
                 </form>
               </div>
+              <% if(data[0].attachments != null) { %>
               <% if(data[0].attachments.length != 0) { %>
                 <ul class="list-group list-group-flush">
                   <% for (let dat of data[0].attachments) { %>
@@ -164,6 +165,7 @@
         </li>
         <% } %>
       </ul>
+      <% } %>
       <% } %>
             </div>
           </div>

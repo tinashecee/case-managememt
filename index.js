@@ -120,8 +120,11 @@ app.post('/upload-case', async (req, res) => {
                    if(err){
                        errors.push({message: err});;
                    }
-                  
+                   if(resulto.rows[0].attachments == null){
+                    attachments = []
+                 }else{
                    attachments = resulto.rows[0].attachments
+                 }
                    
                    attachments.push(avatar.name)
                    
@@ -204,15 +207,21 @@ app.post('/upload-contract', async (req, res) => {
             let query = req.query.id
             let errors =[]
             let attachments = []
+            console.log(query)
+            
             pool.query(
-                'SELECT * FROM contracts WHERE contact_id = $1',
+                'SELECT * FROM contracts WHERE contract_id = $1',
                [query], 
                (err, resulto) => {
                    if(err){
                        errors.push({message: err});;
                    }
+                  if(resulto.rows[0].attachments == null){
+                     attachments = []
+                  }else{
+                    attachments = resulto.rows[0].attachments
+                  }
                   
-                   attachments = resulto.rows[0].attachments
                    
                    attachments.push(avatar.name)
                    
@@ -250,7 +259,7 @@ app.post('/upload-contract', async (req, res) => {
                             }
                    
                          
-                     res.render('contract_view',{layout:'./layouts/contract_view_layout',user:nam,errors:errors,data:results.rows,dollarUS:dollarUS,id:query,fcontract_status:results2.rows,id:query})
+                     res.render('contract_view',{layout:'./layouts/contract_view_layout',user:nam,errors:errors,data:results.rows,dollarUS:dollarUS,id:query,contract_status:results2.rows,id:query})
                         })
                 }
             )
@@ -576,6 +585,7 @@ app.get('/case_view',checkNotAuthenticated,  async (req,res) => {
                     filenames.forEach((file) => {
                         console.log("File:", file);
                     });
+                    console.log(results.rows[0])
                   
                     res.render('case_view',{layout:'./layouts/case_view_layout',user:nam,errors:errors,data:results.rows, dataA:results1.rows,id:query, files:filenames,case_status:results2.rows,id:query})
                 
@@ -1284,6 +1294,7 @@ app.post('/update-lawfirm', (req, res)=>{
             if(err){
                 errors.push({message: err});;
             }
+            req.flash('success','You have successfully updated status of  Cases');
             res.redirect('/case_view?id='+query);
         }
     )
@@ -1300,6 +1311,7 @@ app.post('/update-case-status', (req, res)=>{
             if(err){
                 errors.push({message: err});;
             }
+            req.flash('success','You have successfully updated status of  Cases');
             res.redirect('/case_view?id='+query);
         }
     )
@@ -1316,6 +1328,7 @@ app.post('/update-case-startdate', (req, res)=>{
             if(err){
                 errors.push({message: err});;
             }
+            req.flash('success','You have successfully updated status of  Cases');
             res.redirect('/case_view?id='+query);
         }
     )
@@ -1333,9 +1346,43 @@ app.post('/update-case-description', (req, res)=>{
             if(err){
                 errors.push({message: err});;
             }
+            req.flash('success','You have successfully updated status of  Cases');
             res.redirect('/case_view?id='+query);
         }
     )
+    
+});
+app.post('/update-case-updates', (req, res)=>{
+    let query = req.query.id
+    let description = req.body.description
+    let comments = req.body.comments
+    let yourDate = new Date()
+    let array = []
+    date_created = formatDate(yourDate)
+    pool.query(
+        'SELECT * FROM cases WHERE case_id = $1',
+       [query], 
+       (err, results1) => {
+           if(err){
+               errors.push({message: err});;
+           }
+           if(results1.rows[0].updates == null) {array = []}
+           else{array = results1.rows[0].updates}
+           array.push({desc:description,comms:comments,updated_on:date_created})
+           pool.query(
+            'UPDATE cases SET updates = $1 WHERE case_id = $2',
+           [array, query], 
+           (err, results) => {
+               if(err){
+                   errors.push({message: err});;
+               }
+               req.flash('success','You have successfully updated status of  Cases');
+               res.redirect('/case_view?id='+query);
+           }
+       )
+       }
+   )
+    
     
 });
 app.post('/update-contract-value', (req, res)=>{
@@ -1456,13 +1503,12 @@ app.post('/add-case', (req, res)=>{
     let law_firm = req.body.law_firm
     let tag = req.body.tag
     let staff_members = req.body.members
-    let progress = req.body.progress
     let yourDate = new Date()
     date_created = formatDate(yourDate)
     pool.query(
-        `INSERT INTO cases (description, start_date, end_date, notes, department, case_name, law_firm, tag, staff_members, progress,attachments,status)
+        `INSERT INTO cases (description, start_date, end_date, notes, department, case_name, law_firm, tag, staff_members,attachments,status)
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
-        [description, start_date, end_date, notes, department, case_name, law_firm, tag, staff_members, progress,[],status], 
+        [description, start_date, end_date, notes, department, case_name, law_firm, tag, staff_members,[],status], 
         (err, results) => {
             if(err){
                 errors.push({message: err});;
@@ -1527,7 +1573,7 @@ app.post('/edit-expenditure', (req, res)=>{
         expenditureArray.forEach(elem=>{
             console.log(elem.expenditure_desc,expe)
             if(elem.expenditure_desc  == expe){
-               expenditureArray[count]={"expenditure":expenditure,"expenditure_desc":expenditure_desc,"expenditure_date":expenditure_date,"balance":(parseFloat(elem.expenditure)+elem.balance-expenditure)}
+               expenditureArray[count]={expenditure:expenditure,expenditure_desc:expenditure_desc,expenditure_date:expenditure_date,balance:(parseFloat(elem.expenditure)+elem.balance-expenditure)}
             }
             count+=1
         })
