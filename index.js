@@ -450,7 +450,7 @@ app.get('/cases',checkNotAuthenticated,  async (req,res) => {
                                     const endIndex = page * limit;
                                     const reso = results.rows.slice(startIndex, endIndex);
                    
-                     res.render('cases',{layout:'./layouts/cases-layout',unfilteredRows:results.rows, user:nam,errors:errors,data: reso,
+                     res.render('cases',{layout:'./layouts/cases-layout',unfilteredRows:results.rows, user:nam,errors:errors,cases:results.rows, data: reso,
                      page,
                      totalItems: results.rows.length,
                      totalPages: Math.ceil(results.rows.length / limit), dataA:results1.rows,dataB:results2.rows,users:results3.rows,case_status:results4.rows})
@@ -637,7 +637,7 @@ app.get('/contracts',checkNotAuthenticated,  async (req,res) => {
                  const reso = results.rows.slice(startIndex, endIndex);
              
                 
-                 res.render('contracts',{layout:'./layouts/contracts-layout',user:nam,errors:errors,data:reso,page,dollarUS:dollarUS,vendors:results1.rows,contract_status:results2.rows,dataB:results3.rows})
+                 res.render('contracts',{layout:'./layouts/contracts-layout',user:nam,errors:errors,contracts:results.rows,data:reso,page,dollarUS:dollarUS,vendors:results1.rows,contract_status:results2.rows,dataB:results3.rows})
                     })
                 })
             }
@@ -802,7 +802,7 @@ app.get('/lawfirms',checkNotAuthenticated, async (req,res) => {
                     const endIndex = page * limit;
                     const reso = results.rows.slice(startIndex, endIndex);
              
-             res.render('lawfirms',{layout:'./layouts/lawfirms-layout',user:nam,errors:errors,data:reso,page, active:active, not_active:not_active})
+             res.render('lawfirms',{layout:'./layouts/lawfirms-layout',user:nam,errors:errors,lawfirms:results.rows,data:reso,page, active:active, not_active:not_active})
             }
         }
     )
@@ -1149,7 +1149,7 @@ app.get('/vendors',checkNotAuthenticated, async (req,res) => {
                     const endIndex = page * limit;
                     const reso = results.rows.slice(startIndex, endIndex);
                 
-             res.render('vendors',{layout:'./layouts/vendors-layout',user:nam,errors:errors,data:reso,page,dataB:results2.rows})
+             res.render('vendors',{layout:'./layouts/vendors-layout',user:nam,errors:errors,vendors:results.rows, data:reso,page,dataB:results2.rows})
                 })
           
         }

@@ -106,25 +106,19 @@
                               <div class="col">
                                 <div class="form-group mb-0">
                                   <div class="input-group">
-                                    <div class="input-group-prepend">
-                                      <span class="input-group-text"
-                                        ><i class="fas fa-search"></i
-                                      ></span>
-                                    </div>
-                                    <input
-                                      class="form-control"
-                                      placeholder="Search"
-                                      type="text"
-                                      id="searchInput"
-                                    />
+                                  
+                                    <button type="button" class="btn" data-toggle="modal" data-target="#exampleModalSearch">
+                                        <i class="fas fa-search"></i
+                                            > Search
+                                     </button>
                                   </div>
                                 </div>
                               </div>
                             </div>
                           </div>
-                          <div class="table-responsive" id="tableContainer">
+                          <div class="table-responsive" >
                            
-                        <table class="table align-items-center table-flush paginated" id="table">
+                        <table class="table align-items-center table-flush paginated" >
                             <thead class="thead-light">
                                 <tr>
                                     <th scope="col">Case #</th>
@@ -212,4 +206,66 @@
                 </div>
             </div>
         </div>
- 
+        <div class="modal fade" id="exampleModalSearch"  tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" style="max-width: 960px;
+            width: 100%;" role="document">
+                <div class="modal-content" >
+                    <div class="modal-header">
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text"
+                                ><i class="fas fa-search"></i
+                              ></span>
+                            </div>
+                            <input
+                              class="form-control"
+                              placeholder="Search"
+                              type="text"
+                              id="searchInput"
+                            />
+                          </div>
+                    </div>
+                    <div class="modal-body">
+                        <div class="table-responsive">
+                           
+                            <table class="table align-items-center table-flush paginated" id="table">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th scope="col">Case #</th>
+                                        <th scope="col">Case Name</th>
+                                        <th scope="col">Law Firm</th>
+                                        <th scope="col">Start Date</th>
+                                        <th scope="col">Deadline</th>
+                                        <th scope="col">Members</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% if (cases.length > 0) { %>
+                                        <% for (let dat of cases) { %>
+                                    <tr>
+                                        
+                                        <th scope="row">
+                                            <%= dat.case_id %>
+                                        </th>
+                                        <td><a href='/case_view?id=<%= dat.case_id %>'><%= dat.case_name %></a></td>
+                                        <td><%= dat.law_firm %></td>
+                                       
+                                        <td>
+                                            <%= moment(dat.start_date).format('Do MMMM, YYYY') %></td>
+                                        <td>
+                                            <%= moment(dat.end_date).format('Do MMMM, YYYY') %></td>
+                                        <td>
+                                           <p><%= dat.staff_members %></p> </td>
+                                    </tr>
+                                    <% } %>
+                                    <% } %>
+                                </tbody>
+                            </table>
+                              </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>   

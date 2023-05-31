@@ -207,17 +207,10 @@
               <div class="col">
                 <div class="form-group mb-0">
                   <div class="input-group">
-                    <div class="input-group-prepend">
-                      <span class="input-group-text"
-                        ><i class="fas fa-search"></i
-                      ></span>
-                    </div>
-                    <input
-                      class="form-control"
-                      placeholder="Search"
-                      type="text"
-                      id="searchInput"
-                    />
+                    <button type="button" class="btn" data-toggle="modal" data-target="#exampleModalSearch">
+                      <i class="fas fa-search"></i
+                          > Search
+                   </button>
                   </div>
                 </div>
               </div>
@@ -229,7 +222,7 @@
           <div class="table-responsive">
           
 
-            <table class="table align-items-center table-flush" id="table">
+            <table class="table align-items-center table-flush" >
               <thead class="thead-light">
                 <tr>
                   <th scope="col">
@@ -335,3 +328,110 @@
       </div>
     </div>
   </div>
+  <div class="modal fade" id="exampleModalSearch"  tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" style="max-width: 960px;
+    width: 100%;" role="document">
+        <div class="modal-content" >
+            <div class="modal-header">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text"
+                        ><i class="fas fa-search"></i
+                      ></span>
+                    </div>
+                    <input
+                      class="form-control"
+                      placeholder="Search"
+                      type="text"
+                      id="searchInput"
+                    />
+                  </div>
+            </div>
+            <div class="modal-body">
+              <div class="table-responsive">
+          
+
+                <table class="table align-items-center table-flush" id="table">
+                  <thead class="thead-light">
+                    <tr>
+                      <th scope="col">
+                        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Vendor
+                      </th>
+                      <th scope="col">Status</th>
+                      <th scope="col">Contract Description</th>
+                      <th scope="col">Contract Name</th>
+                      <th scope="col">Department</th>
+                      <th scope="col">Contract Value</th>
+                      <th scope="col">Payment Cycle</th>
+                      <th scope="col">Payment Terms</th>
+                      <th scope="col">Start Date</th>
+                      <th scope="col">End Date</th>
+                      <th scope="col"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% if (contracts.length > 0) { %>
+                      <% for (let dat of contracts) { %>
+                    <tr>
+                      <th scope="row">
+                        <div class="d-flex align-items-center">
+                          <div class="custom-control custom-checkbox">
+                        
+                          </div>
+                          <span><a href='/contract_view?id=<%= dat.contract_id %>'><%= dat.vendor %></a></span>
+                        </div>
+                      </th>
+                      <td>
+                        <span class="badge badge-pill badge-success"><%= dat.status %></span>
+                      </td>
+                      <td>
+                        <span><%= dat.description %></span>
+                      </td>
+                      <td>
+                        <div class="d-flex align-items-center">
+                          <span class="ml-2"><%= dat.name %></span>
+                        </div>
+                      </td>
+                      <td>
+                        <div class="d-flex align-items-center">
+                          <span class="ml-2"><%= dat.department %></span>
+                        </div>
+                      </td>
+                      <td>
+                        <div class="d-flex align-items-center">
+                          <span class="ml-2"><%= dollarUS.format(dat.contract_value) %></span>
+                        </div>
+                      </td>
+                      <td>
+                        <div class="d-flex align-items-center">
+                          <span class="ml-2"><%= dat.payment_cycle %></span>
+                        </div>
+                      </td>
+                      <td>
+                        <div class="d-flex align-items-center">
+                          <span class="ml-2"><%= dat.payment_terms %></span>
+                        </div>
+                      </td>
+                      <td>
+                        <div class="d-flex align-items-center">
+                          <span class="ml-2"><%= moment(dat.start_date).format('Do MMMM, YYYY') %></span>
+                        </div>
+                      </td>
+                      <td>
+                        <div class="d-flex align-items-center">
+                          <span class="ml-2"><%= moment(dat.end_date).format('Do MMMM, YYYY') %></span>
+                        </div>
+                      </td>
+                    </tr>
+                    <% } %>
+                <% } %>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>   

@@ -249,19 +249,17 @@
           <div class="col">
             <div class="form-group mb-0">
               <div class="input-group">
-                <input
-                  class="form-control"
-                  placeholder="Search"
-                  id="searchInput"
-                  type="text"
-                />
+                <button type="button" class="btn" data-toggle="modal" data-target="#exampleModalSearch">
+                  <i class="fas fa-search"></i
+                      > Search
+               </button>
               </div>
             </div>
           </div>
         </div>
       </div>
       <div class="table-responsive">
-        <table class="table align-items-center table-flush" id="table">
+        <table class="table align-items-center table-flush">
           <thead class="thead-light">
             <tr>
               <th scope="col">&nbsp; &nbsp; &nbsp; &nbsp; No.</th>
@@ -359,3 +357,76 @@
         </div>
     </div>
 </div>
+<div class="modal fade" id="exampleModalSearch"  tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" style="max-width: 960px;
+  width: 100%;" role="document">
+      <div class="modal-content" >
+          <div class="modal-header">
+              <div class="input-group">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text"
+                      ><i class="fas fa-search"></i
+                    ></span>
+                  </div>
+                  <input
+                    class="form-control"
+                    placeholder="Search"
+                    type="text"
+                    id="searchInput"
+                  />
+                </div>
+          </div>
+          <div class="modal-body">
+            <div class="table-responsive">
+              <table class="table align-items-center table-flush" id="table">
+                <thead class="thead-light">
+                  <tr>
+                    <th scope="col">&nbsp; &nbsp; &nbsp; &nbsp; No.</th>
+                    <th scope="col">law Firm</th>
+                    <th scope="col">Primary Email&nbsp;</th>
+                    <th scope="col">Phones</th>
+                    <th scope="col">Date Created</th>
+                  </tr>
+                </thead>
+                <tbody id="resultsContainer">
+                  <% if (lawfirms.length > 0) { %>
+                    <% for (let dat of lawfirms) { %>
+                  <tr class="car">
+                    <th scope="row">
+                      <div class="d-flex align-items-center">
+                      
+                        <span>&nbsp; &nbsp; &nbsp; &nbsp;<%= dat.law_firm_id %></span>
+                      </div>
+                    </th>
+                    <td><span><a class="car-title" href='/lawfirm_view?id=<%= dat.law_firm_id %>'><%= dat.name %></a></span>
+                    </td>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <span class="ml-2 car-title" ><%= dat.email %></span>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <span class="ml-2"><%= dat.phone_number %></span>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <span class="ml-2"><%= moment(dat.date_created).format('Do MMMM, YYYY') %></span>
+                      </div>
+                    </td>
+                   
+                  </tr>
+                  <% } %>
+                  <% } %>
+                
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+      </div>
+  </div>
+</div>  

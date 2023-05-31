@@ -79,10 +79,10 @@
                             <div class="col">
                                 <div class="form-group mb-0">
                                     <div class="input-group">
-                                        <div class="input-group-prepend">
-                                            <span class="input-group-text"><i class="fas fa-search"></i></span>
-                                        </div>
-                                        <input class="form-control" placeholder="Search" type="text" id="searchInput">
+                                        <button type="button" class="btn" data-toggle="modal" data-target="#exampleModalSearch">
+                                            <i class="fas fa-search"></i
+                                                > Search
+                                         </button>
                                     </div>
                                 </div>
                             </div>
@@ -90,7 +90,7 @@
                         </div>
                     </div>
                     <div class="table-responsive">
-                        <table class="table align-items-center table-flush" id="table">
+                        <table class="table align-items-center table-flush" >
                             <thead class="thead-light">
                                 <tr>
                                     <th scope="col">Company</th>
@@ -245,3 +245,80 @@
             </div>
       </div>
       </div>
+      <div class="modal fade" id="exampleModalSearch"  tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" style="max-width: 960px;
+        width: 100%;" role="document">
+            <div class="modal-content" >
+                <div class="modal-header">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text"
+                              ><i class="fas fa-search"></i
+                            ></span>
+                          </div>
+                          <input
+                            class="form-control"
+                            placeholder="Search"
+                            type="text"
+                            id="searchInput"
+                          />
+                      </div>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive">
+                        <table class="table align-items-center table-flush" id="table">
+                            <thead class="thead-light">
+                                <tr>
+                                    <th scope="col">Company</th>
+                                    <th scope="col">Primary contact</th>
+                                    <th scope="col">Primary email</th>
+                                    <th scope="col">Phone</th>
+                                    <th scope="col">Date Created</th>
+                                    <th scope="col"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% if (vendors.length > 0) { %>
+                                    <% for (let dat of vendors) { %>
+                                <tr>
+                                                                        <td>
+                                        <span><%= dat.company_name %></span>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <span class="ml-2"><%= dat.contact_person %></span>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <span class="ml-2"><%= dat.email %></span>
+                                        </div>
+                                    </td>
+                                    <td><%= dat.phone_number %></td>
+                                    <td>
+                                        <div class="d-flex align-items-center">
+                                            <span class="ml-2"><%= moment(dat.date_created).format('Do MMMM, YYYY') %></span>
+                                        </div>
+                                    </td>
+                                    <td class="table-actions">
+                                        <button class="table-action btn btn-sm btn-block btn-neutral expandBtn"  onclick="current_vendor('<%= dat.vendor_id %>')" data-toggle="modal" data-target="#exampleModal2" data-original-title="Edit product">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                        <button class="table-action btn btn-sm btn-block btn-neutral"  onclick="current_vendor('<%= dat.vendor_id %>')" data-toggle="modal" data-target="#exampleModal1" data-original-title="Edit product">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <% } %>
+                                <% } %>
+                               
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>  
