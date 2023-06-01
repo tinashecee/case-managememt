@@ -758,9 +758,18 @@ app.get('/case_view',checkNotAuthenticated,  async (req,res) => {
                         console.log("File:", file);
                     });
                     console.log(results.rows[0])
+                    pool.query( `SELECT * FROM users`,
+                            [],
+                            (err, results3) => {
+                                if(err){
+                                    console.log(err)
+                                    errors.push({message: err});;
+                                    return res.render('cases', { layout: './layouts/cases-layout', errors });
+
+                                }
                   
-                    res.render('case_view',{layout:'./layouts/case_view_layout',user:nam,errors:errors,data:results.rows, dataA:results1.rows,id:query, files:filenames,case_status:results2.rows,id:query})
-                
+                    res.render('case_view',{layout:'./layouts/case_view_layout',user:nam,errors:errors,data:results.rows, dataA:results1.rows,id:query, files:filenames,case_status:results2.rows,id:query,users:results3.rows})
+                })
                 })
                 }
             )

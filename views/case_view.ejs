@@ -368,8 +368,12 @@
           </div>
           <div class="modal-body">
 <div class="col-md-12">
-  <label for="description" class="form-label">Case Administrator</label>
-  <input type="text" class="form-control" id="description" name="staff_members" required="">
+  <label for="members" class="form-label">Case Administrator</label>
+  <select class="form-select" id="members" name="staff_members" required="">
+    <% for (let dat of users) { %>
+        <option value="<%= dat.name %>"><%= dat.name %></option>
+        <% } %>
+</select>
 </div>
 </div>  
           <div class="modal-footer">
