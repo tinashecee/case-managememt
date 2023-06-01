@@ -1494,25 +1494,24 @@ app.post('/change-lawfirm-status', (req, res)=>{
 app.post('/add-case', (req, res)=>{
     console.log(req.body)
     let department = req.body.department
-    let description = req.body.description
     let start_date = req.body.start_date
     let end_date = req.body.deadline
     let notes = req.body.comments
     let case_name = req.body.case_name
     let status = req.body.status
     let law_firm = req.body.law_firm
-    let tag = req.body.tag
     let staff_members = req.body.members
     let yourDate = new Date()
     date_created = formatDate(yourDate)
     pool.query(
-        `INSERT INTO cases (description, start_date, end_date, notes, department, case_name, law_firm, tag, staff_members,attachments,status)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
-        [description, start_date, end_date, notes, department, case_name, law_firm, tag, staff_members,[],status], 
+        `INSERT INTO cases (start_date, end_date, notes, department, case_name, law_firm,  staff_members,attachments,status)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+        [start_date, end_date, notes, department, case_name, law_firm, staff_members,[],status], 
         (err, results) => {
             if(err){
                 errors.push({message: err});;
             }
+            console.log(results)
             req.flash('success','You have successfully added a case');
             res.redirect('/cases');
         }
