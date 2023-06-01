@@ -87,11 +87,11 @@
                         <div class="ml-3">
                           <h5 class="mb-0">Case Administrator</h5>
                           <p class="text-sm mb-0">
-                            Morton Mabumbo
+                            <%= data[0].staff_members %>
                           </p>
                         </div>
                       </div>
-                      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal"
+                      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal7"
                         ><i class="fa fa-edit"></i
                       ></button>
                     </div>
@@ -102,7 +102,7 @@
                         <i class="fa fa-star text-primary text-lg"></i>
                         <div class="ml-3">
                           <h5 class="mb-0">Status</h5>
-                          <p class="text-sm mb-0">In Progress</p>
+                          <p class="text-sm mb-0"><%= data[0].status %></p>
                         </div>
                       </div>
                       <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal2"
@@ -122,45 +122,6 @@
         </button>
       </div>
       <br></br>
-        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" style="display: none;" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Case Update</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">×</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                      <div class="card">
-                                        
-                          <div class="form-group">
-                            <label for="case-update-title">Title</label>
-                            <input type="text" class="form-control" id="case-update-title" placeholder="Enter title">
-                          </div>
-                          <div class="form-group">
-                            <label for="case-update-description">Description</label>
-                            <textarea class="form-control" id="case-update-description" rows="3" placeholder="Enter description"></textarea>
-                          </div>
-                          <div class="form-group">
-                            <label for="case-update-date">Date</label>
-                            <input type="date" class="form-control" id="case-update-date">
-                          </div>
-                          <div class="mb-3">
-                            <label for="formFile" class="form-label">File upload</label>
-                            <input class="form-control" type="file" id="formFile">
-                          </div>
-                          
-                        
-                            </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Save changes</button>
-                    </div>
-                </div>
-            </div>
-          </div>
           <div class="card-body pt-0 pb-2 px-0">
             <% if(data[0].updates != null) { %>
             <% for (let dat of data[0].updates) { %>
@@ -210,22 +171,28 @@
           <% if(data[0].attachments.length != 0) { %>
                     <ul class="list-group list-group-flush">
                       <% for (let dat of data[0].attachments) { %>
-            <li class="list-group-item">
-              <div class="row align-items-center">
-                
-                <div class="col-md-3">
-                  <button type="button" class="btn btn-primary" onclick="changeSrc('<%= dat %>')"
-                  ><i class="fa fa-eye"></i
-                ></button>
-              </div>
-              
-                <div class="col-md-9">
-                  <h6 class="card-subtitle mb-2 text-muted">File Name</h6>
-                  <p class="card-text"><%= dat %></p>
-                </div>
-              
-              </div>
-            </li>
+                        <li class="list-group-item">
+                          <div class="row align-items-center">
+                            <div class="col-md-1">
+                            <button type="button" class="btn btn-primary" onclick="changeSrc('<%= dat %>')"
+                              ><i class="fa fa-eye"></i
+                            ></button>
+                          </div>
+                          <div class="col-md-1"></div>
+                            <div class="col-md-8">
+                              
+                              <h6 class="card-subtitle mb-2 text-muted">File Name</h6>
+                              <p class="card-text"><%= dat %></p>
+                            </div>
+                          <div class="col-md-1">
+                          <button class="btn  btn-danger" onclick="deleteFile('<%= dat %>' , '<%= id %>')"  data-toggle="modal" data-target="#exampleModal8" data-original-title="Edit product">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                          </div>
+                            
+                          
+                          </div>
+                        </li>
             <% } %>
           </ul>
           <% } %>
@@ -375,7 +342,11 @@
 <div class="col-md-12">
   <label for="comments" class="form-label">Comments</label>
   <textarea class="form-control" id="comments" name="comments"></textarea>
-</div>       
+</div>     
+<div class="col-md-12">
+  <label for="case-update-date">Date</label>
+  <input type="date" name="case_update_date" class="form-control" id="case-update-date">
+</div>  
           </div>
           <div class="modal-footer">
               <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -385,3 +356,43 @@
       </div>
 </div>
 </div>
+<div class="modal fade" id="exampleModal7" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+          <form action='update-case-members?id=<%= id %>' method="POST">
+          <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Update Case Administrator</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">X</span>
+              </button>
+          </div>
+          <div class="modal-body">
+<div class="col-md-12">
+  <label for="description" class="form-label">Case Administrator</label>
+  <input type="text" class="form-control" id="description" name="staff_members" required="">
+</div>
+</div>  
+          <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary">Submit</button>
+          </div>
+      </form> 
+      </div>
+</div>
+</div>
+<div class="modal fade" id="exampleModal8" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Delete File</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">X</span>
+              </button>
+          </div>
+          <div class="modal-body">
+             
+          </div>
+        
+      </div>
+  </div>
+</div>   

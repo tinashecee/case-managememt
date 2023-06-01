@@ -201,6 +201,23 @@
         function changeSrc(source){
             document.getElementById("embed-pdf").src='/uploads/'+source;
         }
+        function deleteFile(params1,params2) {
+    var modal = document.getElementById('exampleModal8');
+var modalTitle = modal.querySelector('.modal-title');
+var modalBody = modal.querySelector('.modal-body');
+  // Set the modal title and body content
+  modalTitle.textContent = `Are you sure you want to Delete File:  ${params1} ?`; // Replace with your desired title
+  modalBody.innerHTML = `
+  <form  action="/delete-case-file?path=${params1}&id=${params2}" method="POST">
+    <div class="mb-3">
+                         
+                    <div class="mb-3">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Delete</button>
+                    </div>
+                </form>             
+  `;
+            }
       </script>
     </body>
     

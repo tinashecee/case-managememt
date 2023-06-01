@@ -27,6 +27,7 @@ const SENDMAIL = require("./mailer.js")
 
 
 const moment = require("moment");
+const { count } = require('console');
 const app = express();
 initializePassport(passport);
 const PORT = process.env.PORT || 8080
@@ -177,8 +178,8 @@ app.post('/upload-case', async (req, res) => {
                             attachments.forEach((file) => {
                                 console.log("File:", file);
                             });
-                          
-                            res.render('case_view',{layout:'./layouts/case_view_layout',user:nam,errors:errors,data:results.rows, dataA:results1.rows,id:query, case_status:results2.rows,id:query})
+                            req.flash('success','You have successfully added a file');
+                            res.redirect('/case_view?id='+query)
                         
                         })
                         }
@@ -258,8 +259,8 @@ app.post('/upload-contract', async (req, res) => {
                                 
                             }
                    
-                         
-                     res.render('contract_view',{layout:'./layouts/contract_view_layout',user:nam,errors:errors,data:results.rows,dollarUS:dollarUS,id:query,contract_status:results2.rows,id:query})
+                        req.flash('success','You have successfully added a file');   
+                        res.redirect('/contract_view?id='+query)
                         })
                 }
             )
@@ -268,6 +269,177 @@ app.post('/upload-contract', async (req, res) => {
         res.status(500).send(err);
     }
 });
+app.post('/delete-contract-file', async (req, res) => {
+    const path = './public/uploads1/'+req.query.path
+    const query = req.query.id
+   
+    fs.unlink(path, (err) => {
+      if (err) {
+        console.error(err)
+        return
+      }
+    
+            let errors =[]
+            let attachments = []
+            
+            
+            pool.query(
+                'SELECT * FROM contracts WHERE contract_id = $1',
+               [query], 
+               (err, resulto) => {
+                   if(err){
+                       errors.push({message: err});;
+                   }
+                  if(resulto.rows[0].attachments == null){
+                     attachments = []
+                  }else{
+                    attachments = resulto.rows[0].attachments
+                  }
+                  
+                   let count = 0
+                   attachments.forEach(e=>{
+                    if(e == req.query.path){
+                        attachments.splice(count, 1); 
+                    }
+                    count+=1
+                   })
+                   
+                   pool.query(
+                    'UPDATE contracts SET attachments = $1 WHERE contract_id = $2',
+                   [attachments, query], 
+                   (err, results) => {
+                       if(err){
+                           errors.push({message: err});;
+                       }
+                   }
+                )
+               }
+            )
+            pool.query(
+                `SELECT * FROM contracts WHERE contract_id = $1`,
+                [query],
+                (err, results) => {
+                    if(err){
+                        console.log(err)
+                        errors.push({message: err});;
+                        
+                    }
+                    let dollarUS = Intl.NumberFormat("en-US", {
+                        style: "currency",
+                        currency: "USD", 
+                    });
+                    pool.query( `SELECT * FROM contract_status`,
+                        [],
+                        (err, results2) => {
+                            if(err){
+                                console.log(err)
+                                errors.push({message: err});;
+                                
+                            }
+                   
+                        req.flash('success','You have successfully deleted a file');   
+                        res.redirect('/contract_view?id='+query)
+                                            })
+                }
+            )
+        })
+    
+})
+app.post('/delete-case-file', async (req, res) => {
+    const path = './public/uploads/'+req.query.path
+    const query = req.query.id
+   
+    fs.unlink(path, (err) => {
+      if (err) {
+        console.error(err)
+        return
+      }
+    
+      let errors =[]
+      let message=[]
+      let query = req.query.id
+      let attachments = []
+      pool.query(
+          'SELECT * FROM cases WHERE case_id = $1',
+         [query], 
+         (err, resulto) => {
+             if(err){
+                 errors.push({message: err});;
+             }
+             if(resulto.rows[0].attachments == null){
+              attachments = []
+           }else{
+             attachments = resulto.rows[0].attachments
+           }
+             
+           let count = 0
+           attachments.forEach(e=>{
+            if(e == req.query.path){
+                attachments.splice(count, 1); 
+            }
+            count+=1
+           })
+             
+             pool.query(
+              'UPDATE cases SET attachments = $1 WHERE case_id = $2',
+             [attachments, query], 
+             (err, results) => {
+                 if(err){
+                     errors.push({message: err});;
+                 }
+             }
+          )
+         }
+      )
+     
+      pool.query(
+          `SELECT * FROM cases WHERE case_id = $1`,
+          [query],
+          (err, results) => {
+              if(err){
+                  console.log(err)
+                  errors.push({message: err});;
+                  
+              }
+              let dollarUS = Intl.NumberFormat("en-US", {
+                  style: "currency",
+                  currency: "USD",
+              });
+              pool.query(
+                  `SELECT name FROM law_firms`,
+                  [],
+                  (err, results1) => {
+                      if(err){
+                          console.log(err)
+                          errors.push({message: err});;
+                          
+                      }
+                      pool.query( `SELECT * FROM case_status`,
+                      [],
+                      (err, results2) => {
+                          if(err){
+                              console.log(err)
+                              errors.push({message: err});;
+                              
+                          }
+                      let directory_name = "./public/uploads";
+                      //let filenames = fs.readdirSync(directory_name);
+                        
+                      console.log("\nFilenames in directory:");
+                      attachments.forEach((file) => {
+                          console.log("File:", file);
+                      });
+                      req.flash('success','You have successfully deleted a file');
+                      res.redirect('/case_view?id='+query)
+                  
+                  })
+                  }
+              )
+          }
+      )
+            
+    })       
+})
     
   app.get('/display-message', (req, res) => {
       res.render("display-message",{layout:'./layouts/index-layout'});
@@ -1334,6 +1506,22 @@ app.post('/update-case-startdate', (req, res)=>{
     )
     
 });
+app.post('/update-case-members', (req, res)=>{
+    let query = req.query.id
+    let staff_members = req.body.staff_members
+    pool.query(
+         'UPDATE cases SET staff_members = $1 WHERE case_id = $2',
+        [staff_members, query], 
+        (err, results) => {
+            if(err){
+                errors.push({message: err});;
+            }
+            req.flash('success','You have successfully updated status of  Cases');
+            res.redirect('/case_view?id='+query);
+        }
+    )
+    
+});
 app.post('/update-case-description', (req, res)=>{
     let query = req.query.id
     let description = req.body.description
@@ -1356,9 +1544,9 @@ app.post('/update-case-updates', (req, res)=>{
     let query = req.query.id
     let description = req.body.description
     let comments = req.body.comments
-    let yourDate = new Date()
+    let date_created = req.body.case_update_date
+   
     let array = []
-    date_created = formatDate(yourDate)
     pool.query(
         'SELECT * FROM cases WHERE case_id = $1',
        [query], 

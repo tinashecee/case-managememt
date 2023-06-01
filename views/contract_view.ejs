@@ -46,7 +46,7 @@
                             <p>
                               <%= data[0].notes %>
                             </p>
-                            <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#exampleModal1"><i class="fa fa-edit"></i
+                            <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#exampleModal5"><i class="fa fa-edit"></i
                               ></button>
                           </div>
                         </div>
@@ -149,17 +149,23 @@
                   <% for (let dat of data[0].attachments) { %>
         <li class="list-group-item">
           <div class="row align-items-center">
-            
-            <div class="col-md-3">
-              <button type="button" class="btn btn-primary" onclick="changeSrc('<%= dat %>')"
+            <div class="col-md-1">
+            <button type="button" class="btn btn-primary" onclick="changeSrc('<%= dat %>')"
               ><i class="fa fa-eye"></i
             ></button>
           </div>
-          
-            <div class="col-md-9">
+          <div class="col-md-1"></div>
+            <div class="col-md-8">
+              
               <h6 class="card-subtitle mb-2 text-muted">File Name</h6>
               <p class="card-text"><%= dat %></p>
             </div>
+          <div class="col-md-1">
+          <button class="btn  btn-danger" onclick="deleteFile('<%= dat %>' , '<%= id %>')"  data-toggle="modal" data-target="#exampleModal8" data-original-title="Edit product">
+            <i class="fas fa-trash"></i>
+        </button>
+          </div>
+            
           
           </div>
         </li>
@@ -340,3 +346,19 @@
           </div>
     </div>
     </div>
+    <div class="modal fade" id="exampleModal8" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Delete File</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">X</span>
+                  </button>
+              </div>
+              <div class="modal-body">
+                 
+              </div>
+            
+          </div>
+      </div>
+    </div> 
