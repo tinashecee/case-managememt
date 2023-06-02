@@ -455,6 +455,10 @@ app.get('',checkNotAuthenticated,  async (req,res) => {
                 errors.push({message: err});
                 
             }
+            let tasks = []
+            results.rows.forEach(e=>{
+                 if(e.status == 'ACTIVE') tasks.push(e)
+                  })
             pool.query(
                 `SELECT * FROM cases`,
                 [],
@@ -484,10 +488,7 @@ app.get('',checkNotAuthenticated,  async (req,res) => {
                                         errors.push({message: err});
                                         
                                     }
-                                    let  expiring_contracts = []
-                                    result3.rows.forEach(e=>{
-                                        if(e.status == 'ACTIVE') contract_expiring.push(e)
-                                    })
+                                    
                                     let dollarUS = Intl.NumberFormat("en-US", {
                                         style: "currency",
                                         currency: "USD", 
@@ -504,7 +505,7 @@ app.get('',checkNotAuthenticated,  async (req,res) => {
                                    // console.log(result3.rows)
              array1 = results.rows
            
-             res.render('index',{layout:'./layouts/index-layout',dollarUS:dollarUS, expiring_contracts, contracts_length:result2.rows.length ,contract_expiring_length:result3.rows.length ,cases_length:results1.rows.length, tasks:results.rows,authed:authed,user:nam,users:results4.rows})
+             res.render('index',{layout:'./layouts/index-layout',dollarUS:dollarUS, expiring_contracts:result3.rows, contracts_length:result2.rows.length ,contract_expiring_length:result3.rows.length ,cases_length:results1.rows.length, tasks,authed:authed,user:nam,users:results4.rows})
                 })
             })
             })
