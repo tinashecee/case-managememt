@@ -174,9 +174,9 @@ app.post('/upload-case', async (req, res) => {
                             let directory_name = "./public/uploads";
                             //let filenames = fs.readdirSync(directory_name);
                               
-                            console.log("\nFilenames in directory:");
+                           // console.log("\nFilenames in directory:");
                             attachments.forEach((file) => {
-                                console.log("File:", file);
+                              //  console.log("File:", file);
                             });
                             req.flash('success','You have successfully added a file');
                             res.redirect('/case_view?id='+query)
@@ -208,7 +208,7 @@ app.post('/upload-contract', async (req, res) => {
             let query = req.query.id
             let errors =[]
             let attachments = []
-            console.log(query)
+           // console.log(query)
             
             pool.query(
                 'SELECT * FROM contracts WHERE contract_id = $1',
@@ -425,9 +425,9 @@ app.post('/delete-case-file', async (req, res) => {
                       let directory_name = "./public/uploads";
                       //let filenames = fs.readdirSync(directory_name);
                         
-                      console.log("\nFilenames in directory:");
+                    //  console.log("\nFilenames in directory:");
                       attachments.forEach((file) => {
-                          console.log("File:", file);
+                     //     console.log("File:", file);
                       });
                       req.flash('success','You have successfully deleted a file');
                       res.redirect('/case_view?id='+query)
@@ -484,6 +484,10 @@ app.get('',checkNotAuthenticated,  async (req,res) => {
                                         errors.push({message: err});
                                         
                                     }
+                                    let  expiring_contracts = []
+                                    result3.rows.forEach(e=>{
+                                        if(e.status == 'ACTIVE') contract_expiring.push(e)
+                                    })
                                     let dollarUS = Intl.NumberFormat("en-US", {
                                         style: "currency",
                                         currency: "USD", 
@@ -497,10 +501,10 @@ app.get('',checkNotAuthenticated,  async (req,res) => {
                                                 errors.push({message: err});
                                                 
                                             }
-                                    console.log(result3.rows)
+                                   // console.log(result3.rows)
              array1 = results.rows
            
-             res.render('index',{layout:'./layouts/index-layout',dollarUS:dollarUS, expiring_contracts:result3.rows, contracts_length:result2.rows.length ,contract_expiring_length:result3.rows.length ,cases_length:results1.rows.length, tasks:results.rows,authed:authed,user:nam,users:results4.rows})
+             res.render('index',{layout:'./layouts/index-layout',dollarUS:dollarUS, expiring_contracts, contracts_length:result2.rows.length ,contract_expiring_length:result3.rows.length ,cases_length:results1.rows.length, tasks:results.rows,authed:authed,user:nam,users:results4.rows})
                 })
             })
             })
@@ -753,11 +757,11 @@ app.get('/case_view',checkNotAuthenticated,  async (req,res) => {
                     let directory_name = "./public/uploads";
                     let filenames = fs.readdirSync(directory_name);
                       
-                    console.log("\nFilenames in directory:");
+                  //  console.log("\nFilenames in directory:");
                     filenames.forEach((file) => {
                         console.log("File:", file);
                     });
-                    console.log(results.rows[0])
+                  //  console.log(results.rows[0])
                     pool.query( `SELECT * FROM users`,
                             [],
                             (err, results3) => {
@@ -1062,7 +1066,7 @@ app.post('/resources-gazettes', async (req,res) => {
   let year = req.body.year
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
- console.log(year)
+ //console.log(year)
   await page.goto(`https://zimlii.org/gazettes/${year}`);
 
   // Wait for the gazette items to load
@@ -1081,9 +1085,9 @@ app.post('/resources-gazettes', async (req,res) => {
 
   // Print the gazette titles and links
   gazetteList.forEach((gazette) => {
-    console.log('Title:', gazette.title);
-    console.log('Link:', gazette.link);
-    console.log('----------------------');
+   // console.log('Title:', gazette.title);
+  //  console.log('Link:', gazette.link);
+  //  console.log('----------------------');
   });
    scrapping_results = gazetteList
   await browser.close();
@@ -1094,7 +1098,7 @@ app.post('/resources-cases-and-judgements', async (req,res) => {
     let court = req.body.court
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
-   console.log(court)
+   //console.log(court)
     
   
     // Navigating to the target website
@@ -1116,7 +1120,7 @@ app.post('/resources-cases-and-judgements', async (req,res) => {
       });
     });
 
-    console.log(judgments);
+    //console.log(judgments);
 
     await browser.close();
     scrapping_results = judgments
@@ -1130,7 +1134,7 @@ app.get('/resources-results',checkNotAuthenticated,  async (req,res) => {
     let keyword_url;
     let errors =[]
     let message=[]
-    console.log(req.query.query)
+    //console.log(req.query.query)
     if(req.query.query == 'cases_and_judgements'){
         keyword = 'cases and judgements zimbabwe'
     }
@@ -1161,9 +1165,9 @@ app.get('/resources-results',checkNotAuthenticated,  async (req,res) => {
       
           // Print the legislation titles and URLs
           legislationList.forEach((legislation) => {
-            console.log('Title:', legislation.title);
-            console.log('URL:', legislation.url);
-            console.log('----------------------');
+           // console.log('Title:', legislation.title);
+           // console.log('URL:', legislation.url);
+           // console.log('----------------------');
           });
           res.render('resources_legislature',{layout:'./layouts/resources-results-layout',user:nam,errors:errors,results: legislationList})
         } catch (error) {
@@ -1241,9 +1245,9 @@ app.post('/resources-search-results',  async (req,res) => {
     
       // Print the search results
       searchResults.forEach((result) => {
-        console.log(`Title: ${result.title}`);
-        console.log(`URL: ${result.url}`);
-        console.log('----------------------');
+       // console.log(`Title: ${result.title}`);
+       // console.log(`URL: ${result.url}`);
+      //  console.log('----------------------');
       });
       scrapping_results = searchResults
       // Close the browser instance
@@ -1301,13 +1305,19 @@ app.get('/tasks',checkNotAuthenticated,  async (req,res) => {
                     }
 
                     array1 = results.rows
+                    let completed = 0
+                    let active = 0
+                    results.rows.forEach(e=>{
+                        if(e.status == 'ACTIVE'){active+=1}
+                        if(e.status == 'COMPLETED'){completed+=1}
+                    })
                     const page = parseInt(req.query.page) || 1; // Current page number
                     const limit = 10; // Number of items per page
                     const startIndex = (page - 1) * limit;
                     const endIndex = page * limit;
                     const reso = results.rows.slice(startIndex, endIndex);
                 
-                    res.render('tasks',{layout:'./layouts/tasks-layout',user:nam,errors:errors,data:reso,page,users:results1.rows})
+                    res.render('tasks',{layout:'./layouts/tasks-layout',active,completed,user:nam,errors:errors,data:reso,page,users:results1.rows})
                 })
             
              
@@ -1418,7 +1428,7 @@ app.post('/update-lawfirm-contact', (req, res)=>{
                 
             }
           result.rows[0].contacts.push({name:name1,email:email1,position:position1,phone:phone1})
-          console.log(result.rows[0].contacts)
+         // console.log(result.rows[0].contacts)
           pool.query(
             'UPDATE law_firms SET contacts = $1 WHERE law_firm_id = $2',
            [ result.rows[0].contacts, query], 
@@ -1449,7 +1459,7 @@ app.post('/add-lawfirm', (req, res)=>{
     }
     let yourDate = new Date()
     date_created = formatDate(yourDate)
-    console.log(contacts)
+    //console.log(contacts)
     pool.query(
         `INSERT INTO law_firms (name, address, phone_number, contacts, status, groups, date_created, email, vat_number, website)
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
@@ -1669,10 +1679,10 @@ app.post('/update-contract-description', (req, res)=>{
     
 });
 app.post('/change-lawfirm-status', (req, res)=>{
-    console.log(req.body)
+    //console.log(req.body)
     let active_status = req.body.active_status
     let law_firm_id = req.body.law_firm_id
-    console.log(active_status,law_firm_id)
+   // console.log(active_status,law_firm_id)
     let yourDate = new Date()
     date_created = formatDate(yourDate)
     pool.query(
@@ -1682,14 +1692,14 @@ app.post('/change-lawfirm-status', (req, res)=>{
             if(err){
                 errors.push({message: err});;
             }
-            console.log(results)
+           // console.log(results)
             req.flash('success','You have successfully updated status of law firm');
             res.redirect('/lawfirms');
         }
     )
 });
 app.post('/add-case', (req, res)=>{
-    console.log(req.body)
+   // console.log(req.body)
     let department = req.body.department
     let start_date = req.body.start_date
     let end_date = req.body.deadline
@@ -1708,14 +1718,14 @@ app.post('/add-case', (req, res)=>{
             if(err){
                 errors.push({message: err});;
             }
-            console.log(results)
+           // console.log(results)
             req.flash('success','You have successfully added a case');
             res.redirect('/cases');
         }
     )
 });
 app.post('/add-contract', (req, res)=>{
-    console.log(req.body)
+    //console.log(req.body)
     
     let description = req.body.contract_description
     let start_date = req.body.start_date
@@ -1767,13 +1777,13 @@ app.post('/edit-expenditure', (req, res)=>{
         
         let count = 0
         expenditureArray.forEach(elem=>{
-            console.log(elem.expenditure_desc,expe)
+           // console.log(elem.expenditure_desc,expe)
             if(elem.expenditure_desc  == expe){
                expenditureArray[count]={expenditure:expenditure,expenditure_desc:expenditure_desc,expenditure_date:expenditure_date,balance:(parseFloat(elem.expenditure)+elem.balance-expenditure)}
             }
             count+=1
         })
-        console.log(expenditureArray)
+       // console.log(expenditureArray)
         pool.query( 'UPDATE budget_items SET expenditure = $1  WHERE budget_id = $2',
         [expenditureArray, id], 
         (err, results) => {
@@ -1787,7 +1797,7 @@ app.post('/edit-expenditure', (req, res)=>{
 
 })
 app.post('/add-vendor', (req, res)=>{
-    console.log(req.body)
+    //console.log(req.body)
     let contact_person = req.body.contactPerson
     let phone_number = req.body.phoneNumber
     let company_name = req.body.vendorName
@@ -1804,14 +1814,14 @@ app.post('/add-vendor', (req, res)=>{
             if(err){
                 errors.push({message: err});;
             }
-            console.log(results.row);
+           // console.log(results.row);
             req.flash('success','You have successfully added a vendor');
             res.redirect('/vendors');
         }
     )
 });
 app.post('/edit-vendor', (req, res)=>{
-    console.log(req.body)
+   // console.log(req.body)
     let contact_person = req.body.contactPerson
     let phone_number = req.body.phoneNumber
     let company_name = req.body.vendorName
@@ -1825,14 +1835,14 @@ app.post('/edit-vendor', (req, res)=>{
             if(err){
                 errors.push({message: err});;
             }
-            console.log(results.row);
+           // console.log(results.row);
             req.flash('message','You have successfully updated a vendor');
             res.redirect('/vendors');
         }
     )
 });
 app.post('/delete-vendor', (req, res)=>{
-    console.log(current_vendor)
+    //console.log(current_vendor)
     pool.query(
         `DELETE from vendors WHERE vendor_id = $1`,
         [current_vendor], 
@@ -1868,7 +1878,7 @@ app.post('/delete-budget-item-expenses', (req, res)=>{
             }
             count+=1
         })
-        console.log(expenditureArray)
+       // console.log(expenditureArray)
         
         pool.query( 'UPDATE budget_items SET expenditure = $1, actual = $2, variance = $3 WHERE budget_id = $4',
         [expenditureArray, totalExp,budgeted-totalExp, id], 
@@ -1884,7 +1894,7 @@ app.post('/delete-budget-item-expenses', (req, res)=>{
 app.post('/delete-budget-item', (req, res)=>{
     let id = req.query.id
     let budget = req.query.budget
-    console.log(id,budget)
+    //console.log(id,budget)
     pool.query('DELETE from budget_items WHERE budget_id = $1',
     [id]
     , (err, results) => {
@@ -1918,7 +1928,7 @@ app.post('/add-budget', (req, res)=>{
             if(err){
                 errors.push({message: err});;
             }
-            console.log(results.row);
+           // console.log(results.row);
             req.flash('success','You have successfully added budget');
             res.redirect('/budget');
         }
@@ -1926,10 +1936,10 @@ app.post('/add-budget', (req, res)=>{
 })
 app.post('/add-line-budget', (req, res)=>{
     for(let i=1;i<line_budget_count+1;i++){
-        console.log(budget_balance- req.body[`budget${i}`])
+        //console.log(budget_balance- req.body[`budget${i}`])
 
        if( parseFloat(budget_balance) < parseFloat(req.body[`budget${i}`])){
-            console.log("budget not enough")
+          //  console.log("budget not enough")
         }else{
             pool.query(
                 `INSERT INTO budget_items (budget_name, budget,variance, actual, expenditure)
@@ -1940,14 +1950,14 @@ app.post('/add-line-budget', (req, res)=>{
                         errors.push({message: err});;
                     }
                     budget_balance-=req.body[`budget${i}`]
-                    console.log(budget_balance,"     ",budget_id)
+                   // console.log(budget_balance,"     ",budget_id)
                     pool.query('UPDATE budget SET balance = $1 WHERE budget_id = $2',
                     [budget_balance, budget_id],
                     (err, result) => {
                         if(err){
                             errors.push({message: err});;
                         }
-                        console.log(result)
+                     //   console.log(result)
                     })
                 })
                     
@@ -1984,7 +1994,7 @@ app.post('/add-expenditure', (req, res)=>{
     let a = parseFloat(expenditure)
     let b = parseFloat( expenditure_budget) - a
     expenditure_budget -= parseFloat(expenditure_actual)
-    console.log(expenditure_budget_id)
+    //console.log(expenditure_budget_id)
     pool.query(
         'SELECT * FROM budget_items WHERE budget_id = $1',
        [parseFloat(expenditure_budget_id)], 
@@ -2002,7 +2012,7 @@ app.post('/add-expenditure', (req, res)=>{
            array.forEach(el=>{
             totalExp+=parseFloat(el.expenditure)
            })
-           console.log(totalExp)
+          // console.log(totalExp)
    pool.query(
       'UPDATE budget_items SET actual = $1, variance = $2, expenditure = $3 WHERE budget_id = $4',
      [totalExp,budgeted-totalExp,array,expenditure_budget_id], 
@@ -2022,7 +2032,7 @@ app.post('/add-expenditure', (req, res)=>{
       expenditure_budget =req.body.budget
   })
 app.post('/edit-task', (req, res)=>{
-    console.log(req.body)
+   // console.log(req.body)
     let task_name = req.body.taskName
     let start_date = req.body.startDate
     let due_date = req.body.dueDate
@@ -2087,7 +2097,7 @@ app.post('/compliance-form-part-1', (req, res)=>{
     
    let a = req.body.department
    compliance_department = a
-   console.log(compliance_department)
+   //console.log(compliance_department)
    
 })
 app.post('/compliance-form-part-2', (req, res)=>{
@@ -2096,7 +2106,7 @@ app.post('/compliance-form-part-2', (req, res)=>{
     let b = req.body.contact_email
     compliance_contact_name = a
     compliance_contact_email = b
-    console.log(compliance_contact_name,compliance_contact_email)
+   // console.log(compliance_contact_name,compliance_contact_email)
 })
 app.post('/compliance-form-part-3', (req, res)=>{
     compliance_survey_questions = []
@@ -2174,8 +2184,8 @@ app.post('/compliance-form-part-3', (req, res)=>{
         }        
         // send mail with defined transport object and mail options
 SENDMAIL(options, (info) => {
-    console.log("Email sent successfully");
-    console.log("MESSAGE ID: ", info.messageId);
+    //console.log("Email sent successfully");
+    //console.log("MESSAGE ID: ", info.messageId);
     req.flash('success','Survey successfully sent via Email');
    res.redirect('/compliance')
       
@@ -2197,7 +2207,7 @@ app.get('/download',async (req,res) =>{
             date_completed: e.date_completed,
             questions: JSON.stringify(e.questions)
         }
-        console.log( JSON.stringify(e.questions))
+        //console.log( JSON.stringify(e.questions))
         usersArray.push(b)
       })
     const path = 'sample.csv';
@@ -2226,8 +2236,8 @@ app.get('/download1',async (req,res) =>{
     compliance_data.forEach(e=>{
         questions.push(e.questions)
       })
-      console.log(compliance_data)
-      console.log(questions)
+      //console.log(compliance_data)
+     // console.log(questions)
     const csvWriter = createCsvWriter({
         path: path,
         header: [{ id:'title',title:'Question'},{ id:'response',title:'Response'}]});
@@ -2274,7 +2284,7 @@ app.get('/download4',async (req,res) =>{
 
     let usersArray = budgetLineItems
    
-    console.log(budgetLineItems)
+    //console.log(budgetLineItems)
     const path = 'sample3.csv';
     const csvWriter = createCsvWriter({
       path: path,
@@ -2347,7 +2357,7 @@ app.post('/compliance_results',(req,res) =>{
      })
     });
     let y = boolean_yes_count+"/"+boolean_count
-    console.log(y)
+    //console.log(y)
     pool.query(
         'UPDATE compliance_results SET responses = $1, date_completed = $2, questions = $3, score = $4 WHERE department = $5',
        [responses, date_created, compliance_survey_questions, y, compliance_department], 
@@ -2429,9 +2439,9 @@ app.post('/reset-password', async (req,res) => {
             }        
             // send mail with defined transport object and mail options
         SENDMAIL(options, (info) => {
-        console.log("Email sent successfully");
+        //console.log("Email sent successfully");
         req.flash('success','Reset Password email sent');
-          console.log("MESSAGE ID: ", info.messageId);
+       //   console.log("MESSAGE ID: ", info.messageId);
           res.redirect("/reset-password-email-sent")
         });
            }
@@ -2453,7 +2463,7 @@ app.post('/set-password', async (req,res) => {
 }
 else{
     let hashedPassword = await bcrypt.hash(password1, 10);
-    console.log(email)
+    //console.log(email)
     pool.query(
         'UPDATE users SET password = $1, activated = $2 WHERE email = $3',
        [hashedPassword, true, email], 
@@ -2658,9 +2668,9 @@ app.post('/new_user', (req,res) => {
             }        
             // send mail with defined transport object and mail options
         SENDMAIL(options, (info) => {
-        console.log("Email sent successfully");
+        //console.log("Email sent successfully");
         req.flash('success','New User has been created and an email sent to them to activate their account');
-          console.log("MESSAGE ID: ", info.messageId);
+         // console.log("MESSAGE ID: ", info.messageId);
           res.redirect("/settings/users")
         });
         }
@@ -2747,7 +2757,7 @@ app.post('/users/register', async (req,res) => {
                if(err){
                    errors.push({message: err});;
                }
-               console.log(results.rows);
+               //console.log(results.rows);
                if(results.rows.length >0){
                 errors.push({message: `Email: ${email} is already registered`});
                 res.render("login",{layout:'./layouts/login-layout',authed:authed,user:nam, errors:errors});
