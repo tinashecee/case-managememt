@@ -19,6 +19,170 @@
     />
     <link rel="stylesheet" href="/css/theme.css" />
     <link rel="stylesheet" href="/css/loopple/loopple.css" />
+    <style>
+      .tabs {
+  margin: 0 auto;
+  padding: 0 20px;
+}
+#tab-button {
+  display: table;
+  table-layout: fixed;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+#tab-button li {
+  display: table-cell;
+  width: 20%;
+}
+#tab-button li a {
+  display: block;
+  padding: .5em;
+  background: #eee;
+  border: 1px solid #ddd;
+  text-align: center;
+  color: #000;
+  text-decoration: none;
+}
+#tab-button li:not(:first-child) a {
+  border-left: none;
+}
+#tab-button li a:hover,
+#tab-button .is-active a {
+  border-bottom-color: transparent;
+  background: #fff;
+}
+.tab-contents {
+  padding: .5em 2em 1em;
+  border: 1px solid #ddd;
+}
+
+
+
+.tab-button-outer {
+  display: none;
+}
+.tab-contents {
+  margin-top: 20px;
+}
+@media screen and (min-width: 768px) {
+  .tab-button-outer {
+    position: relative;
+    z-index: 2;
+    display: block;
+  }
+  .tab-select-outer {
+    display: none;
+  }
+  .tab-contents {
+    position: relative;
+    top: -1px;
+    margin-top: 0;
+  }
+}
+.check {
+ position: relative;
+ background: linear-gradient(90deg, #f19af3, #f099b5);
+ line-height: 0;
+ font-size: 25px;
+}
+
+.check input[type="checkbox"],
+.check label,
+.check label::before,
+.check label::after {
+ appearance: none;
+ display: inline-block;
+ font-size: inherit;
+ border-radius: 1em;
+ border: 0;
+ transition: .35s ease-in-out;
+ box-sizing: border-box;
+ cursor: pointer;
+}
+
+.check {
+ appearance: none;
+ display: inline-block;
+ border-radius: 1em;
+ border: 0;
+ transition: .35s ease-in-out;
+ box-sizing: border-box;
+ cursor: pointer;
+}
+
+.check label {
+ width: 2.2em;
+ height: 1em;
+ background: #d7d7d7;
+ overflow: hidden;
+}
+
+.check input[type="checkbox"] {
+ position: absolute;
+ z-index: 1;
+ width: .8em;
+ height: .8em;
+ top: .1em;
+ left: .1em;
+ background: linear-gradient(45deg, #dedede, #ffffff);
+ box-shadow: 0 6px 7px rgba(0,0,0,0.3);
+ outline: none;
+}
+
+.check input[type="checkbox"]:checked {
+ left: 1.3em;
+}
+
+.check input[type="checkbox"]:checked + label {
+ background: transparent;
+}
+
+.check label::before,
+.check label::after {
+ content: "· ·";
+ position: absolute;
+ overflow: hidden;
+ left: .50em;
+ top: .5em;
+ height: 1em;
+ letter-spacing: -.04em;
+ color: #9b9b9b;
+ font-family: "Times New Roman", serif;
+ z-index: 2;
+ font-size: .6em;
+ border-radius: 0;
+ transform-origin: 0 0 -.5em;
+ backface-visibility: hidden;
+}
+
+.check label::after {
+ content: "?";
+ top: .65em;
+ left: .6em;
+ height: .1em;
+ width: .35em;
+ font-size: .2em;
+ transform-origin: 0 0 -.4em;
+}
+
+.check input[type="checkbox"]:checked + label::before,
+.check input[type="checkbox"]:checked + label::after {
+ left: 2.55em;
+ top: .4em;
+ line-height: .1em;
+ transform: rotateY(360deg);
+}
+
+.check input[type="checkbox"]:checked + label::after {
+ height: .16em;
+ top: .55em;
+ left: 2.6em;
+ font-size: .6em;
+ line-height: 0;
+}
+    </style>
   </head>
   <body class="g-sidenav-show">
     <nav class="sidenav navbar navbar-vertical fixed-left navbar-expand-xs navbar-light bg-white loopple-fixed-start" id="sidenav-main">
@@ -208,6 +372,20 @@
     <script src="https://rawcdn.githack.com/Loopple/loopple-public-assets/7bb803d2af2ab6d71d429b0cb459c24a4cd0fbb4/argon-dashboard/js/argon.min.js"></script>
     <script src="/js/loopple/loopple.js"></script>
     <script>
+function isCheckedJQuery(a,b) {
+    fetch('/edit-task-status',{
+			method: 'POST',
+			body: JSON.stringify({  
+                id:a,
+                status:b
+			}),
+			headers: {
+				'Content-type': 'application/json; charset=UTF-8'
+			},
+		})
+}
+
+
 var input = document.getElementById('searchInput');
 var table = document.getElementById('table');
 
@@ -254,6 +432,37 @@ function filterTableRows(filter) {
 		})
         }
         
+        $(function() {
+  var $tabButtonItem = $('#tab-button li'),
+      $tabSelect = $('#tab-select'),
+      $tabContents = $('.tab-contents'),
+      activeClass = 'is-active';
+
+  $tabButtonItem.first().addClass(activeClass);
+  $tabContents.not(':first').hide();
+
+  $tabButtonItem.find('a').on('click', function(e) {
+    var target = $(this).attr('href');
+
+    $tabButtonItem.removeClass(activeClass);
+    $(this).parent().addClass(activeClass);
+    $tabSelect.val(target);
+    $tabContents.hide();
+    $(target).show();
+    e.preventDefault();
+  });
+
+  $tabSelect.on('change', function() {
+    var target = $(this).val(),
+        targetSelectNum = $(this).prop('selectedIndex');
+
+    $tabButtonItem.removeClass(activeClass);
+    $tabButtonItem.eq(targetSelectNum).addClass(activeClass);
+    $tabContents.hide();
+    $(target).show();
+  });
+});
+
     </script>
   </body>
   

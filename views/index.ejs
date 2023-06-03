@@ -112,6 +112,7 @@
           </div>
         </div>
         <div class="table-responsive">
+          <% if (expiring_contracts.length > 0) { %>
           <table class="table align-items-center table-flush">
             <thead class="thead-light">
               <tr>
@@ -138,6 +139,10 @@
               <% } %>
             </tbody>
           </table>
+          <% } else { %>
+            <div style="padding: auto;margin:auto;position: relative;left:40%"><p>No tasks to show!</p></div>
+            
+          <% } %>  
         </div>
       </div>
     </div>
@@ -256,6 +261,7 @@
         </div>
         <div class="table-responsive">
           <!-- Projects table -->
+          <% if (tasks.length > 0) { %>
           <table class="table align-items-center table-flush">
             <thead class="thead-light">
               <tr>
@@ -267,6 +273,11 @@
                 <th scope="col">
                   <font style="vertical-align: inherit">
                     <font style="vertical-align: inherit">Status</font>
+                  </font>
+                </th>
+                <th scope="col">
+                  <font style="vertical-align: inherit">
+                    <font style="vertical-align: inherit">Completed?</font>
                   </font>
                 </th>
                 <th scope="col">
@@ -292,26 +303,20 @@
                 <th scope="col">
                  
                 </th>
-                <th scope="col"></th>
-                <th></th>
               </tr>
             </thead>
-            <tbody>
-              <% if (tasks.length > 0) { %>
+            <tbody id="resultsContainer">
+             
                 <% for (let dat of tasks) { %>
-              <tr>
-                <th scope="row">
+              <tr class="car">
+                <td scope="row">
                   <div class="d-flex align-items-center">
                     
                     <span>
-                      <font style="vertical-align: inherit">
-                        <font style="vertical-align: inherit"
-                          ><%= dat.name %></font
-                        >
-                      </font>
+                      <p class="car-title"><%= dat.name %></p>
                     </span>
                   </div>
-                  </th>
+                  </td>
                   <td>
                   <span class="badge badge-pill badge-success">
                     <font style="vertical-align: inherit">
@@ -319,35 +324,39 @@
                     </font>
                   </span>
                    </td>
-                  <td>
-                   <span>
-                    <font style="vertical-align: inherit">
-                      <font style="vertical-align: inherit"><%=  moment(dat.start_date).format('Do MMMM, YYYY') %></font>
-                    </font>
-                  </span>
+                   <td>
+                      <span>
+                      <label class="custom-toggle">
+                        <input id="check_status" type="checkbox" onclick="isCheckedJQuery('<%= dat.task_id %>','COMPLETED')" name="<%= dat.id %>" value="<%= dat.task_id %>">
+                        <span class="custom-toggle-slider rounded-circle" data-label-off="No" data-label-on="Yes"></span>
+                    </label>
+                     </span>
                    </td>
+                   <td>
+                    <div class="d-flex align-items-center">
+                      <span class="ml-2 car-title" ><%=  moment(dat.start_date).format('Do MMMM, YYYY') %></span>
+                    </div>
+                  </td>
                   <td>
-                  <div class="d-flex align-items-center">
-                    <span class="ml-2">
-                      <font style="vertical-align: inherit">
-                        <font style="vertical-align: inherit"><%= moment(dat.due_date).format('Do MMMM, YYYY')  %></font>
-                      </font>
-                    </span>
-                  </div>
-                 </td>
-                 <td>
-                  <div class="d-flex align-items-center">
-                    <span class="ml-2">
-                      <font style="vertical-align: inherit">
-                        <font style="vertical-align: inherit"><%= dat.assigned_to %></font>
-                      </font>
-                    </span>
-                  </div>
+                    <div class="d-flex align-items-center">
+                      <span class="ml-2 car-title" ><%= moment(dat.due_date).format('Do MMMM, YYYY')  %></span>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <span class="ml-2 car-title" ><%= dat.assigned_to %></span>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="d-flex align-items-center">
+                      <span class="ml-2 car-title" ><%= dat.priority %></span>
+                    </div>
                   </td>
                   <td class="table-actions">
                     <button class="table-action btn btn-sm btn-block btn-neutral expandBtn"  onclick="current_task('<%= dat.task_id %>')" data-toggle="modal" data-target="#exampleModal3" data-original-title="Edit product">
                         <i class="fas fa-trash"></i>
                     </button>
+                 
                     <button class="table-action btn btn-sm btn-block btn-neutral"  onclick="current_task('<%= dat.task_id %>')" data-toggle="modal" data-target="#exampleModal2" data-original-title="Edit product">
                         <i class="fas fa-edit"></i>
                     </button>
@@ -355,9 +364,14 @@
                  
               </tr>
               <% } %>
-              <% } %>
+            
+
             </tbody>
           </table>
+          <% } else { %>
+            <div style="padding: auto;margin:auto;position: relative;left:40%"><p>No tasks to show!</p></div>
+            
+          <% } %>  
         </div>
       </div>
     </div>

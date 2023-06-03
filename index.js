@@ -564,13 +564,22 @@ app.get('/budget',checkNotAuthenticated,  async (req,res) => {
                     current_balance = parseFloat(results.rows[0].amount) - total_expenditure
                     console.log(parseFloat(results.rows[0].amount))
                     }
+                    function compare( a, b ) {
+                        if ( a.amount > b.amount ){
+                          return -1;
+                        }
+                        if ( a.amount < b.amount ){
+                          return 1;
+                        }
+                        return 0;
+                      }
                     const page = parseInt(req.query.page) || 1; // Current page number
                     const limit = 10; // Number of items per page
                     const startIndex = (page - 1) * limit;
                     const endIndex = page * limit;
                     const reso = results1.rows.slice(startIndex, endIndex);
                    
-                     res.render('budget',{layout:'./layouts/budget-layout',user:nam,errors:errors,budget_statement:budget_statement,data:results.rows, data1:reso,page, dollarUS:dollarUS,total_expenditure:total_expenditure,expenditure_left:expenditure_left, current_balance:current_balance})
+                     res.render('budget',{layout:'./layouts/budget-layout',user:nam,errors:errors,budget_statement:budget_statement,data:results.rows, data1:reso.sort(compare),page, dollarUS:dollarUS,total_expenditure:total_expenditure,expenditure_left:expenditure_left, current_balance:current_balance})
                 }
             )
         }
@@ -633,14 +642,21 @@ app.get('/cases',checkNotAuthenticated,  async (req,res) => {
 
                                     }
                                    
-                     
+                                    function compare( a, b ) {
+                                        if ( a.end_date > b.end_date ){
+                                          return -1;
+                                        }
+                                        if ( a.end_date < b.end_date ){
+                                          return 1;
+                                        }
+                                    }
                                     const page = parseInt(req.query.page) || 1; // Current page number
                                     const limit = 10; // Number of items per page
                                     const startIndex = (page - 1) * limit;
                                     const endIndex = page * limit;
                                     const reso = results.rows.slice(startIndex, endIndex);
                    
-                     res.render('cases',{layout:'./layouts/cases-layout',unfilteredRows:results.rows, user:nam,errors:errors,cases:results.rows, data: reso,
+                     res.render('cases',{layout:'./layouts/cases-layout',unfilteredRows:results.rows, user:nam,errors:errors,cases:results.rows, data: reso.sort(compare),
                      page,
                      totalItems: results.rows.length,
                      totalPages: Math.ceil(results.rows.length / limit), dataA:results1.rows,dataB:results2.rows,users:results3.rows,case_status:results4.rows})
@@ -830,6 +846,14 @@ app.get('/contracts',checkNotAuthenticated,  async (req,res) => {
                             
                             
                         }
+                        function compare( a, b ) {
+                            if ( a.end_date > b.end_date ){
+                              return -1;
+                            }
+                            if ( a.end_date < b.end_date ){
+                              return 1;
+                            }
+                        }
                  const page = parseInt(req.query.page) || 1; // Current page number
                  const limit = 10; // Number of items per page
                  const startIndex = (page - 1) * limit;
@@ -837,7 +861,7 @@ app.get('/contracts',checkNotAuthenticated,  async (req,res) => {
                  const reso = results.rows.slice(startIndex, endIndex);
              
                 
-                 res.render('contracts',{layout:'./layouts/contracts-layout',user:nam,errors:errors,contracts:results.rows,data:reso,page,dollarUS:dollarUS,vendors:results1.rows,contract_status:results2.rows,dataB:results3.rows})
+                 res.render('contracts',{layout:'./layouts/contracts-layout',user:nam,errors:errors,contracts:results.rows,data:reso.sort(compare),page,dollarUS:dollarUS,vendors:results1.rows,contract_status:results2.rows,dataB:results3.rows})
                     })
                 })
             }
@@ -996,13 +1020,23 @@ app.get('/lawfirms',checkNotAuthenticated, async (req,res) => {
                     not_active += 1
                 }
              })
+             function compare( a, b ) {
+                if ( a.date_created > b.date_created ){
+                  return -1;
+                }
+                if ( a.date_created < b.date_created ){
+                  return 1;
+                }
+                return 0;
+              }
+              
              const page = parseInt(req.query.page) || 1; // Current page number
                     const limit = 10; // Number of items per page
                     const startIndex = (page - 1) * limit;
                     const endIndex = page * limit;
                     const reso = results.rows.slice(startIndex, endIndex);
              
-             res.render('lawfirms',{layout:'./layouts/lawfirms-layout',user:nam,errors:errors,lawfirms:results.rows,data:reso,page, active:active, not_active:not_active})
+             res.render('lawfirms',{layout:'./layouts/lawfirms-layout',user:nam,errors:errors,lawfirms:results.rows,data:reso.sort( compare ),page, active:active, not_active:not_active})
             }
         }
     )
@@ -1312,13 +1346,36 @@ app.get('/tasks',checkNotAuthenticated,  async (req,res) => {
                         if(e.status == 'ACTIVE'){active+=1}
                         if(e.status == 'COMPLETED'){completed+=1}
                     })
+                    function compare( a, b ) {
+                        if ( a.due_date > b.due_date ){
+                          return -1;
+                        }
+                        if ( a.due_date < b.due_date ){
+                          return 1;
+                        }
+                    }
+                    let active_tasks = []
+                    let completed_tasks = []
+                    results.rows.forEach(e=>{
+                        if(e.status == 'ACTIVE'){
+                            active_tasks.push(e)
+                        }
+                        if(e.status == 'COMPLETED'){
+                            completed_tasks.push(e)
+                        }
+                    })
+
                     const page = parseInt(req.query.page) || 1; // Current page number
                     const limit = 10; // Number of items per page
                     const startIndex = (page - 1) * limit;
                     const endIndex = page * limit;
-                    const reso = results.rows.slice(startIndex, endIndex);
+                    const reso = active_tasks.slice(startIndex, endIndex);
+                    const page1 = parseInt(req.query.page1) || 1; // Current page number
+                    const startIndex1 = (page1 - 1) * limit;
+                    const endIndex1 = page1 * limit;
+                    const reso1 = completed_tasks.slice(startIndex1, endIndex1);
                 
-                    res.render('tasks',{layout:'./layouts/tasks-layout',active,completed,user:nam,errors:errors,data:reso,page,users:results1.rows})
+                    res.render('tasks',{layout:'./layouts/tasks-layout',active,completed,user:nam,errors:errors,data:reso.sort(compare),data1:reso1.sort(compare),page,page1,users:results1.rows})
                 })
             
              
@@ -1349,13 +1406,22 @@ app.get('/vendors',checkNotAuthenticated, async (req,res) => {
                         errors.push({message: err});;
                         
                     }
+                    function compare( a, b ) {
+                        if ( a.date_created > b.date_created ){
+                          return -1;
+                        }
+                        if ( a.date_created < b.date_created ){
+                          return 1;
+                        }
+                        return 0;
+                      }
              const page = parseInt(req.query.page) || 1; // Current page number
                     const limit = 10; // Number of items per page
                     const startIndex = (page - 1) * limit;
                     const endIndex = page * limit;
                     const reso = results.rows.slice(startIndex, endIndex);
                 
-             res.render('vendors',{layout:'./layouts/vendors-layout',user:nam,errors:errors,vendors:results.rows, data:reso,page,dataB:results2.rows})
+             res.render('vendors',{layout:'./layouts/vendors-layout',user:nam,errors:errors,vendors:results.rows, data:reso.sort(compare),page,dataB:results2.rows})
                 })
           
         }
@@ -2056,6 +2122,22 @@ app.post('/edit-task', (req, res)=>{
         }
     )
 });
+app.post('/edit-task-status', (req, res)=>{
+    console.log(req.body.id)
+     let status = req.body.status
+     let id = req.body.id
+     pool.query(
+         `UPDATE tasks SET status = $1 WHERE task_id = $2`,
+         [status, id], 
+         (err, results) => {
+             if(err){
+                 errors.push({message: err});;
+             }
+             req.flash('success','You have successfully edited task');
+             res.redirect('/tasks');
+         }
+     )
+ });
 app.post('/add-tasks', (req, res)=>{
     let task_name = req.body.taskName
     let start_date = req.body.startDate

@@ -266,6 +266,7 @@
                 </div>
                 <div class="modal-body">
                     <div class="table-responsive">
+                        <% if (vendors.length > 0) { %>
                         <table class="table align-items-center table-flush" id="table">
                             <thead class="thead-light">
                                 <tr>
@@ -278,7 +279,6 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <% if (vendors.length > 0) { %>
                                     <% for (let dat of vendors) { %>
                                 <tr>
                                                                         <td>
@@ -310,10 +310,13 @@
                                     </td>
                                 </tr>
                                 <% } %>
-                                <% } %>
                                
                             </tbody>
                         </table>
+                        <% } else { %>
+                            <div style="padding: auto;margin:auto;position: relative;left:40%"><p>No Vendors to show!</p></div>
+                            
+                          <% } %> 
                     </div>
                 </div>
                 <div class="modal-footer">

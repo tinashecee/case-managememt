@@ -11766,6 +11766,18 @@ function current_task(t){
 			},
 		})
         }
+        function isCheckedJQuery(a,b) {
+    fetch('/edit-task-status',{
+			method: 'POST',
+			body: JSON.stringify({  
+                id:a,
+                status:b
+			}),
+			headers: {
+				'Content-type': 'application/json; charset=UTF-8'
+			},
+		})
+}
     </script>
    
     </body>

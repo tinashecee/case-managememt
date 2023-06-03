@@ -156,156 +156,356 @@
               </div>
             </div>
           </div>
+         
+         
         </div>
       </div>
+      <div class="tabs">
+        <div class="tab-button-outer">
+          <ul id="tab-button">
+            <li><a href="#tab01">ACTIVE TASKS</a></li>
+            <li><a href="#tab02">COMPLETED TASKS</a></li>
+          </ul>
+        </div>
+        <div class="tab-select-outer">
+          <select id="tab-select">
+            <option value="#tab01">ACTIVE TASKS</option>
+            <option value="#tab02">COMPLETED TASKS</option>
+          </select>
+        </div>
       
-    
-      
-      <div class="table-responsive">
-        <table class="table align-items-center table-flush">
-          <thead class="thead-light">
-            <tr>
-              <th scope="col">
-                <font style="vertical-align: inherit">
-                  <font style="vertical-align: inherit">Name</font>
-                </font>
-              </th>
-              <th scope="col">
-                <font style="vertical-align: inherit">
-                  <font style="vertical-align: inherit">Status</font>
-                </font>
-              </th>
-              <th scope="col">
-                <font style="vertical-align: inherit">
-                  <font style="vertical-align: inherit">Start Date</font>
-                </font>
-              </th>
-              <th scope="col">
-                <font style="vertical-align: inherit">
-                  <font style="vertical-align: inherit">Due Date</font>
-                </font>
-              </th>
-              <th scope="col">
-                <font style="vertical-align: inherit">
-                  <font style="vertical-align: inherit">Assigned To</font>
-                </font>
-              </th>
-              <th scope="col">
-                <font style="vertical-align: inherit">
-                  <font style="vertical-align: inherit">Priority</font>
-                </font>
-              </th>
-              <th scope="col">
-               
-              </th>
-            </tr>
-          </thead>
-          <tbody id="resultsContainer">
+        <div id="tab01" class="tab-contents">
+          <div  data-tab class="table-responsive tabcontent">
+            
             <% if (data.length > 0) { %>
-              <% for (let dat of data) { %>
-            <tr class="car">
-              <td scope="row">
-                <div class="d-flex align-items-center">
-                  
-                  <span>
-                    <p class="car-title"><%= dat.name %></p>
-                  </span>
-                </div>
-                </td>
-                <td>
-                <span class="badge badge-pill badge-success">
-                  <font style="vertical-align: inherit">
-                    <font style="vertical-align: inherit"><%= dat.status %></font>
-                  </font>
-                </span>
-                 </td>
-                 <td>
-                  <div class="d-flex align-items-center">
-                    <span class="ml-2 car-title" ><%=  moment(dat.start_date).format('Do MMMM, YYYY') %></span>
-                  </div>
-                </td>
-                <td>
-                  <div class="d-flex align-items-center">
-                    <span class="ml-2 car-title" ><%= moment(dat.due_date).format('Do MMMM, YYYY')  %></span>
-                  </div>
-                </td>
-                <td>
-                  <div class="d-flex align-items-center">
-                    <span class="ml-2 car-title" ><%= dat.assigned_to %></span>
-                  </div>
-                </td>
-                <td>
-                  <div class="d-flex align-items-center">
-                    <span class="ml-2 car-title" ><%= dat.priority %></span>
-                  </div>
-                </td>
-                <td class="table-actions">
-                  <button class="table-action btn btn-sm btn-block btn-neutral expandBtn"  onclick="current_task('<%= dat.task_id %>')" data-toggle="modal" data-target="#exampleModal3" data-original-title="Edit product">
-                      <i class="fas fa-trash"></i>
-                  </button>
-                  <button class="table-action btn btn-sm btn-block btn-neutral"  onclick="current_task('<%= dat.task_id %>')" data-toggle="modal" data-target="#exampleModal2" data-original-title="Edit product">
-                      <i class="fas fa-edit"></i>
-                  </button>
-              </td>
-               
-            </tr>
-            <% } %>
-            <% } %>
-          </tbody>
-        </table>
-      </div>
-      </div>
-    </div>
-      <div class="row removable">
-        <div class="col-lg-12">
-            <div class="row removable">
-                <div class="col-lg-12">
-                    <div class="row removable">
-                        <div class="col-lg-4">
-                            <div class="row removable">
-                                <div class="col-lg-4">
-                                    <nav aria-label="..." class="">
-                                        <ul class="pagination">
-                                            <li class="page-item">
-                                
-                                                <% if (page > 1) { %>
-                                                  <a class="page-link" href="/tasks?page=<%= page - 1 %>">
-                                                    <i class="fa fa-angle-left"></i>
-                                                    <span class="sr-only">Previous</span>
-                                                  </a>
-                                              <% } %>
-                                            </li>
-                                            <li class="page-item">
-                                               
-                                                <% if (data.length === 10) { %>
-                                                  <a class="page-link" href="/tasks?page=<%= page + 1 %>">
-                                                    <i class="fa fa-angle-right"></i>
-                                                    <span class="sr-only">Next</span>
-                                                  </a>
-                                              <% } %>
-                                            </li>
-                                            <li class="page-item">
-                                                <a class="page-link" href="#"><%= page %></a>
+            <table class="table align-items-center table-flush">
+              <thead class="thead-light">
+                <tr>
+                  <th scope="col">
+                    <font style="vertical-align: inherit">
+                      <font style="vertical-align: inherit">Name</font>
+                    </font>
+                  </th>
+                  <th scope="col">
+                    <font style="vertical-align: inherit">
+                      <font style="vertical-align: inherit">Status</font>
+                    </font>
+                  </th>
+                  <th scope="col">
+                    <font style="vertical-align: inherit">
+                      <font style="vertical-align: inherit">Completed?</font>
+                    </font>
+                  </th>
+                  <th scope="col">
+                    <font style="vertical-align: inherit">
+                      <font style="vertical-align: inherit">Start Date</font>
+                    </font>
+                  </th>
+                  <th scope="col">
+                    <font style="vertical-align: inherit">
+                      <font style="vertical-align: inherit">Due Date</font>
+                    </font>
+                  </th>
+                  <th scope="col">
+                    <font style="vertical-align: inherit">
+                      <font style="vertical-align: inherit">Assigned To</font>
+                    </font>
+                  </th>
+                  <th scope="col">
+                    <font style="vertical-align: inherit">
+                      <font style="vertical-align: inherit">Priority</font>
+                    </font>
+                  </th>
+                  <th scope="col">
+                   
+                  </th>
+                </tr>
+              </thead>
+              <tbody id="resultsContainer">
+                  <% for (let dat of data) { %>
+                <tr class="car">
+                  <td scope="row">
+                    <div class="d-flex align-items-center">
+                      
+                      <span>
+                        <p class="car-title"><%= dat.name %></p>
+                      </span>
+                    </div>
+                    </td>
+                    <td>
+                    <span class="badge badge-pill badge-success">
+                      <font style="vertical-align: inherit">
+                        <font style="vertical-align: inherit"><%= dat.status %></font>
+                      </font>
+                    </span>
+                     </td>
+                     <td>
+                        <span>
+                        <label class="custom-toggle">
+                          <input id="check_status" type="checkbox" onclick="isCheckedJQuery('<%= dat.task_id %>','COMPLETED')" name="<%= dat.id %>" value="<%= dat.task_id %>">
+                          <span class="custom-toggle-slider rounded-circle" data-label-off="No" data-label-on="Yes"></span>
+                      </label>
+                       </span>
+                     </td>
+                     <td>
+                      <div class="d-flex align-items-center">
+                        <span class="ml-2 car-title" ><%=  moment(dat.start_date).format('Do MMMM, YYYY') %></span>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <span class="ml-2 car-title" ><%= moment(dat.due_date).format('Do MMMM, YYYY')  %></span>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <span class="ml-2 car-title" ><%= dat.assigned_to %></span>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <span class="ml-2 car-title" ><%= dat.priority %></span>
+                      </div>
+                    </td>
+                    <td class="table-actions">
+                      <button class="table-action btn btn-sm btn-block btn-neutral expandBtn"  onclick="current_task('<%= dat.task_id %>')" data-toggle="modal" data-target="#exampleModal3" data-original-title="Edit product">
+                          <i class="fas fa-trash"></i>
+                      </button>
+                   
+                      <button class="table-action btn btn-sm btn-block btn-neutral"  onclick="current_task('<%= dat.task_id %>')" data-toggle="modal" data-target="#exampleModal2" data-original-title="Edit product">
+                          <i class="fas fa-edit"></i>
+                      </button>
+                  </td>
+                   
+                </tr>
+                <% } %>
+              </tbody>
+            </table>
+            <% } else { %>
+              <div style="padding: auto;margin:auto;position: relative;left:40%"><p>No Active Tasks to show!</p></div>
+              
+            <% } %> 
+          </div>        
+          <div class="row removable">
+            <div class="col-lg-12">
+                <div class="row removable">
+                    <div class="col-lg-12">
+                        <div class="row removable">
+                            <div class="col-lg-4">
+                                <div class="row removable">
+                                    <div class="col-lg-4">
+                                        <nav aria-label="..." class="">
+                                            <ul class="pagination">
+                                                <li class="page-item">
+                                    
+                                                    <% if (page > 1) { %>
+                                                      <a class="page-link" href="/tasks?page=<%= page - 1 %>">
+                                                        <i class="fa fa-angle-left"></i>
+                                                        <span class="sr-only">Previous</span>
+                                                      </a>
+                                                  <% } %>
                                                 </li>
-                                        </ul>
-                                    </nav>
+                                                <li class="page-item">
+                                                   
+                                                    <% if (data.length === 10) { %>
+                                                      <a class="page-link" href="/tasks?page=<%= page + 1 %>">
+                                                        <i class="fa fa-angle-right"></i>
+                                                        <span class="sr-only">Next</span>
+                                                      </a>
+                                                  <% } %>
+                                                </li>
+                                                <li class="page-item">
+                                                    <a class="page-link" href="#"><%= page %></a>
+                                                    </li>
+                                            </ul>
+                                        </nav>
+                                    </div>
+                                    <div class="col-lg-4"></div>
+                                    <div class="col-lg-4"></div>
                                 </div>
-                                <div class="col-lg-4"></div>
-                                <div class="col-lg-4"></div>
                             </div>
-                        </div>
-                       
-                        <div class="col-lg-4">
-                            <div class="row removable">
-                                <div class="col-lg-6"></div>
-                                <div class="col-lg-6"></div>
+                           
+                            <div class="col-lg-4">
+                                <div class="row removable">
+                                    <div class="col-lg-6"></div>
+                                    <div class="col-lg-6"></div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        </div>
+        <div id="tab02" class="tab-contents">
+          <div  data-tab class="table-responsive tabcontent">
+            <% if (data1.length > 0) { %>
+            <table class="table align-items-center table-flush">
+              <thead class="thead-light">
+                <tr>
+                  <th scope="col">
+                    <font style="vertical-align: inherit">
+                      <font style="vertical-align: inherit">Name</font>
+                    </font>
+                  </th>
+                  <th scope="col">
+                    <font style="vertical-align: inherit">
+                      <font style="vertical-align: inherit">Status</font>
+                    </font>
+                  </th>
+                  <th scope="col">
+                    <font style="vertical-align: inherit">
+                      <font style="vertical-align: inherit">Completed?</font>
+                    </font>
+                  </th>
+                  <th scope="col">
+                    <font style="vertical-align: inherit">
+                      <font style="vertical-align: inherit">Start Date</font>
+                    </font>
+                  </th>
+                  <th scope="col">
+                    <font style="vertical-align: inherit">
+                      <font style="vertical-align: inherit">Due Date</font>
+                    </font>
+                  </th>
+                  <th scope="col">
+                    <font style="vertical-align: inherit">
+                      <font style="vertical-align: inherit">Assigned To</font>
+                    </font>
+                  </th>
+                  <th scope="col">
+                    <font style="vertical-align: inherit">
+                      <font style="vertical-align: inherit">Priority</font>
+                    </font>
+                  </th>
+                  <th scope="col">
+                   
+                  </th>
+                </tr>
+              </thead>
+              <tbody id="resultsContainer">
+               
+                  <% for (let dat of data1) { %>
+                <tr class="car">
+                  <td scope="row">
+                    <div class="d-flex align-items-center">
+                      
+                      <span>
+                        <p class="car-title"><%= dat.name %></p>
+                      </span>
+                    </div>
+                    </td>
+                    <td>
+                    <span class="badge badge-pill badge-success">
+                      <font style="vertical-align: inherit">
+                        <font style="vertical-align: inherit"><%= dat.status %></font>
+                      </font>
+                    </span>
+                     </td>
+                     <td>
+                      <span>
+                      <label class="custom-toggle">
+                        <input id="check_status" type="checkbox" onclick="isCheckedJQuery('<%= dat.task_id %>','ACTIVE')" name="check_status" checked="">
+                        <span class="custom-toggle-slider rounded-circle" data-label-off="No" data-label-on="Yes"></span>
+                    </label>
+                   </span>
+                     </td>
+                     <td>
+                      <div class="d-flex align-items-center">
+                        <span class="ml-2 car-title" ><%=  moment(dat.start_date).format('Do MMMM, YYYY') %></span>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <span class="ml-2 car-title" ><%= moment(dat.due_date).format('Do MMMM, YYYY')  %></span>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <span class="ml-2 car-title" ><%= dat.assigned_to %></span>
+                      </div>
+                    </td>
+                    <td>
+                      <div class="d-flex align-items-center">
+                        <span class="ml-2 car-title" ><%= dat.priority %></span>
+                      </div>
+                    </td>
+                    <td class="table-actions">
+                      <button class="table-action btn btn-sm btn-block btn-neutral expandBtn"  onclick="current_task('<%= dat.task_id %>')" data-toggle="modal" data-target="#exampleModal3" data-original-title="Edit product">
+                          <i class="fas fa-trash"></i>
+                      </button>
+                   
+                      <button class="table-action btn btn-sm btn-block btn-neutral"  onclick="current_task('<%= dat.task_id %>')" data-toggle="modal" data-target="#exampleModal2" data-original-title="Edit product">
+                          <i class="fas fa-edit"></i>
+                      </button>
+                  </td>
+                   
+                </tr>
+                <% } %>
+              </tbody>
+            </table>
+            <% } else { %>
+              <div style="padding: auto;margin:auto;position: relative;left:40%"><p>No Completed Tasks to show!</p></div>
+              
+            <% } %> 
+          </div>   
+          <div class="row removable">
+            <div class="col-lg-12">
+                <div class="row removable">
+                    <div class="col-lg-12">
+                        <div class="row removable">
+                            <div class="col-lg-4">
+                                <div class="row removable">
+                                    <div class="col-lg-4">
+                                        <nav aria-label="..." class="">
+                                            <ul class="pagination">
+                                                <li class="page-item">
+                                    
+                                                    <% if (page1 > 1) { %>
+                                                      <a class="page-link" href="/tasks?page1=<%= page1 - 1 %>">
+                                                        <i class="fa fa-angle-left"></i>
+                                                        <span class="sr-only">Previous</span>
+                                                      </a>
+                                                  <% } %>
+                                                </li>
+                                                <li class="page-item">
+                                                   
+                                                    <% if (data1.length === 10) { %>
+                                                      <a class="page-link" href="/tasks?page1=<%= page1 + 1 %>">
+                                                        <i class="fa fa-angle-right"></i>
+                                                        <span class="sr-only">Next</span>
+                                                      </a>
+                                                  <% } %>
+                                                </li>
+                                                <li class="page-item">
+                                                    <a class="page-link" href="#"><%= page1 %></a>
+                                                    </li>
+                                            </ul>
+                                        </nav>
+                                    </div>
+                                    <div class="col-lg-4"></div>
+                                    <div class="col-lg-4"></div>
+                                </div>
+                            </div>
+                           
+                            <div class="col-lg-4">
+                                <div class="row removable">
+                                    <div class="col-lg-6"></div>
+                                    <div class="col-lg-6"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+      </div>
+     
+    
+      </div>
     </div>
+      
       <div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -530,3 +730,6 @@
             </div>
         </div>
     </div>   
+    
+  
+  

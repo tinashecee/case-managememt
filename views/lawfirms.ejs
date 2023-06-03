@@ -257,6 +257,7 @@
         </div>
       </div>
       <div class="table-responsive">
+        <% if (data.length > 0) { %>
         <table class="table align-items-center table-flush">
           <thead class="thead-light">
             <tr>
@@ -268,7 +269,7 @@
             </tr>
           </thead>
           <tbody id="resultsContainer">
-            <% if (data.length > 0) { %>
+           
               <% for (let dat of data) { %>
             <tr class="car">
               <th scope="row">
@@ -297,10 +298,13 @@
              
             </tr>
             <% } %>
-            <% } %>
           
           </tbody>
         </table>
+        <% } else { %>
+          <div style="padding: auto;margin:auto;position: relative;left:40%"><p>No Law firms to show!</p></div>
+          
+        <% } %>  
       </div>
     </div>
     
