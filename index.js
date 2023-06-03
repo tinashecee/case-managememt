@@ -16,11 +16,28 @@ const puppeteer = require('puppeteer');
 const fileUpload = require('express-fileupload');
 const cors = require('cors');
 const morgan = require('morgan');
-
+const CronJob = require('cron').CronJob
 const _ = require('lodash');
 // enable files upload
 
-
+//cron job
+if(process.env.NODE_APP_INSTANCE === '0') {
+const job = new CronJob('0 8 * * *', function()  {
+    pool.query(
+        `SELECT *
+        FROM contracts
+        WHERE end_date < CURRENT_DATE + INTERVAL '1 month'`,
+        [],
+        (err, result3) => {
+            if(err){
+                console.log(err)
+                errors.push({message: err});
+                
+            }
+        });
+}, null, true, 'Etc/UTC');
+//job.start();
+}
 const HTML_TEMPLATE = require("./mail-template.js");
 const SENDMAIL = require("./mailer.js") 
 
@@ -734,7 +751,7 @@ app.get('/cases',checkNotAuthenticated,  async (req,res) => {
                      res.render('cases',{layout:'./layouts/cases-layout', user_role, unfilteredRows:results.rows, user:nam,errors:errors,cases:results.rows, data: reso.sort(compare),
                      page,
                      totalItems: results.rows.length,
-                     totalPages: Math.ceil(results.rows.length / limit), dataA:results1.rows,dataB:results2.rows,users:results3.rows,case_status:results4.rows})
+                     totalPages: Math.ceil(results.rows.length / limit), dataA:results1.rows,dataB:results2.rows,users:results3.rows,case_status:results4.rows,total_cases:results.rows})
                             })
                         })
                         })
@@ -936,7 +953,7 @@ app.get('/contracts',checkNotAuthenticated,  async (req,res) => {
                  const reso = results.rows.slice(startIndex, endIndex);
              
                 
-                 res.render('contracts',{layout:'./layouts/contracts-layout', user_role, user:nam,errors:errors,contracts:results.rows,data:reso.sort(compare),page,dollarUS:dollarUS,vendors:results1.rows,contract_status:results2.rows,dataB:results3.rows})
+                 res.render('contracts',{layout:'./layouts/contracts-layout', user_role, user:nam,errors:errors,contracts:results.rows,data:reso.sort(compare),page,dollarUS:dollarUS,vendors:results1.rows,contract_status:results2.rows,dataB:results3.rows,total_contracts:results.rows})
                     })
                 })
             }
@@ -1111,7 +1128,7 @@ app.get('/lawfirms',checkNotAuthenticated, async (req,res) => {
                     const endIndex = page * limit;
                     const reso = results.rows.slice(startIndex, endIndex);
              
-             res.render('lawfirms',{layout:'./layouts/lawfirms-layout', user_role, user:nam,errors:errors,lawfirms:results.rows,data:reso.sort( compare ),page, active:active, not_active:not_active})
+             res.render('lawfirms',{layout:'./layouts/lawfirms-layout', user_role, user:nam,errors:errors,lawfirms:results.rows,data:reso.sort( compare ),page, active:active, not_active:not_active,total_lawfirms:results.rows})
             }
         }
     )
@@ -1496,7 +1513,7 @@ app.get('/vendors',checkNotAuthenticated, async (req,res) => {
                     const endIndex = page * limit;
                     const reso = results.rows.slice(startIndex, endIndex);
                 
-             res.render('vendors',{layout:'./layouts/vendors-layout', user_role, user:nam,errors:errors,vendors:results.rows, data:reso.sort(compare),page,dataB:results2.rows})
+             res.render('vendors',{layout:'./layouts/vendors-layout', user_role, user:nam,errors:errors,vendors:results.rows, data:reso.sort(compare),page,dataB:results2.rows,total_vendors:results.rows})
                 })
           
         }
