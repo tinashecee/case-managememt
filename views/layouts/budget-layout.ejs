@@ -287,14 +287,14 @@ expandBtns.forEach((btn, index) => {
     });
 });
 
-function editExpenditure(params1,params2,params3,params4) {
+function editExpenditure(params1,params2,params3) {
     var modal = document.getElementById('exampleModal5');
 var modalTitle = modal.querySelector('.modal-title');
 var modalBody = modal.querySelector('.modal-body');
   // Set the modal title and body content
   modalTitle.textContent = 'Edit Expenditure'; // Replace with your desired title
   modalBody.innerHTML = `
-  <form  action="/edit-expenditure?id=${params1}&expenditure_desc=${params3}" method="POST">
+  <form  action="/edit-expenditure?id=${params1}&expenditure_desc=${params2}" method="POST">
     <div class="mb-3">
                             <label for="expenditure_date" class="form-label"
                               >Expenditure Date</label
@@ -303,7 +303,7 @@ var modalBody = modal.querySelector('.modal-body');
                               type="date"
                               class="form-control"
                               id="expenditure_date"
-                              value="${params2}"
+                             
                               name="expenditure_date"
                               required
                             />
@@ -316,7 +316,7 @@ var modalBody = modal.querySelector('.modal-body');
                               type="text"
                               class="form-control"
                               id="expenditure_desc"
-                              value="${params3}"
+                              value="${params2}"
                               name="expenditure_desc"
                               required
                             />
@@ -329,7 +329,7 @@ var modalBody = modal.querySelector('.modal-body');
                           type="number"
                           class="form-control"
                           id="expenditure"
-                          value="${params4}"
+                          value="${params3}"
                           name="expenditure"
                           required
                         />

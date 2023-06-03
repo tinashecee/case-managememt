@@ -177,13 +177,13 @@
                                     <%= dollarUS.format(dat.variance) %></td>
                                 <td class="table-actions">
                                     <button class="table-action btn btn-sm btn-block btn-neutral expandBtn"  >
-                                        <i class="fas fa-file"></i>
+                                       View Expenses
                                     </button>
                                     <button class="table-action btn btn-sm btn-block btn-danger" onclick="deleteBudgetItem('<%= dat.budget_id %>', '<%= dat.budget %>','<%= dat.budget_name %>')"  data-toggle="modal" data-target="#exampleModal6" data-original-title="Edit product">
                                       <i class="fas fa-trash"></i>
                                   </button>
                                     <button class="table-action btn btn-sm btn-block btn-neutral"  onclick="expenditure('<%= dat.budget %>','<%= dat.budget_id %>','<%= dat.actual %>')" data-toggle="modal" data-target="#exampleModal3" data-original-title="Edit product">
-                                        <i class="fas fa-edit"></i>
+                                        Add Expense
                                     </button>
                                 </td>
                             </tr>

@@ -11755,17 +11755,98 @@ document.body.addEventListener("keyup", function (e) {
     click = 0;
   }
 });
-function current_task(t){
-            fetch('/current_task',{
-			method: 'POST',
-			body: JSON.stringify({  
-                task_id:t,
-			}),
-			headers: {
-				'Content-type': 'application/json; charset=UTF-8'
-			},
-		})
-        }
+function edit_task(params1,params2,params3,params4,params5,params6,params7,params8,params9) {
+    console.log("hh")
+    var modal = document.getElementById('exampleModal2');
+var modalTitle = modal.querySelector('.modal-title');
+var modalBody = modal.querySelector('.modal-body');
+  // Set the modal title and body content
+  modalTitle.textContent = `Edit Task`; // Replace with your desired title
+  modalBody.innerHTML = `
+   
+                <form action="/edit-task?id=${params1}" method="POST">     
+            
+                    <div class="mb-3">
+                    <label for="taskName" class="form-label">Task Name</label>
+                    <input type="text" value="${params2}" class="form-control" id="taskName" name="taskName" required>
+                  </div>
+                  <div class="row mb-3">
+                    <div class="col-md-6">
+                      <label for="startDate" class="form-label">Start Date</label>
+                      <input type="date" value="${params3}" class="form-control" id="startDate" name="startDate" required>
+                    </div>
+                    <div class="col-md-6">
+                      <label for="dueDate" class="form-label">Due Date</label>
+                      <input type="date" value="${params4}" class="form-control" id="dueDate" name="dueDate" required>
+                    </div>
+                  </div>
+                  <div class="mb-3">
+                    <label for="priority" class="form-label">Priority</label>
+                    <select class="form-select"  value="${params5}" id="priority" name="priority" required>
+                      <option value="" disabled selected>Select Priority</option>
+                      <option value="high">High</option>
+                      <option value="medium">Medium</option>
+                      <option value="low">Low</option>
+                    </select>
+                  </div>
+                  <div class="mb-3">
+                    <label for="frequency" class="form-label">Frequency</label>
+                    <select class="form-select" value="${params6}" id="frequency" name="frequency" required>
+                      <option value="" disabled selected>Select Frequency</option>
+                      <option value="weekly">Weekly</option>
+                      <option value="biweekly">2 Weeks</option>
+                      <option value="monthly">1 Month</option>
+                      <option value="bimonthly">2 Months</option>
+                      <option value="quarterly">3 Months</option>
+                      <option value="halfyearly">6 Months</option>
+                      <option value="yearly">1 Year</option>
+                      <option value="custom">Custom</option>
+                    </select>
+                  </div>
+                  <div class="mb-3">
+                    <label for="assignees" class="form-label">Assignees</label>
+                    <select class="form-select" id="frequency" value="${params7}" name="assiigness" required>
+                      <% for (let dat of users) { %>
+                      <option value="<%= dat.name %>"><%= dat.name %></option>
+                      <% } %>
+                    </select>
+                  </div>
+                  <div class="mb-3">
+                    <label for="taskDescription" class="form-label">Task Description</label>
+                    <textarea class="form-control" value="${params8}" id="taskDescription" name="taskDescription" rows="3"></textarea>
+                  </div>
+                  <div class="mb-3">
+                    <label for="completed" class="form-label">Status</label>
+                    <select class="form-select" id="status" value="${params9}" name="status" required>
+                      <option value="ACTIVE" selected>ACTIVE</option>
+                      <option value="COMPLETED">COMPLETED</option>
+                     
+                    </select>
+                  </div>
+                  <div class="mb-3">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Update Vendor</button>
+                </div>
+                </form>
+  `;
+            }
+            function delete_task(params1,params2) {
+    var modal = document.getElementById('exampleModal3');
+var modalTitle = modal.querySelector('.modal-title');
+var modalBody = modal.querySelector('.modal-body');
+  // Set the modal title and body content
+  modalTitle.textContent = `Are you sure you want to Delete Task:  ${params2} ?`; // Replace with your desired title
+  modalBody.innerHTML = `
+  <form  action="/delete-task?id=${params1}" method="POST">
+    <div class="mb-3">
+                         
+                    <div class="mb-3">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Delete</button>
+                    </div>
+                </form>             
+  `;
+            }
         function isCheckedJQuery(a,b) {
     fetch('/edit-task-status',{
 			method: 'POST',

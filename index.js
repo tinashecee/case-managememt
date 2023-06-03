@@ -91,12 +91,79 @@ let compliance_contact_email = ''
 let compliance_survey_questions = []
 let compliance_data = []
 let scrapping_results = []
-let current_task
-let current_vendor
 let budgetLineItems
 
-
-
+function sendEmail(a,b,c,d){
+    pool.query(
+        `SELECT * FROM users WHERE name = $1`,
+        [a],
+        (err, results) => {
+            if(err){
+                console.log(err)
+                errors.push({message: err});;
+                
+            }
+    const message = "New Task Assignment"
+    const options = {
+        from: "CASE MANAGEMENT SYSTEM <mochonam19@gmail.com>", // sender address
+        to: results.rows[0].email, // receiver email
+        subject: "A new task has been assigned to you", // Subject line
+        text: message,
+        html: `<h2>New Task Assigned to You</h2>
+        <p>Dear ${a},</p>
+        <p>A new task has been assigned to you in the ProLegal Case Management System. Please review the details below:</p>
+        <ul>
+            <li><strong>Task:</strong> ${b}</li>
+            <li><strong>Description:</strong> ${c}</li>
+            <li><strong>Due Date:</strong> ${d}</li>
+            <li><strong>Assigned By:</strong> ${nam}</li>
+        </ul>
+        <p>Please log in to the system to access the task and view any associated files or instructions. Promptly complete the task within the specified deadline to ensure smooth case progress and effective collaboration.</p>
+        <p>If you have any questions, feel free to reach out to the assigner or our support team.</p>
+        <p>Thank you,</p>
+        <p>Prolegal Team<br>`
+    }        
+    // send mail with defined transport object and mail options
+SENDMAIL(options, (info) => {
+});
+        })
+}
+function sendEmail1(a,b,c,d,e){
+    pool.query(
+        `SELECT * FROM users WHERE name = $1`,
+        [a],
+        (err, results) => {
+            if(err){
+                console.log(err)
+                errors.push({message: err});;
+                
+            }
+    const message = "New Case Assignment"
+    const options = {
+        from: "CASE MANAGEMENT SYSTEM <mochonam19@gmail.com>", // sender address
+        to: results.rows[0].email, // receiver email
+        subject: "A new task has been assigned to you", // Subject line
+        text: message,
+        html: `<h2>New Case Assigned to You</h2>
+        <p>Dear ${a},</p>
+        <p>A new task has been assigned to you in the ProLegal Case Management System. Please review the details below:</p>
+        <ul>
+            <li><strong>Case:</strong> ${b}</li>
+            <li><strong>Description:</strong> ${c}</li>
+            <li><strong>Start Date:</strong> ${d}</li>
+            <li><strong>End Date:</strong> ${e}</li>
+            <li><strong>Assigned By:</strong> ${nam}</li>
+        </ul>
+        <p>Please log in to the system to access the task and view any associated files or instructions. Promptly complete the task within the specified deadline to ensure smooth case progress and effective collaboration.</p>
+        <p>If you have any questions, feel free to reach out to the assigner or our support team.</p>
+        <p>Thank you,</p>
+        <p>Prolegal Team<br>`
+    }        
+    // send mail with defined transport object and mail options
+SENDMAIL(options, (info) => {
+});
+        })
+}
 app.post('/upload-case', async (req, res) => {
     try {
         if(!req.files) {
@@ -544,12 +611,13 @@ app.get('/budget',checkNotAuthenticated,  async (req,res) => {
                         style: "currency",
                         currency: "USD", 
                     });
-                   
+
                     if(results.rows[0]){
                         budget_balance = results.rows[0].balance
                         budget_amount = results.rows[0].amount
                         budget_id = results.rows[0].budget_id
                     }
+                    total_expenditure = 0
                     if(results1.rows[0] && results.rows[0]){
                         results1.rows.forEach(e=>{
                            total_expenditure += parseFloat(e.actual)
@@ -565,10 +633,10 @@ app.get('/budget',checkNotAuthenticated,  async (req,res) => {
                     console.log(parseFloat(results.rows[0].amount))
                     }
                     function compare( a, b ) {
-                        if ( a.amount > b.amount ){
+                        if ( a.budget > b.budget){
                           return -1;
                         }
-                        if ( a.amount < b.amount ){
+                        if ( a.budget < b.budget ){
                           return 1;
                         }
                         return 0;
@@ -1602,8 +1670,17 @@ app.post('/update-case-members', (req, res)=>{
             if(err){
                 errors.push({message: err});;
             }
+            pool.query(
+                'SELECT * FROM cases  WHERE case_id = $1',
+               [query], 
+               (err, results1) => {
+                   if(err){
+                       errors.push({message: err});;
+                   }
+            sendEmail1(staff_members,results1.rows[0].case_name,results1.rows[0].notes,results1.rows[0].start_date,results1.rows[0].end_date)
             req.flash('success','You have successfully updated status of  Cases');
             res.redirect('/case_view?id='+query);
+                })
         }
     )
     
@@ -1785,9 +1862,17 @@ app.post('/add-case', (req, res)=>{
             if(err){
                 errors.push({message: err});;
             }
-           // console.log(results)
+            pool.query(
+                'SELECT * FROM cases  WHERE case_name = $1',
+               [case_name], 
+               (err, results1) => {
+                   if(err){
+                       errors.push({message: err});;
+                   }
+            sendEmail1(staff_members,results1.rows[0].case_name,results1.rows[0].notes,results1.rows[0].start_date,results1.rows[0].end_date)
             req.flash('success','You have successfully added a case');
             res.redirect('/cases');
+                })
         }
     )
 });
@@ -1834,6 +1919,7 @@ app.post('/edit-expenditure', (req, res)=>{
     let expenditure_date = req.body.expenditure_date
     let expenditure_desc = req.body.expenditure_desc
     let expenditureArray  = []
+    let actual = 0
     pool.query( 'SELECT * from budget_items WHERE budget_id = $1',
     [id], 
     (err, results) => {
@@ -1842,17 +1928,19 @@ app.post('/edit-expenditure', (req, res)=>{
         }
         expenditureArray = results.rows[0].expenditure
         
+        console.log()
         let count = 0
         expenditureArray.forEach(elem=>{
            // console.log(elem.expenditure_desc,expe)
+           actual+=parseFloat(elem.expenditure)
             if(elem.expenditure_desc  == expe){
                expenditureArray[count]={expenditure:expenditure,expenditure_desc:expenditure_desc,expenditure_date:expenditure_date,balance:(parseFloat(elem.expenditure)+elem.balance-expenditure)}
             }
             count+=1
         })
        // console.log(expenditureArray)
-        pool.query( 'UPDATE budget_items SET expenditure = $1  WHERE budget_id = $2',
-        [expenditureArray, id], 
+        pool.query( 'UPDATE budget_items SET expenditure = $1, actual = $2  WHERE budget_id = $3',
+        [expenditureArray, actual, id], 
         (err, results) => {
             if(err){
                 errors.push({message: err});;
@@ -1889,6 +1977,7 @@ app.post('/add-vendor', (req, res)=>{
 });
 app.post('/edit-vendor', (req, res)=>{
    // console.log(req.body)
+   let id = req.query.id
     let contact_person = req.body.contactPerson
     let phone_number = req.body.phoneNumber
     let company_name = req.body.vendorName
@@ -1897,7 +1986,7 @@ app.post('/edit-vendor', (req, res)=>{
     let email = req.body.email
     pool.query(
         `UPDATE vendors SET  phone_number = $1, contact_person = $2, company_name = $3, vat_number = $4, physical_address = $5, email = $6 WHERE vendor_id = $7`,
-        [ phone_number, contact_person, company_name, vat_number, physical_address, email, current_vendor], 
+        [ phone_number, contact_person, company_name, vat_number, physical_address, email, id], 
         (err, results) => {
             if(err){
                 errors.push({message: err});;
@@ -1912,7 +2001,7 @@ app.post('/delete-vendor', (req, res)=>{
     //console.log(current_vendor)
     pool.query(
         `DELETE from vendors WHERE vendor_id = $1`,
-        [current_vendor], 
+        [req.query.id], 
         (err, results) => {
             if(err){
                 errors.push({message: err});;
@@ -2087,6 +2176,7 @@ app.post('/add-expenditure', (req, res)=>{
          if(err){
              errors.push({message: err});;
          }
+         req.flash('success','You have successfully added expense');
          res.redirect('/budget');
      }
   )
@@ -2112,11 +2202,12 @@ app.post('/edit-task', (req, res)=>{
     date_created = formatDate(yourDate)
     pool.query(
         `UPDATE tasks SET name = $1, start_date = $2, due_date = $3, priority = $4, frequency = $5, assigned_to = $6, description = $7, status = $8 WHERE task_id = $9`,
-        [task_name, start_date, due_date, priority, frequency, assigness, task_description, statuss,current_task], 
+        [task_name, start_date, due_date, priority, frequency, assigness, task_description, statuss,req.query.id], 
         (err, results) => {
             if(err){
                 errors.push({message: err});;
             }
+            sendEmail(assigness,task_name,task_description,due_date)
             req.flash('success','You have successfully edited task');
             res.redirect('/tasks');
         }
@@ -2156,6 +2247,7 @@ app.post('/add-tasks', (req, res)=>{
             if(err){
                 errors.push({message: err});;
             }
+            sendEmail(assigness,task_name,task_description,due_date)
             req.flash('success','You have successfully added a task');
             res.redirect('/tasks');
         }
@@ -2165,7 +2257,7 @@ app.post('/delete-task', (req, res)=>{
     
     pool.query(
         `DELETE from tasks WHERE task_id = $1`,
-        [current_task], 
+        [req.query.id], 
         (err, results) => {
             if(err){
                 errors.push({message: err});;
@@ -2897,12 +2989,7 @@ app.post('/update-compliance-question-count', async (req,res) => {
 app.post('/reduce-compliance-question-count', async (req,res) => { 
     compliance_count-=1
 })
-app.post('/current_task', async (req,res) => { 
-    current_task = req.body.task_id
-})
-app.post('/current_vendor', async (req,res) => { 
-    current_vendor = req.body.vendor_id
-})
+
 app.post('/budget_statement', async (req,res) => {
     console.log(req.body.data) 
     let id = req.body.data

@@ -125,10 +125,10 @@
                                         </div>
                                     </td>
                                     <td class="table-actions">
-                                        <button class="table-action btn btn-sm btn-block btn-neutral expandBtn"  onclick="current_vendor('<%= dat.vendor_id %>')" data-toggle="modal" data-target="#exampleModal2" data-original-title="Edit product">
+                                        <button class="table-action btn btn-sm btn-block btn-neutral expandBtn"  onclick="delete_vendor('<%= dat.vendor_id %>','<%= dat.company_name %>')" data-toggle="modal" data-target="#exampleModal2" data-original-title="Edit product">
                                             <i class="fas fa-trash"></i>
                                         </button>
-                                        <button class="table-action btn btn-sm btn-block btn-neutral"  onclick="current_vendor('<%= dat.vendor_id %>')" data-toggle="modal" data-target="#exampleModal1" data-original-title="Edit product">
+                                        <button class="table-action btn btn-sm btn-block btn-neutral"  onclick="edit_vendor('<%= dat.vendor_id %>','<%= dat.company_name %>','<%= dat.physical_address %>','<%= dat.vat_number %>','<%= dat.contact_person %>','<%= dat.phone_number %>','<%= dat.email %>')" data-toggle="modal" data-target="#exampleModal1" data-original-title="Edit product">
                                             <i class="fas fa-edit"></i>
                                         </button>
                                     </td>
@@ -140,45 +140,44 @@
                         </table>
                     </div>
                 </div>
-                <div class="row removable">
-                    <div class="col-lg-4"></div>
-                    <div class="col-lg-4"></div>
-                    <div class="col-lg-4">
-                        <nav aria-label="..." class="">
-                            <ul class="pagination">
-                                <li class="page-item">
-                                    
-                                    <% if (page > 1) { %>
-                                      <a class="page-link" href="/vendors?page=<%= page - 1 %>">
-                                        <i class="fa fa-angle-left"></i>
-                                        <span class="sr-only">Previous</span>
-                                      </a>
-                                  <% } %>
-                                </li>
-                                <li class="page-item">
-                                   
-                                    <% if (data.length === 10) { %>
-                                      <a class="page-link" href="/vendors?page=<%= page + 1 %>">
-                                        <i class="fa fa-angle-right"></i>
-                                        <span class="sr-only">Next</span>
-                                      </a>
-                                  <% } %>
-                                </li>
-                                <li class="page-item">
-                                    <a class="page-link" href="#"><%= page %></a>
-                                    </li>
-                            </ul>
-                        </nav>
-                    </div>
-                </div>
+        
             </div>
+        </div>
+    </div>
+    <div class="row removable">
+        <div class="col-lg-4">
+            <nav aria-label="..." class="">
+                <ul class="pagination">
+                    <li class="page-item">
+                        
+                        <% if (page > 1) { %>
+                          <a class="page-link" href="/vendors?page=<%= page - 1 %>">
+                            <i class="fa fa-angle-left"></i>
+                            <span class="sr-only">Previous</span>
+                          </a>
+                      <% } %>
+                    </li>
+                    <li class="page-item">
+                       
+                        <% if (data.length === 10) { %>
+                          <a class="page-link" href="/vendors?page=<%= page + 1 %>">
+                            <i class="fa fa-angle-right"></i>
+                            <span class="sr-only">Next</span>
+                          </a>
+                      <% } %>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="#"><%= page %></a>
+                        </li>
+                </ul>
+            </nav>
         </div>
     </div>
     
     <div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
-                <form action="/edit-vendor" method="POST">
+               
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">Edit Vendor</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -186,65 +185,12 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="vendorName" class="form-label">Vendor Name (required)  </label>
-                        <input type="text" class="form-control" id="vendorName" name="vendorName" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="address" class="form-label">Address</label>
-                        <input type="text" class="form-control" id="address" name="address">
-                    </div>
-                    <div class="mb-3">
-                        <label for="vatNumber" class="form-label">VAT Number</label>
-                        <input type="text" class="form-control" id="vatNumber" name="vatNumber">
-                    </div>
-                    <div class="mb-3">
-                        <label for="contactPerson" class="form-label">Contact Person  (required)</label>
-                        <input type="text" class="form-control" id="contactPerson" name="contactPerson" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="phoneNumber" class="form-label">Phone Number  (required)</label>
-                        <input type="tel" class="form-control" id="phoneNumber" name="phoneNumber" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="email" class="form-label">Email address</label>
-                        <input type="email" class="form-control" id="email" name="email">
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Update Vendor</button>
-                </div>
-            </form>
+                   
             </div>
         </div>
-    </div>   
-    <div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <form action='/delete-vendor' method="POST">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Delete Vendor</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">X</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                
-                  
-                  <div class="mb-3">
-                    <span>Are you sure that you want to <label for="priority" style="color: red;" class="form-label"> DELETE VENDOR?</label></span>
-                   
-                  </div>
-               </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">CANCEL</button>
-                    <button type="submit"  class="btn btn-primary">DELETE</button>
-                </div>
-            </form> 
-            </div>
-      </div>
-      </div>
+    </div>  
+    </div> 
+
       <div class="modal fade" id="exampleModalSearch"  tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" style="max-width: 960px;
         width: 100%;" role="document">
@@ -325,3 +271,20 @@
             </div>
         </div>
     </div>  
+  
+    <div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+               
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Delete Vendor</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">X</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                   
+            </div>
+        </div>
+    </div>   
+    </div>

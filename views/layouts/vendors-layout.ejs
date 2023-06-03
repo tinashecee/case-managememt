@@ -242,5 +242,62 @@ function filterTableRows(filter) {
     row.style.display = shouldDisplay ? '' : 'none';
   }
 }
+function edit_vendor(params1,params2,params3,params4,params5,params6,params7) {
+    var modal = document.getElementById('exampleModal1');
+var modalTitle = modal.querySelector('.modal-title');
+var modalBody = modal.querySelector('.modal-body');
+  // Set the modal title and body content
+  modalTitle.textContent = `Edit Vendor`; // Replace with your desired title
+  modalBody.innerHTML = `
+   
+                <form action="/edit-vendor?id=${params1}" method="POST">     
+                <div class="mb-3">
+                        <label for="vendorName" class="form-label">Vendor Name (required)  </label>
+                        <input type="text" value="${params2}" class="form-control" id="vendorName" name="vendorName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="address" class="form-label">Address</label>
+                        <input type="text" value="${params3}" class="form-control" id="address" name="address">
+                    </div>
+                    <div class="mb-3">
+                        <label for="vatNumber" class="form-label">VAT Number</label>
+                        <input type="text" value="${params4}" class="form-control" id="vatNumber" name="vatNumber">
+                    </div>
+                    <div class="mb-3">
+                        <label for="contactPerson" class="form-label">Contact Person  (required)</label>
+                        <input type="text" value="${params5}" class="form-control" id="contactPerson" name="contactPerson" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="phoneNumber" class="form-label">Phone Number  (required)</label>
+                        <input type="tel" value="${params6}"  class="form-control" id="phoneNumber" name="phoneNumber" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email address</label>
+                        <input type="email" value="${params7}" class="form-control" id="email" name="email">
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Update Vendor</button>
+                </div>
+  `;
+            }
+            function delete_vendor(params1,params2) {
+    var modal = document.getElementById('exampleModal2');
+var modalTitle = modal.querySelector('.modal-title');
+var modalBody = modal.querySelector('.modal-body');
+  // Set the modal title and body content
+  modalTitle.textContent = `Are you sure you want to Delete Vendor:  ${params2} ?`; // Replace with your desired title
+  modalBody.innerHTML = `
+  <form  action="/delete-vendor?id=${params1}" method="POST">
+    <div class="mb-3">
+                         
+                    <div class="mb-3">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Delete</button>
+                    </div>
+                </form>             
+  `;
+            }
     </script>
 </body>

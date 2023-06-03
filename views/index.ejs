@@ -327,9 +327,9 @@
                    <td>
                       <span>
                       <label class="custom-toggle">
-                        <input id="check_status" type="checkbox" onclick="isCheckedJQuery('<%= dat.task_id %>','COMPLETED')" name="<%= dat.id %>" value="<%= dat.task_id %>">
+                       <input id="check_status" type="checkbox" onclick="isCheckedJQuery('<%= dat.task_id %>','COMPLETED')" name="<%= dat.id %>" value="<%= dat.task_id %>">
                         <span class="custom-toggle-slider rounded-circle" data-label-off="No" data-label-on="Yes"></span>
-                    </label>
+                </label>
                      </span>
                    </td>
                    <td>
@@ -353,13 +353,14 @@
                     </div>
                   </td>
                   <td class="table-actions">
-                    <button class="table-action btn btn-sm btn-block btn-neutral expandBtn"  onclick="current_task('<%= dat.task_id %>')" data-toggle="modal" data-target="#exampleModal3" data-original-title="Edit product">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                 
-                    <button class="table-action btn btn-sm btn-block btn-neutral"  onclick="current_task('<%= dat.task_id %>')" data-toggle="modal" data-target="#exampleModal2" data-original-title="Edit product">
-                        <i class="fas fa-edit"></i>
-                    </button>
+                    <button class="table-action btn btn-sm btn-block btn-neutral expandBtn"  onclick="delete_task('<%= dat.task_id %>','<%= dat.name %>')" data-toggle="modal" data-target="#exampleModal3" data-original-title="Edit product">
+                      <i class="fas fa-trash"></i>
+                  </button>
+               
+                  <button class="table-action btn btn-sm btn-block btn-neutral"  onclick="edit_task('<%= dat.task_id %>','<%= dat.name %>','<%= dat.start_date %>','<%= dat.due_date %>','<%= dat.priority %>','<%= dat.frequency %>','<%= dat.assigned_to %>','<%= dat.description %>','<%= dat.status %>')" data-toggle="modal" data-target="#exampleModal2" data-original-title="Edit product">
+                      <i class="fas fa-edit"></i>
+                  </button>
+              </td>
                 </td>
                  
               </tr>
@@ -380,7 +381,6 @@
 <div class="modal fade" id="exampleModal2" style="z-index:45" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
-          <form action='/edit-task' method="POST">
           <div class="modal-header">
               <h5 class="modal-title" id="exampleModalLabel">Edit Task</h5>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -389,76 +389,14 @@
           </div>
           <div class="modal-body">
           
-            <div class="mb-3">
-              <label for="taskName" class="form-label">Task Name</label>
-              <input type="text" class="form-control" id="taskName" name="taskName" required>
-            </div>
-            <div class="row mb-3">
-              <div class="col-md-6">
-                <label for="startDate" class="form-label">Start Date</label>
-                <input type="date" class="form-control" id="startDate" name="startDate" required>
-              </div>
-              <div class="col-md-6">
-                <label for="dueDate" class="form-label">Due Date</label>
-                <input type="date" class="form-control" id="dueDate" name="dueDate" required>
-              </div>
-            </div>
-            <div class="mb-3">
-              <label for="priority" class="form-label">Priority</label>
-              <select class="form-select" id="priority" name="priority" required>
-                <option value="" disabled selected>Select Priority</option>
-                <option value="high">High</option>
-                <option value="medium">Medium</option>
-                <option value="low">Low</option>
-              </select>
-            </div>
-            <div class="mb-3">
-              <label for="frequency" class="form-label">Frequency</label>
-              <select class="form-select" id="frequency" name="frequency" required>
-                <option value="" disabled selected>Select Frequency</option>
-                <option value="weekly">Weekly</option>
-                <option value="biweekly">2 Weeks</option>
-                <option value="monthly">1 Month</option>
-                <option value="bimonthly">2 Months</option>
-                <option value="quarterly">3 Months</option>
-                <option value="halfyearly">6 Months</option>
-                <option value="yearly">1 Year</option>
-                <option value="custom">Custom</option>
-              </select>
-            </div>
-            <div class="mb-3">
-              <label for="assignees" class="form-label">Assignees</label>
-              <select class="form-select" id="frequency" name="assiigness" required>
-                <% for (let dat of users) { %>
-                <option value="<%= dat.id %>"><%= dat.name %></option>
-                <% } %>
-              </select>
-            </div>
-            <div class="mb-3">
-              <label for="taskDescription" class="form-label">Task Description</label>
-              <textarea class="form-control" id="taskDescription" name="taskDescription" rows="3"></textarea>
-            </div>
-            <div class="mb-3">
-              <label for="completed" class="form-label">Status</label>
-              <select class="form-select" id="status" name="status" required>
-                <option value="ACTIVE" selected>ACTIVE</option>
-                <option value="COMPLETED">COMPLETED</option>
-               
-              </select>
-            </div>
-         </div>
-          <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-              <button type="submit" disabled class="btn btn-primary">SAVE</button>
-          </div>
-      </form> 
+          
       </div>
+</div>
 </div>
 </div>
 <div class="modal fade" id="exampleModal3" style="z-index:45" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
-          <form action='/delete-task' method="POST">
           <div class="modal-header">
               <h5 class="modal-title" id="exampleModalLabel">Delete Task</h5>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -467,17 +405,7 @@
           </div>
           <div class="modal-body">
           
-            
-            <div class="mb-3">
-              <span>Are you sure that you want to <label for="priority" style="color: red;" class="form-label"> DELETE TASK?</label></span>
-             
-            </div>
-         </div>
-          <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">CANCEL</button>
-              <button type="submit" disabled class="btn btn-primary">DELETE</button>
-          </div>
-      </form> 
       </div>
+</div>
 </div>
 </div>
