@@ -2800,6 +2800,28 @@ app.post('/department', (req,res) => {
         }
     )
 });
+app.post('/edit-user', (req,res) => {
+    let user_name = req.body.user_name
+    let email = req.body.email
+    let role = req.body.role
+    let activated
+    if(req.body.activated == 'true'){
+         activated = true
+    }else{
+        activated = false
+    }
+    pool.query(
+        'UPDATE users SET name = $1, email = $2, role = $3, activated = $4 WHERE id = $5',
+       [user_name, email, role, activated, req.query.id], 
+       (err, results) => {
+           if(err){
+               errors.push({message: err});;
+           }
+           req.flash('success','You have successfully edited a User');
+           res.redirect('/settings/users');
+       }
+    )
+})
 app.post('/new_user', (req,res) => {
     let user_name = req.body.user_name
     let email = req.body.email
@@ -2966,6 +2988,7 @@ app.post('/users/register', async (req,res) => {
 app.post("/users/login", passport.authenticate('local', {
         
     //successRedirect: '/',
+
     failureRedirect:'/login',
     failureFlash: true
 }),(req,res) => {

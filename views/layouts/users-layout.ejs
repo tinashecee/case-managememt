@@ -213,6 +213,65 @@
     <script src="https://rawcdn.githack.com/Loopple/loopple-public-assets/5cef8f62939eeb089fa26d4c53a49198de421e3d/argon-dashboard/js/vendor/chart.extension.js"></script>
     <script src="https://rawcdn.githack.com/Loopple/loopple-public-assets/7bb803d2af2ab6d71d429b0cb459c24a4cd0fbb4/argon-dashboard/js/argon.min.js"></script>
     <script src="/js/loopple/loopple.js"></script>
-    
+    <script>
+                    function editUser(params1,params2,params3) {
+    var modal = document.getElementById('exampleModal1');
+var modalTitle = modal.querySelector('.modal-title');
+var modalBody = modal.querySelector('.modal-body');
+  // Set the modal title and body content
+  modalTitle.textContent = `Edit User`; // Replace with your desired title
+  modalBody.innerHTML = `
+  <form action='/edit-user?id=${params1}' method="POST">
+    <div class="mb-3">
+                    <label for="user_name" class="form-label"
+                      >Name</label
+                    >
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="user_name"
+                      value="${params2}"
+                      name="user_name"
+                      required
+                    />
+                </div>              
+                <div class="mb-3">
+                    <label for="email" class="form-label"
+                      >Email</label
+                    >
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="email"
+                      name="email"
+                      value="${params3}"
+                      required
+                    />
+                  </div>
+                  <div class="mb-3">
+                    <label for="role" class="form-label">Role</label>
+                    <select class="form-select" id="role" name="role" required style="font-weight: bold; font-size: 18px;">
+                        <option value=""></option>
+                        <option value="Admin">Admin</option>
+                        <option value="Legal Staff">Legal Staff</option>
+                        <option value="Viewer">Viewer</option>
+                      </select>
+                  </div>
+                  <div class="mb-3">
+                    <label for="activated" class="form-label">Activated?</label>
+                    <select class="form-select" id="activated" name="activated" required style="font-weight: bold; font-size: 18px;">
+                        <option value=""></option>
+                        <option value="true">Activate</option>
+                        <option value="false">Deactivate</option>
+                      </select>
+                  </div>
+                  <div class="mb-3">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Update User</button>
+                </div>
+    <form>             
+  `;
+            }
+    </script>
     </body>
   

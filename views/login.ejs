@@ -12,10 +12,10 @@
               National University of Science and Technology.<br />
               Prolegal Case Management Platform
             </h4>
-            <%  for (let error of errors) { %>
-             <div class="alert alert-danger" role="alert">
-               <%= error.message %>
-              </div>
+                <% if (message.error) { %>
+                  <div class="alert alert-danger" role="alert">
+                    <%= message.error %>
+                  </div>
                 <% } %>
                 <% if(message.success){ %>
                  <div class="alert alert-success" role="alert">

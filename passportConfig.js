@@ -2,7 +2,7 @@ const LocalStrategy = require("passport-local").Strategy;
 const { pool } = require("./dbConfig");
 const bcrypt = require("bcryptjs");
 const passport = require("passport");
-
+const alert = require('alert'); 
 function initialize(password){
   const authenticateUser = (email, password, done) =>{
       pool.query(
@@ -20,7 +20,12 @@ function initialize(password){
                           throw err;
                       }
                       if(isMatch){
-                        return done(null, user);
+                        if(user.activated == false){
+                            return done(null, false, {message:"User not Activated"});
+                        }
+                        else{
+                            return done(null, user);
+                        }
                       }else {
                           return done(null, false, {message:"Password is incorrect"});
                       }

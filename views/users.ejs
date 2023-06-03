@@ -28,6 +28,7 @@
                                 <th scope="col">Name</th>
                                 <th scope="col">Email</th>
                                 <th scope="col">Role</th>
+                                <th scope="col">Activated</th>
                                 <th scope="col"></th>
                             </tr>
                         </thead>
@@ -44,8 +45,10 @@
                                     <%= dat.email %></td>
                                 <td>
                                     <%= dat.role %></td>
+                                    <td>
+                                        <%= dat.activated %></td>
                                     <td class="table-actions">
-                                        <button class="table-action btn btn-sm btn-block btn-neutral"   data-toggle="modal" data-target="#exampleModal1" data-original-title="Edit product">
+                                        <button class="table-action btn btn-sm btn-block btn-neutral" onclick="editUser(' <%= dat.id %>' , '<%= dat.name %>', '<%= dat.email %>')"   data-toggle="modal" data-target="#exampleModal1" data-original-title="Edit product">
                                             <i class="fas fa-edit"></i>
                                         </button>
                                     </td>
@@ -62,7 +65,7 @@
     <div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
-                <form action='add-budget' method="POST">
+             
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">Edit User</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -70,45 +73,8 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                  <div class="mb-3">
-                    <label for="user_name" class="form-label"
-                      >Name</label
-                    >
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="user_name"
-                      name="user_name"
-                      required
-                    />
-                </div>              
-                <div class="mb-3">
-                    <label for="email" class="form-label"
-                      >Email</label
-                    >
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="email"
-                      name="email"
-                      required
-                    />
-                  </div>
-                  <div class="mb-3">
-                    <label for="role" class="form-label">Role</label>
-                    <select class="form-select" id="role" name="role" required style="font-weight: bold; font-size: 18px;">
-                        <option value=""></option>
-                        <option value="Admin">Admin</option>
-                        <option value="Legal Staff">Legal Staff</option>
-                        <option value="Viewer">Viewer</option>
-                      </select>
-                  </div>
+         
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Submit</button>
-                </div>
-            </form> 
             </div>
         </div>
     </div>
