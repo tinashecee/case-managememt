@@ -92,6 +92,7 @@ let compliance_survey_questions = []
 let compliance_data = []
 let scrapping_results = []
 let budgetLineItems
+let user_role = ''
 
 function sendEmail(a,b,c,d){
     pool.query(
@@ -569,10 +570,16 @@ app.get('',checkNotAuthenticated,  async (req,res) => {
                                                 errors.push({message: err});
                                                 
                                             }
-                                   // console.log(result3.rows)
+                                            results4.rows.forEach(e=>{
+                                               
+                                                if(e.name.toLowerCase() == nam.toLowerCase()){
+                                                    
+                                                 user_role = e.role
+                                                }
+                                            })
              array1 = results.rows
            
-             res.render('index',{layout:'./layouts/index-layout',dollarUS:dollarUS, expiring_contracts:result3.rows, contracts_length:result2.rows.length ,contract_expiring_length:result3.rows.length ,cases_length:results1.rows.length, tasks,authed:authed,user:nam,users:results4.rows})
+             res.render('index',{layout:'./layouts/index-layout', user_role, dollarUS:dollarUS, expiring_contracts:result3.rows, contracts_length:result2.rows.length ,contract_expiring_length:result3.rows.length ,cases_length:results1.rows.length, tasks,authed:authed,user:nam,users:results4.rows})
                 })
             })
             })
@@ -647,7 +654,7 @@ app.get('/budget',checkNotAuthenticated,  async (req,res) => {
                     const endIndex = page * limit;
                     const reso = results1.rows.slice(startIndex, endIndex);
                    
-                     res.render('budget',{layout:'./layouts/budget-layout',user:nam,errors:errors,budget_statement:budget_statement,data:results.rows, data1:reso.sort(compare),page, dollarUS:dollarUS,total_expenditure:total_expenditure,expenditure_left:expenditure_left, current_balance:current_balance})
+                     res.render('budget',{layout:'./layouts/budget-layout', user_role, user:nam,errors:errors,budget_statement:budget_statement,data:results.rows, data1:reso.sort(compare),page, dollarUS:dollarUS,total_expenditure:total_expenditure,expenditure_left:expenditure_left, current_balance:current_balance})
                 }
             )
         }
@@ -667,7 +674,7 @@ app.get('/cases',checkNotAuthenticated,  async (req,res) => {
             if(err){
                 console.log(err)
                 errors.push({message: err});;
-                return res.render('cases', { layout: './layouts/cases-layout', errors });
+                return res.render('cases', { layout: './layouts/cases-layout', user_role,  errors });
 
             }
              array3 = results.rows
@@ -678,7 +685,7 @@ app.get('/cases',checkNotAuthenticated,  async (req,res) => {
                     if(err){
                         console.log(err)
                         errors.push({message: err});;
-                        return res.render('cases', { layout: './layouts/cases-layout', errors });
+                        return res.render('cases', { layout: './layouts/cases-layout', user_role,  errors });
 
                     }
                     pool.query(
@@ -688,7 +695,7 @@ app.get('/cases',checkNotAuthenticated,  async (req,res) => {
                             if(err){
                                 console.log(err)
                                 errors.push({message: err});;
-                                return res.render('cases', { layout: './layouts/cases-layout', errors });
+                                return res.render('cases', { layout: './layouts/cases-layout', user_role,  errors });
 
                             }
                             pool.query( `SELECT * FROM users`,
@@ -697,7 +704,7 @@ app.get('/cases',checkNotAuthenticated,  async (req,res) => {
                                 if(err){
                                     console.log(err)
                                     errors.push({message: err});;
-                                    return res.render('cases', { layout: './layouts/cases-layout', errors });
+                                    return res.render('cases', { layout: './layouts/cases-layout', user_role,  errors });
 
                                 }
                                 pool.query( `SELECT * FROM case_status`,
@@ -706,7 +713,7 @@ app.get('/cases',checkNotAuthenticated,  async (req,res) => {
                                     if(err){
                                         console.log(err)
                                         errors.push({message: err});;
-                                        return res.render('cases', { layout: './layouts/cases-layout', errors });
+                                        return res.render('cases', { layout: './layouts/cases-layout', user_role,  errors });
 
                                     }
                                    
@@ -724,7 +731,7 @@ app.get('/cases',checkNotAuthenticated,  async (req,res) => {
                                     const endIndex = page * limit;
                                     const reso = results.rows.slice(startIndex, endIndex);
                    
-                     res.render('cases',{layout:'./layouts/cases-layout',unfilteredRows:results.rows, user:nam,errors:errors,cases:results.rows, data: reso.sort(compare),
+                     res.render('cases',{layout:'./layouts/cases-layout', user_role, unfilteredRows:results.rows, user:nam,errors:errors,cases:results.rows, data: reso.sort(compare),
                      page,
                      totalItems: results.rows.length,
                      totalPages: Math.ceil(results.rows.length / limit), dataA:results1.rows,dataB:results2.rows,users:results3.rows,case_status:results4.rows})
@@ -763,7 +770,7 @@ app.get('/compliance',checkNotAuthenticated,  async (req,res) => {
                     
                 }
                
-            res.render('compliance',{layout:'./layouts/compliance-layout',user:nam,errors:errors,compliance_results:results.rows,dataB:results3.rows})
+            res.render('compliance',{layout:'./layouts/compliance-layout', user_role, user:nam,errors:errors,compliance_results:results.rows,dataB:results3.rows})
             })
         }
     )
@@ -772,7 +779,7 @@ app.get('/compliance',checkNotAuthenticated,  async (req,res) => {
 });
 app.get('/compliance-survey',  async (req,res) => {
     
-    res.render('compliance_survey',{layout:'./layouts/compliance-survey-layout',compliance_survey_questions:compliance_survey_questions})
+    res.render('compliance_survey',{layout:'./layouts/compliance-survey-layout', user_role, compliance_survey_questions:compliance_survey_questions})
 });
 app.get('/contract_view',checkNotAuthenticated,  async (req,res) => {
     let query = req.query.id
@@ -800,7 +807,7 @@ app.get('/contract_view',checkNotAuthenticated,  async (req,res) => {
                         
                     }
            
-             res.render('contract_view',{layout:'./layouts/contract_view_layout',user:nam,errors:errors,data:results.rows,dollarUS:dollarUS,id:query,contract_status:results2.rows,id:query})
+             res.render('contract_view',{layout:'./layouts/contract_view_layout', user_role, user:nam,errors:errors,data:results.rows,dollarUS:dollarUS,id:query,contract_status:results2.rows,id:query})
                 })
         }
     )
@@ -853,11 +860,11 @@ app.get('/case_view',checkNotAuthenticated,  async (req,res) => {
                                 if(err){
                                     console.log(err)
                                     errors.push({message: err});;
-                                    return res.render('cases', { layout: './layouts/cases-layout', errors });
+                                    return res.render('cases', { layout: './layouts/cases-layout', user_role,  errors });
 
                                 }
                   
-                    res.render('case_view',{layout:'./layouts/case_view_layout',user:nam,errors:errors,data:results.rows, dataA:results1.rows,id:query, files:filenames,case_status:results2.rows,id:query,users:results3.rows})
+                    res.render('case_view',{layout:'./layouts/case_view_layout', user_role, user:nam,errors:errors,data:results.rows, dataA:results1.rows,id:query, files:filenames,case_status:results2.rows,id:query,users:results3.rows})
                 })
                 })
                 }
@@ -929,7 +936,7 @@ app.get('/contracts',checkNotAuthenticated,  async (req,res) => {
                  const reso = results.rows.slice(startIndex, endIndex);
              
                 
-                 res.render('contracts',{layout:'./layouts/contracts-layout',user:nam,errors:errors,contracts:results.rows,data:reso.sort(compare),page,dollarUS:dollarUS,vendors:results1.rows,contract_status:results2.rows,dataB:results3.rows})
+                 res.render('contracts',{layout:'./layouts/contracts-layout', user_role, user:nam,errors:errors,contracts:results.rows,data:reso.sort(compare),page,dollarUS:dollarUS,vendors:results1.rows,contract_status:results2.rows,dataB:results3.rows})
                     })
                 })
             }
@@ -968,7 +975,7 @@ app.get('/lawfirm_cases',checkNotAuthenticated,  async (req,res) => {
                         
                     }
                    
-                    res.render('lawfir_cases',{layout:'./layouts/lawfir-cases-layout',user:nam,errors:errors,data:results.rows,dollarUS:dollarUS,cases:results1.rows,law_firm_id:query})
+                    res.render('lawfir_cases',{layout:'./layouts/lawfir-cases-layout', user_role, user:nam,errors:errors,data:results.rows,dollarUS:dollarUS,cases:results1.rows,law_firm_id:query})
 
                     
                 }
@@ -995,7 +1002,7 @@ app.get('/lawfirm_contracts',checkNotAuthenticated,  async (req,res) => {
                 currency: "USD", 
             });
            
-            res.render('lawfirm_contracts',{layout:'./layouts/lawfirm-contracts-layout',user:nam,errors:errors,data:results.rows,dollarUS:dollarUS,law_firm_id:query})
+            res.render('lawfirm_contracts',{layout:'./layouts/lawfirm-contracts-layout', user_role, user:nam,errors:errors,data:results.rows,dollarUS:dollarUS,law_firm_id:query})
         }
     )
 });
@@ -1017,7 +1024,7 @@ app.get('/lawfirm_tasks',checkNotAuthenticated, async (req,res) => {
                 currency: "USD", 
             });
           
-            res.render('lawfirm_contracts',{layout:'./layouts/lawfirm-contracts-layout',user:nam,errors:errors,data:results.rows,dollarUS:dollarUS,law_firm_id:query})
+            res.render('lawfirm_contracts',{layout:'./layouts/lawfirm-contracts-layout', user_role, user:nam,errors:errors,data:results.rows,dollarUS:dollarUS,law_firm_id:query})
         }
     )
 });
@@ -1039,7 +1046,7 @@ app.get('/lawfirm_contacts',checkNotAuthenticated,  async (req,res) => {
                 currency: "USD", 
             });
           
-            res.render('lawfirmcontacts',{layout:'./layouts/lawfirm-contacts-layout',user:nam,errors:errors,data:results.rows,dollarUS:dollarUS,law_firm_id:query})
+            res.render('lawfirmcontacts',{layout:'./layouts/lawfirm-contacts-layout', user_role, user:nam,errors:errors,data:results.rows,dollarUS:dollarUS,law_firm_id:query})
         }
     )
 });
@@ -1061,7 +1068,7 @@ app.get('/lawfirm_notes',checkNotAuthenticated,  async (req,res) => {
                 currency: "USD", 
             });
            
-            res.render('lawfirmnotes',{layout:'./layouts/lawfirm-notes-layout',user:nam,errors:errors,data:results.rows,dollarUS:dollarUS,law_firm_id:query})
+            res.render('lawfirmnotes',{layout:'./layouts/lawfirm-notes-layout', user_role, user:nam,errors:errors,data:results.rows,dollarUS:dollarUS,law_firm_id:query})
         }
     )
 });
@@ -1104,7 +1111,7 @@ app.get('/lawfirms',checkNotAuthenticated, async (req,res) => {
                     const endIndex = page * limit;
                     const reso = results.rows.slice(startIndex, endIndex);
              
-             res.render('lawfirms',{layout:'./layouts/lawfirms-layout',user:nam,errors:errors,lawfirms:results.rows,data:reso.sort( compare ),page, active:active, not_active:not_active})
+             res.render('lawfirms',{layout:'./layouts/lawfirms-layout', user_role, user:nam,errors:errors,lawfirms:results.rows,data:reso.sort( compare ),page, active:active, not_active:not_active})
             }
         }
     )
@@ -1129,7 +1136,7 @@ app.get('/lawfirm_statement',checkNotAuthenticated,  async (req,res) => {
                 currency: "USD", 
             });
            
-            res.render('lawfirmstatement',{layout:'./layouts/lawfirm-statement-layout',user:nam,errors:errors,data:results.rows,dollarUS:dollarUS,law_firm_id:query})
+            res.render('lawfirmstatement',{layout:'./layouts/lawfirm-statement-layout', user_role, user:nam,errors:errors,data:results.rows,dollarUS:dollarUS,law_firm_id:query})
         }
     )
 });
@@ -1152,7 +1159,7 @@ app.get('/lawfirm_view',checkNotAuthenticated, async (req,res) => {
                 currency: "USD", 
             });
         
-            res.render('lawfirmview',{layout:'./layouts/lawfirm-view-layout',user:nam,errors:errors,data:results.rows,dollarUS:dollarUS,law_firm_id:query})
+            res.render('lawfirmview',{layout:'./layouts/lawfirm-view-layout', user_role, user:nam,errors:errors,data:results.rows,dollarUS:dollarUS,law_firm_id:query})
         }
     )
 });
@@ -1162,7 +1169,7 @@ app.get('/learn',checkNotAuthenticated,  async (req,res) => {
 });
 app.get('/resources',checkNotAuthenticated,  async (req,res) => {
     let errors =[]
-    res.render('resources',{layout:'./layouts/resources-layout',user:nam,errors:errors})
+    res.render('resources',{layout:'./layouts/resources-layout', user_role, user:nam,errors:errors})
 });
 app.post('/resources-gazettes', async (req,res) => {
     
@@ -1272,7 +1279,7 @@ app.get('/resources-results',checkNotAuthenticated,  async (req,res) => {
            // console.log('URL:', legislation.url);
            // console.log('----------------------');
           });
-          res.render('resources_legislature',{layout:'./layouts/resources-results-layout',user:nam,errors:errors,results: legislationList})
+          res.render('resources_legislature',{layout:'./layouts/resources-results-layout', user_role, user:nam,errors:errors,results: legislationList})
         } catch (error) {
           console.error('Error:', error);
         } finally {
@@ -1317,7 +1324,7 @@ app.get('/resources-results',checkNotAuthenticated,  async (req,res) => {
 
   await browser.close();
 
-  res.render('resources_legislature',{layout:'./layouts/resources-results-layout',user:nam,errors:errors,results: legislationList})
+  res.render('resources_legislature',{layout:'./layouts/resources-results-layout', user_role, user:nam,errors:errors,results: legislationList})
     } 
 
    
@@ -1360,12 +1367,12 @@ app.post('/resources-search-results',  async (req,res) => {
 app.get('/resources-gazettes',checkNotAuthenticated,  async (req,res) => {
     let errors =[]
     let message=[]
-    res.render('resources_gazettes',{layout:'./layouts/resources-results-layout',user:nam,errors:errors,results: scrapping_results})
+    res.render('resources_gazettes',{layout:'./layouts/resources-results-layout', user_role, user:nam,errors:errors,results: scrapping_results})
 });
 app.get('/resources-cases-and-judgements',checkNotAuthenticated,  async (req,res) => {
     let errors =[]
     let message=[]
-    res.render('resources_gazettes',{layout:'./layouts/resources-results-layout',user:nam,errors:errors,results: scrapping_results})
+    res.render('resources_gazettes',{layout:'./layouts/resources-results-layout', user_role, user:nam,errors:errors,results: scrapping_results})
 });
 app.get('/settings/users',checkNotAuthenticated,  async (req,res) => {
     let errors = []
@@ -1379,7 +1386,7 @@ app.get('/settings/users',checkNotAuthenticated,  async (req,res) => {
                 
             }
           
-             res.render('users',{layout:'./layouts/users-layout',user:nam,errors:errors,data:results.rows,user:nam, errors:errors})
+             res.render('users',{layout:'./layouts/users-layout', user_role, user:nam,errors:errors,data:results.rows,user:nam, errors:errors})
           
         }
     )
@@ -1443,7 +1450,7 @@ app.get('/tasks',checkNotAuthenticated,  async (req,res) => {
                     const endIndex1 = page1 * limit;
                     const reso1 = completed_tasks.slice(startIndex1, endIndex1);
                 
-                    res.render('tasks',{layout:'./layouts/tasks-layout',active,completed,user:nam,errors:errors,data:reso.sort(compare),data1:reso1.sort(compare),page,page1,users:results1.rows})
+                    res.render('tasks',{layout:'./layouts/tasks-layout', user_role, active,completed,user:nam,errors:errors,data:reso.sort(compare),data1:reso1.sort(compare),page,page1,users:results1.rows})
                 })
             
              
@@ -1489,7 +1496,7 @@ app.get('/vendors',checkNotAuthenticated, async (req,res) => {
                     const endIndex = page * limit;
                     const reso = results.rows.slice(startIndex, endIndex);
                 
-             res.render('vendors',{layout:'./layouts/vendors-layout',user:nam,errors:errors,vendors:results.rows, data:reso.sort(compare),page,dataB:results2.rows})
+             res.render('vendors',{layout:'./layouts/vendors-layout', user_role, user:nam,errors:errors,vendors:results.rows, data:reso.sort(compare),page,dataB:results2.rows})
                 })
           
         }
@@ -2557,15 +2564,15 @@ app.get('/users/logout', (req,res) => {
 });
 app.get('/login',checkAuthenticated, (req,res) => {
     let errors = []
-    res.render('login',{layout:'./layouts/login-layout',authed:authed,user:nam, errors:errors});
+    res.render('login',{layout:'./layouts/login-layout', user_role, authed:authed,user:nam, errors:errors});
 });
 app.get('/forgot-password', (req,res) => {
     let errors = []
-    res.render('passwordreset',{layout:'./layouts/login-layout',errors:errors});
+    res.render('passwordreset',{layout:'./layouts/login-layout', user_role, errors:errors});
 });
 app.get('/reset-password', (req,res) => {
    let errors = []
-    res.render('passwordreset',{layout:'./layouts/login-layout',errors:errors});
+    res.render('passwordreset',{layout:'./layouts/login-layout', user_role, errors:errors});
 });
 app.get('/reset-password-email-sent', (req,res) => {
    
@@ -2576,7 +2583,7 @@ app.get('/set-password', (req,res) => {
     let user_name = req.query.user_name
     let role = req.query.role 
     let errors = []
-    res.render('password',{layout:'./layouts/login-layout',email:email,errors:errors});
+    res.render('password',{layout:'./layouts/login-layout', user_role, email:email,errors:errors});
 });
 app.post('/reset-password', async (req,res) => {
     let email = req.body.email
@@ -2586,11 +2593,11 @@ app.post('/reset-password', async (req,res) => {
        (err, results) => {
            if(err){
             errors.push({message: err});
-            res.render('passwordreset',{layout:'./layouts/login-layout', errors:errors})
+            res.render('passwordreset',{layout:'./layouts/login-layout', user_role,  errors:errors})
            }
            if(results.rows.length == 0){
             errors.push({message: 'Email is not registered in the system!'});
-            res.render('passwordreset',{layout:'./layouts/login-layout', errors:errors})
+            res.render('passwordreset',{layout:'./layouts/login-layout', user_role,  errors:errors})
            }else{
             const message = "Email to reset password of your Nust Case Management System account"
             const options = {
@@ -2634,7 +2641,7 @@ app.post('/set-password', async (req,res) => {
     errors.push({message: "Passwords do not match"});
    
     console.log(errors)
- res.render("password",{layout:'./layouts/login-layout',errors:errors});
+ res.render("password",{layout:'./layouts/login-layout', user_role, errors:errors});
 }
 else{
     let hashedPassword = await bcrypt.hash(password1, 10);
@@ -2646,7 +2653,7 @@ else{
            if(err){
             errors.push({message: err});
         
-      res.render("set-password",{layout:'./layouts/login-layout',errors:errors});
+      res.render("set-password",{layout:'./layouts/login-layout', user_role, errors:errors});
      
            }
            req.flash('success','Password setup successfull, you can now login into your account');
@@ -2666,7 +2673,7 @@ app.get('/settings/user-roles',checkNotAuthenticated, (req,res) => {
            if(err){
                errors.push({message: err});;
            }
-           res.render('user-roles',{layout:'./layouts/users-layout',authed:authed,user:nam,errors:errors,data1:results.rows});
+           res.render('user-roles',{layout:'./layouts/users-layout', user_role, authed:authed,user:nam,errors:errors,data1:results.rows});
        }
     )
     
@@ -2682,7 +2689,7 @@ app.get('/settings/departments',checkNotAuthenticated, (req,res) => {
             if(err){
                 errors.push({message: err});;
             }
-            res.render('departments',{layout:'./layouts/users-layout',authed:authed,user:nam,errors:errors,data1:results1.rows});
+            res.render('departments',{layout:'./layouts/users-layout', user_role, authed:authed,user:nam,errors:errors,data1:results1.rows});
         }
     );
 });
@@ -2703,7 +2710,7 @@ app.get('/settings/case-status',checkNotAuthenticated, (req,res) => {
                     if(err){
                         errors.push({message: err});;
                     }
-                    res.render('case-status',{layout:'./layouts/users-layout',authed:authed,user:nam,errors:errors,data1:results1.rows,data2:results2.rows});
+                    res.render('case-status',{layout:'./layouts/users-layout', user_role, authed:authed,user:nam,errors:errors,data1:results1.rows,data2:results2.rows});
                 }
             );
            
@@ -2814,7 +2821,7 @@ app.post('/new_user', (req,res) => {
                             if(err){
                                 console.log(err)
                                 errors.push({message: err});
-                                res.render('users',{layout:'./layouts/users-layout',data:results.rows,user:nam,errors:errors,message:messge})
+                                res.render('users',{layout:'./layouts/users-layout', user_role, data:results.rows,user:nam,errors:errors,message:messge})
                                 
                             }
                            
@@ -2920,7 +2927,7 @@ app.post('/users/register', async (req,res) => {
    
    if(errors.length >0 ){
        console.log(errors)
-    res.render("login",{layout:'./layouts/login-layout',authed:authed,user:nam,errors:errors});
+    res.render("login",{layout:'./layouts/login-layout', user_role, authed:authed,user:nam,errors:errors});
    }else{ 
        let hashedPassword = await bcrypt.hash(password, 10);
 
@@ -2935,7 +2942,7 @@ app.post('/users/register', async (req,res) => {
                //console.log(results.rows);
                if(results.rows.length >0){
                 errors.push({message: `Email: ${email} is already registered`});
-                res.render("login",{layout:'./layouts/login-layout',authed:authed,user:nam, errors:errors});
+                res.render("login",{layout:'./layouts/login-layout', user_role, authed:authed,user:nam, errors:errors});
               }else{
                   pool.query(
                       `INSERT INTO users (name, email, password, role)
@@ -2948,7 +2955,7 @@ app.post('/users/register', async (req,res) => {
                           }
                           console.log(results.row);
                           req.flash('success','You are now registered. Please log in');
-                          res.render('login',{layout:'./layouts/login-layout',authed:authed,user:nam, errors:errors});
+                          res.render('login',{layout:'./layouts/login-layout', user_role, authed:authed,user:nam, errors:errors});
                       }
                   )
               }
@@ -2965,7 +2972,7 @@ app.post("/users/login", passport.authenticate('local', {
     usrId = req.user.id;
     nam = (req.user.name).charAt(0).toUpperCase() + (req.user.name).slice(1)
     authed = true
-    console.log(req.isAuthenticated())
+   // console.log(req.isAuthenticated())
     res.redirect('/')
 
 }
