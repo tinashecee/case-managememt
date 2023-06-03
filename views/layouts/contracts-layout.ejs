@@ -110,6 +110,7 @@
                           <span class="nav-link-text">Tasks</span>
                       </a>
                   </li>
+                    <% if (user_role == 'Admin') { %>
                   <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="contractsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <div class="rounded-circle avatar-xs text-center bg-light py-2 px-1 mr-3 d-flex align-items-center justify-content-center">
@@ -117,13 +118,14 @@
                         </div>
                         <span class="nav-link-text">Settings</span>
                     </a>
-                    <div class="dropdown-menu" aria-labelledby="contractsDropdown">
+                    <div  class="dropdown-menu" aria-labelledby="contractsDropdown">
                         <a class="dropdown-item" href="/settings/users">Users</a>
                         <a class="dropdown-item" href="/settings/user-roles">Users Roles</a>
                         <a class="dropdown-item" href="/settings/departments">Departments</a>
                         <a class="dropdown-item" href="/settings/case-status">Case Status</a>
                     </div>
                 </li>
+                <% } %>
               </ul>
 
           </div>
