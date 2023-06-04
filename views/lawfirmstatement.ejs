@@ -99,35 +99,12 @@
                 <div class="row">
                   <div class="col-md-8">
                     <h2>STATEMENT OF ACCOUNT&nbsp;</h2>
-                    <form>
-                      <div class="row">
-                        <div class="col-md-4">
-                          <div class="form-group">
-                            <label for="start-date">Start Date</label>
-                            <input
-                              type="date"
-                              class="form-control"
-                              id="start-date"
-                            />
-                          </div>
-                        </div>
-                        <div class="col-md-4">
-                          <div class="form-group">
-                            <label for="end-date">End Date</label>
-                            <input
-                              type="date"
-                              class="form-control"
-                              id="end-date"
-                            />
-                          </div>
-                        </div>
+                  
                         <div class="col-md-5">
-                          <button type="submit" class="btn btn-primary">
-                            Submit
+                          <button type="button" class="btn btn-primary"  data-toggle="modal" data-target="#exampleModal3">
+                            Add Payment
                           </button>
                         </div>
-                      </div>
-                    </form>
                     <p></p>
                     <p></p>
                   </div>
@@ -142,51 +119,24 @@
                           <th>Debit</th>
                           <th>Credit</th>
                           <th>Balance</th>
+                          <th></th>
                         </tr>
                       </thead>
                       <tbody>
+                        <% if( data[0].statements != null) { %>
+                          <% for (let dat of data[0].statements) { %>
                         <tr>
-                          <td>01/01/2023</td>
-                          <td>Opening Balance</td>
+                          <td><%= moment(dat.pay_date).format('Do MMMM, YYYY') %></td>
+                          <td><%= dat.description %></td>
+                          <td><%= dat.amount %></td>
                           <td></td>
-                          <td></td>
-                          <td>$10,000.00</td>
+                          <td><%= dollarUS.format(dat.amount) %></td>
+                          <td><button type="button" class="btn btn-primary" onclick="changeSrc('<%= dat.file %>')" data-toggle="modal" data-target="#exampleModal4"
+                            ><i class="fa fa-eye"></i
+                          ></button></td>
                         </tr>
-                        <tr>
-                          <td>02/01/2023</td>
-                          <td>Invoice #001</td>
-                          <td>$1,000.00</td>
-                          <td></td>
-                          <td>$9,000.00</td>
-                        </tr>
-                        <tr>
-                          <td>03/01/2023</td>
-                          <td>Payment Received</td>
-                          <td></td>
-                          <td>$500.00</td>
-                          <td>$9,500.00</td>
-                        </tr>
-                        <tr>
-                          <td>04/01/2023</td>
-                          <td>Invoice #002</td>
-                          <td>$2,500.00</td>
-                          <td></td>
-                          <td>$7,000.00</td>
-                        </tr>
-                        <tr>
-                          <td>05/01/2023</td>
-                          <td>Invoice #003</td>
-                          <td>$1,500.00</td>
-                          <td></td>
-                          <td>$5,500.00</td>
-                        </tr>
-                        <tr>
-                          <td>06/01/2023</td>
-                          <td>Payment Received</td>
-                          <td></td>
-                          <td>$2,000.00</td>
-                          <td>$7,500.00</td>
-                        </tr>
+                      <% } %>
+                      <% } %>
                       </tbody>
                     </table>
                   </div>
@@ -206,3 +156,80 @@
       </div>
     </div>
   </div>
+  <div class="modal fade" id="exampleModal3" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Make Payment</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">X</span>
+                </button>
+            </div>
+            <div class="modal-body">
+              <form action="/add-statement?id=<%= law_firm_id %>" method="POST"  enctype="multipart/form-data">
+               <div class="mb-3"> 
+                <label for="fee_name" class="form-label">Select Fee Notes to make payment</label>
+                <select class="form-select" id="fee_name"  name="fee_name" required>
+                  <% if(data[0].fee_notes != null) {  %>
+                    <% for (let dat of data[0].fee_notes) { %>
+                  <option value="<%= dat.description %>">
+            <p class="card-text"><%= dat.description %>  |  </p>
+            <p class="card-text"><%= moment(dat.fee_date).format('Do MMMM, YYYY') %>  |  </p>
+            <p class="card-text"><%= dollarUS.format(dat.amount) %></p>
+   
+                  </option>
+                  <% } %>
+                  <% } %>
+                </select>
+               </div>
+               <div class="mb-3"> 
+                <label for="pay_date" class="form-label">Payment Date</label>
+                <input type="date"  class="form-control" id="pay_date" name="pay_date" required>
+                </div>
+               <div class="mb-3"> 
+                <label for="amount" class="form-label">Amount</label>
+                <input type="number"  class="form-control" id="amount" name="amount" required>
+                </div>
+                <div class="mb-3">
+                  <label for="files" class="form-label">Attachments</label> 
+                  <input id='files' name="avatar" class="btn btn-primary" type="file" required>
+                </div>
+                <div class="mb-3">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                  <button type="submit" class="btn btn-primary">Save</button>
+              </div>
+            </form>
+            </div>
+          
+        </div>
+    </div>
+</div> 
+<div class="modal fade" id="exampleModal4" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">View PDF</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">X</span>
+              </button>
+          </div>
+          <div class="modal-body">
+            <div class="card">
+              <div class="card-header">
+                <h5 class="card-title">PDF Preview</h5>
+              </div>
+              <div class="card-body">
+                <div class="embed-responsive embed-responsive-16by9">
+                  <embed
+                    class="embed-responsive-item"
+                    id="embed-pdf"
+                    type="application/pdf"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        
+      </div>
+  </div>
+</div> 

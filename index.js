@@ -1350,6 +1350,148 @@ app.post('/delete-fee-note' , async(req, res)=>{
             )
         })
 })
+app.post('/add-statement' , async(req, res)=>{
+    //Use the name of the input field (i.e. "avatar") to retrieve the uploaded file
+    let avatar = req.files.avatar;
+    let fee_name = req.body.fee_name
+    let amount = req.body.amount
+    let pay_date = req.body.pay_date 
+    let fee_payment    
+    //Use the mv() method to place the file in the upload directory (i.e. "uploads")
+    avatar.mv('./public/uploads3/' + avatar.name);
+    let errors =[]
+    let query = req.query.id
+    let statements = []
+    let balance = 0
+    pool.query(
+        'SELECT * FROM law_firms WHERE law_firm_id = $1',
+       [query], 
+       (err, resulto) => {
+           if(err){
+               errors.push({message: err});;
+           }
+           if(resulto.rows[0].statements == null){
+             statements = []
+             resulto.rows[0].fee_notes.forEach(e=>{
+                if(e.description == fee_name){
+                     balance = e.amount
+                }
+             })
+         }else{
+           statements = resulto.rows[0].statements
+
+         }
+         
+         
+         statements.forEach(e=>{
+            if(e.description == fee_name){
+                 balance = e.balance
+            }
+         })
+           let erykah = {
+              description:fee_name,
+              amount:amount,
+              pay_date:pay_date,
+              balance:(balance-amount),
+              file:avatar.name
+           }
+           statements.push(erykah)
+           
+           pool.query(
+            'UPDATE law_firms SET statements = $1 WHERE law_firm_id = $2',
+           [statements, query], 
+           (err, results) => {
+               if(err){
+                   errors.push({message: err});;
+               }
+           }
+        )
+       }
+    )
+    pool.query(
+      `SELECT * FROM law_firms WHERE law_firm_id = $1`,
+      [query],
+      (err, results) => {
+          if(err){
+              console.log(err)
+              errors.push({message: err});;
+              
+          }
+          let dollarUS = Intl.NumberFormat("en-US", {
+              style: "currency",
+              currency: "USD", 
+          });
+          req.flash('success','You have successfully added a statement');
+          res.redirect('/lawfirm_statement?id='+query)
+      }
+  )
+  
+})
+app.post('/delete-statement' , async(req, res)=>{
+  const path = './public/uploads2/'+req.query.path
+  const query = req.query.id
+ 
+  fs.unlink(path, (err) => {
+    if (err) {
+      console.error(err)
+      return
+    }
+  
+          let errors =[]
+          let fee_notes = []
+          
+          
+          pool.query(
+              'SELECT * FROM law_firms WHERE law_firm_id = $1',
+             [query], 
+             (err, resulto) => {
+                 if(err){
+                     errors.push({message: err});;
+                 }
+                if(resulto.rows[0].fee_notes == null){
+                   fee_notes = []
+                }else{
+                  fee_notes = resulto.rows[0].fee_notes
+                }
+                
+                 let count = 0
+                 fee_notes.forEach(e=>{
+                  if(e.file == req.query.path){
+                      fee_notes.splice(count, 1); 
+                  }
+                  count+=1
+                 })
+                 
+                 pool.query(
+                  'UPDATE law_firms SET fee_notes = $1 WHERE law_firm_id = $2',
+                 [fee_notes, query], 
+                 (err, results) => {
+                     if(err){
+                         errors.push({message: err});;
+                     }
+                 }
+              )
+             }
+          )
+          pool.query(
+              `SELECT * FROM law_firms WHERE law_firm_id = $1`,
+              [query],
+              (err, results) => {
+                  if(err){
+                      console.log(err)
+                      errors.push({message: err});;
+                      
+                  }
+                  let dollarUS = Intl.NumberFormat("en-US", {
+                      style: "currency",
+                      currency: "USD", 
+                  });
+                  req.flash('success','You have successfully deleted a fee note');
+                  res.redirect('/lawfirm_notes?id='+query)
+              }
+          )
+      })
+})
 app.post('/resources-gazettes', async (req,res) => {
     
   let year = req.body.year
@@ -2289,11 +2431,11 @@ app.post('/add-line-budget', (req, res)=>{
 
        if( parseFloat(budget_balance) < parseFloat(req.body[`budget${i}`])){
           //  console.log("budget not enough")
-        }else{
+        }else{expens
             pool.query(
                 `INSERT INTO budget_items (budget_name, budget,variance, actual, expenditure)
                 VALUES ($1, $2, $3, $4, $5)`,
-                [req.body[`budget_name${i}`],req.body[`budget${i}`],0,0,[]], 
+                [req.body[`budget_name${i}`],req.body[`budget${i}`],req.body[`budget${i}`],0,[]], 
                 (err, results) => {
                     if(err){
                         errors.push({message: err});;
