@@ -95,13 +95,12 @@
         <div class="card">
           <div class="card-header border-0">
             <div class="container mt-5">
-              <div class="container mt-5">
                 <div class="row">
                   <div class="col-md-8">
                     <h2>STATEMENT OF ACCOUNT&nbsp;</h2>
                   
                         <div class="col-md-5">
-                          <button type="button" class="btn btn-primary"  data-toggle="modal" data-target="#exampleModal3">
+                          <button type="button" class="btn btn-sm btn-primary"  data-toggle="modal" data-target="#exampleModal3">
                             Add Payment
                           </button>
                         </div>
@@ -119,22 +118,34 @@
                           <th>Debit</th>
                           <th>Credit</th>
                           <th>Balance</th>
-                          <th></th>
                         </tr>
                       </thead>
                       <tbody>
-                        <% if( data[0].statements != null) { %>
-                          <% for (let dat of data[0].statements) { %>
+                        <% if( data[0].fee_notes != null) { %>
+                          <% for (let dat of data[0].fee_notes) { %>
                         <tr>
-                          <td><%= moment(dat.pay_date).format('Do MMMM, YYYY') %></td>
+                          <td><%= moment(dat.fee_date).format('Do MMMM, YYYY') %></td>
                           <td><%= dat.description %></td>
-                          <td><%= dat.amount %></td>
                           <td></td>
                           <td><%= dollarUS.format(dat.amount) %></td>
-                          <td><button type="button" class="btn btn-primary" onclick="changeSrc('<%= dat.file %>')" data-toggle="modal" data-target="#exampleModal4"
-                            ><i class="fa fa-eye"></i
-                          ></button></td>
+                          <td><%= dollarUS.format(dat.amount) %></td>
+                         
                         </tr>
+                        <% if( data[0].statements != null) { %>
+                          <% for (let da of data[0].statements) { %>
+                            <% if(da.description == dat.description) { %>
+                            <tr>
+                              <td><%= moment(da.pay_date).format('Do MMMM, YYYY') %></td>
+                              <td><%= da.description %></td>
+                              <td><%= dollarUS.format(da.amount) %></td>
+                              <td></td>
+                              <td><%= dollarUS.format(da.balance) %></td>
+                             
+                            </tr>
+                            <% } %>
+                            <% } %>
+                            <% } %>    
+
                       <% } %>
                       <% } %>
                       </tbody>
@@ -142,7 +153,6 @@
                   </div>
                 </div>
               </div>
-            </div>
           </div>
         </div>
         <div class="row removable">
@@ -189,10 +199,6 @@
                <div class="mb-3"> 
                 <label for="amount" class="form-label">Amount</label>
                 <input type="number"  class="form-control" id="amount" name="amount" required>
-                </div>
-                <div class="mb-3">
-                  <label for="files" class="form-label">Attachments</label> 
-                  <input id='files' name="avatar" class="btn btn-primary" type="file" required>
                 </div>
                 <div class="mb-3">
                   <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

@@ -33,7 +33,8 @@
                                     <div class="mb-2">
                                         <p class="text-white">Budget</p>
                                         <% if(data[0]) { %>
-                                        <sup class="text-white">Total Budget </sup> <span class="h2 text-white"><%= dollarUS.format(data[0].amount) %></span>
+                                        <sup class="text-white">Total Budget </sup> <span class="h2 text-white"><%= dollarUS.format(data[0].amount) %></span><br>
+                                        <sup class="text-white">Period </sup> <span class="h4 text-white"><%= moment(data[0].start_date).format('Do MMMM, YYYY') %> - <%= moment(data[0].end_date).format('Do MMMM, YYYY') %></span>
                                         <div class="text-light mt-2 text-sm">Your current balance</div>
                                         <span class="h2 text-white"><%= dollarUS.format(current_balance) %></span>
                                         <% } %>

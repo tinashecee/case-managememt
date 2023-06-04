@@ -34,14 +34,15 @@
             Survey
     .StylesManager
     .applyTheme("defaultV2");
-
+   
 const surveyJson = {
-    elements: text.compliance_survey_questions
+    elements: text.compliance_survey_questions,
+    completedHtml: "<h3>Thank you for completing survey, your responses have been submitted</h3>",
+
 };
 console.log('<%= compliance_survey_questions %>')
 const survey = new Survey.Model(surveyJson);
 survey.focusFirstQuestionAutomatic = false;
-
 function alertResults (sender) {
     console.log(sender.data)
    // const results = JSON.stringify(sender.data);

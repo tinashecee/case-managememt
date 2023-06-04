@@ -153,6 +153,7 @@
                   <th scope="col">Email Address</th>
                   <th scope="col">Position</th>
                   <th scope="col">Phone Number</th>
+                  <th></th>
                 </tr>
               </thead>
               <tbody>
@@ -160,10 +161,7 @@
                 <tr>
                   <td>
                     <div class="d-flex align-items-center">
-                      <img
-                        src="https://demos.creative-tim.com/argon-dashboard-pro-bs4/assets/img/theme/team-2.jpg"
-                        class="avatar avatar-sm rounded-circle"
-                      />
+                     
                       <span class="ml-2"><%= dat.name %></span>
                     </div>
                   </td>
@@ -181,6 +179,11 @@
                     <div class="d-flex align-items-center">
                       <span class="ml-2"><%= dat.phone %></span>
                     </div>
+                  </td>
+                  <td>
+                    <button type="button" onclick="deleteContact('<%= law_firm_id %>', '<%= dat.name %>')" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal2"
+                    ><i class="fa fa-trash"></i
+                  ></button>
                   </td>
                 </tr>
                 <% } %>
@@ -236,6 +239,21 @@
                 <button type="submit"  class="btn btn-primary">Submit</button>
             </div>
         </form> 
+        </div>
+  </div>
+  </div>
+  <div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Delete Contact</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">X</span>
+                    </button>
+            </div>
+            <div class="modal-body">
+                          
+            </div>
         </div>
   </div>
   </div>

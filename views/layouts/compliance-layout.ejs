@@ -312,5 +312,25 @@ function compliance3(){
         },
     })
 }
+function updateComment(params1) {
+    var modal = document.getElementById('exampleModal5');
+var modalTitle = modal.querySelector('.modal-title');
+var modalBody = modal.querySelector('.modal-body');
+  // Set the modal title and body content
+  modalTitle.textContent = `Add Comment on Compliance`; // Replace with your desired title
+  modalBody.innerHTML = `
+  <form  action="/update-compliance-comment?id=${params1}" method="POST">
+    <div class="mb-3">
+                    <label for="description" class="form-label">Comment</label>
+                    <input type="text"  class="form-control" id="description" name="description" required>
+                  </div>
+                         
+                    <div class="mb-3">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                </form>             
+  `;
+            }
       </script>
 </body>

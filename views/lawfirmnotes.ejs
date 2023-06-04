@@ -125,15 +125,16 @@
             ><i class="fa fa-eye"></i
           ></button>
         </div>
-          <div class="col-md-4">
+        <div class="col-md-1"></div>
+          <div class="col-md-3">
             
-            <h6 class="card-subtitle mb-2 text-muted">Decsription</h6>
+            <h6 class="card-subtitle mb-2 text-muted">Description</h6>
             <p class="card-text"><%= dat.description %></p>
           </div>
           <div class="col-md-3"><h6 class="card-subtitle mb-2 text-muted">Date</h6>
             <p class="card-text"><%= moment(dat.fee_date).format('Do MMMM, YYYY') %></p>
           </div>
-          <div class="col-md-3"><h6 class="card-subtitle mb-2 text-muted">Amount</h6>
+          <div class="col-md-2"><h6 class="card-subtitle mb-2 text-muted">Amount</h6>
             <p class="card-text"><%= dollarUS.format(dat.amount) %></p>
           </div>
         <div class="col-md-1">

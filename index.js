@@ -26,7 +26,7 @@ const job = new CronJob('0 8 * * *', function()  {
     pool.query(
         `SELECT *
         FROM contracts
-        WHERE end_date = CURRENT_DATE + INTERVAL '1 month'`,
+        WHERE end_date = CURRENT_DATE + INTERVAL '3 month'`,
         [],
         (err, results1) => {
             if(err){
@@ -48,7 +48,7 @@ const job = new CronJob('0 8 * * *', function()  {
                     const options = {
                         from: "CASE MANAGEMENT SYSTEM <mochonam19@gmail.com>", // sender address
                         to: e.email, // receiver email
-                        subject: "A contract is about to expire in a month!", // Subject line
+                        subject: "A contract is about to expire in a 3 month!", // Subject line
                         text: message,
                         html: `<p>Hi ${e.name},</p>
                         <p>This is a reminder that the contract for ${results1.rows[0].vendor} is about to expire on ${results1.rows[0].end_date}.</p>
@@ -601,7 +601,7 @@ app.get('',checkNotAuthenticated,  async (req,res) => {
                             pool.query(
                                 `SELECT *
                                 FROM contracts
-                                WHERE end_date < CURRENT_DATE + INTERVAL '1 month'`,
+                                WHERE end_date < CURRENT_DATE + INTERVAL '3 month'`,
                                 [],
                                 (err, result3) => {
                                     if(err){
@@ -1149,10 +1149,10 @@ app.get('/lawfirms',checkNotAuthenticated, async (req,res) => {
                 }
              })
              function compare( a, b ) {
-                if ( a.date_created > b.date_created ){
+                if ( a.name > b.name ){
                   return -1;
                 }
-                if ( a.date_created < b.date_created ){
+                if ( a.name < b.name ){
                   return 1;
                 }
                 return 0;
@@ -1352,13 +1352,10 @@ app.post('/delete-fee-note' , async(req, res)=>{
 })
 app.post('/add-statement' , async(req, res)=>{
     //Use the name of the input field (i.e. "avatar") to retrieve the uploaded file
-    let avatar = req.files.avatar;
+  
     let fee_name = req.body.fee_name
     let amount = req.body.amount
-    let pay_date = req.body.pay_date 
-    let fee_payment    
-    //Use the mv() method to place the file in the upload directory (i.e. "uploads")
-    avatar.mv('./public/uploads3/' + avatar.name);
+    let pay_date = req.body.pay_date  
     let errors =[]
     let query = req.query.id
     let statements = []
@@ -1375,25 +1372,26 @@ app.post('/add-statement' , async(req, res)=>{
              resulto.rows[0].fee_notes.forEach(e=>{
                 if(e.description == fee_name){
                      balance = e.amount
+                     console.log(e.balance)
                 }
              })
          }else{
            statements = resulto.rows[0].statements
-
+           statements.forEach(e=>{
+            if(e.description == fee_name){
+                 balance = e.balance
+                 console.log(e.balance)
+            }
+         }) 
          }
          
          
-         statements.forEach(e=>{
-            if(e.description == fee_name){
-                 balance = e.balance
-            }
-         })
+         console.log(balance,amount)
            let erykah = {
               description:fee_name,
               amount:amount,
               pay_date:pay_date,
-              balance:(balance-amount),
-              file:avatar.name
+              balance:(balance-amount)
            }
            statements.push(erykah)
            
@@ -1909,6 +1907,44 @@ app.post('/update-lawfirm-contact', (req, res)=>{
    
   
   })
+  app.post('/delete-lawfirm-contact', (req, res)=>{
+    let query = req.query.law_firm_id
+    let a = req.query.name
+    let array = []
+    pool.query(
+        `SELECT * FROM law_firms WHERE law_firm_id = $1`,
+        [query],
+        (err, result) => {
+            if(err){
+                console.log(err)
+                errors.push({message: err});;
+                
+            }
+         array = result.rows[0].contacts
+         // console.log(result.rows[0].contacts)
+        let  count = 0
+         array.forEach(e=>{
+            if(e.name == a ){
+                array.splice(count, 1); 
+            }
+             count += 1
+         })
+          pool.query(
+            'UPDATE law_firms SET contacts = $1 WHERE law_firm_id = $2',
+           [ array, query], 
+           (err, results) => {
+               if(err){
+                   errors.push({message: err});;
+               }
+               req.flash('success','You have successfully updated lawfirm');
+               res.redirect('/lawfirm_contacts?id='+query);
+           }
+        )
+        })
+     
+   
+  
+  })
 app.post('/add-lawfirm', (req, res)=>{
    
     let law_firm = req.body.law_firm
@@ -2235,7 +2271,7 @@ app.post('/add-contract', (req, res)=>{
     }
     pool.query(  
         `INSERT INTO contracts (  name, description, start_date, end_date, notes,  vendor, department, payment_cycle, payment_terms, status, contract_value,attachments)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11,$12)`,
         [  contract_name, description, start_date, end_date, notes, vendor, department, 
             payment_cycle, payment_terms, status, contract_value,[]], 
         (err, results) => {
@@ -2673,9 +2709,9 @@ app.post('/compliance-form-part-3', (req, res)=>{
                 )
                }else{
                 pool.query(
-                    `INSERT INTO compliance_results (department, questions, responses, score, contact_person, contact_email, date_completed)
-                    VALUES ($1, $2, $3, $4, $5, $6, $7)`,
-                    [compliance_department, compliance_survey_questions, [], 0, compliance_contact_name, compliance_contact_email,date_created], 
+                    `INSERT INTO compliance_results (department, questions, responses, score, contact_person, contact_email, date_completed, comment)
+                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+                    [compliance_department, compliance_survey_questions, [], 0, compliance_contact_name, compliance_contact_email,date_created, ''], 
                     (err, results1) => {
                         if(err){
                             errors.push({message: err});;
@@ -2847,6 +2883,51 @@ app.get('/download5',async (req,res) =>{
       console.log(error);
     }
 });
+app.get('/download6',async (req,res) =>{
+    let createCsvWriter = csvwriter.createObjectCsvWriter;
+
+    
+    pool.query(
+        'SELECT * FROM contracts',
+       [], 
+       (err, results) => {
+           if(err){
+               errors.push({message: err});;
+           }
+    const path = 'sample5.csv';
+    const csvWriter = createCsvWriter({
+      path: path,
+      header: [{ id:'name',title:'Name'},{ id:'notes',title:'Description'},{id:'start_date',title:'Start Date'},{id:'end_date',title:'End Date'},{id:'vendor',title:'Vendor'},,{id:'department',title:'Department'},{id:'payment_cycle',title:'Payment Cycle'},{id:'payment_type',title:'Payment Terms'},{id:'status',title:'Status'},{id:'contract_value',title:'Contract View'}]});
+
+    try 
+    {
+         
+         csvWriter.writeRecords(results.rows)
+         .then(() => {
+            res.download(path); 
+           
+        });
+    }
+    catch (error) 
+    {
+      console.log(error);
+    }
+})
+});
+app.post('/update-compliance-comment',(req,res) =>{
+   let query = req.query.id
+   let comment = req.body.description
+   pool.query(
+    'UPDATE compliance_results SET comment = $1 WHERE id = $2',
+   [comment, query], 
+   (err, results) => {
+       if(err){
+           errors.push({message: err});;
+       }
+       req.flash('success','You have successfully added a comment on compliance');
+       res.redirect('/compliance');
+    })
+})
 app.post('/compliance_results',(req,res) =>{
     let responses = req.body.responses
     let yourDate = new Date()
@@ -2875,6 +2956,23 @@ app.post('/compliance_results',(req,res) =>{
            if(err){
                errors.push({message: err});;
            }
+           const message = "Survey Completed"
+    const options = {
+        from: "CASE MANAGEMENT SYSTEM <mochonam19@gmail.com>", // sender address
+        to: 'mochonam19@gmail.com', // receiver email
+        subject: " A survey has been submitted by "+compliance_department, // Subject line
+        text: message,
+        html: `<h1>Compliance Run for ${compliance_department} Completed</h1>
+        <p>This is a system generated email to inform you that the compliance run for the ${compliance_department} department has been completed on <strong>${date_created}</strong>. You can now login to the <strong>ProLegal Case Management Platform</strong> to view the results of the compliance check.</p>
+        
+        <p>Once you have logged in, you can view the results of the compliance check by clicking on the "Compliance" tab.</p>
+        <p>Thank you,</p>
+        <p>Prolegal Team</p>
+        `
+    }        
+    // send mail with defined transport object and mail options
+SENDMAIL(options, (info) => {
+});
            res.redirect('/budget');
        }
     )
