@@ -210,5 +210,28 @@
     <script src="https://rawcdn.githack.com/Loopple/loopple-public-assets/5cef8f62939eeb089fa26d4c53a49198de421e3d/argon-dashboard/js/vendor/chart.extension.js"></script>
     <script src="https://rawcdn.githack.com/Loopple/loopple-public-assets/7bb803d2af2ab6d71d429b0cb459c24a4cd0fbb4/argon-dashboard/js/argon.min.js"></script>
     <script src="/js/loopple/loopple.js"></script>
+    <script>
+         function changeSrc(source){
+            document.getElementById("embed-pdf").src='/uploads2/'+source;
+        }
+        function deleteFeeNote(params1,params2,params3) {
+    var modal = document.getElementById('exampleModal3');
+var modalTitle = modal.querySelector('.modal-title');
+var modalBody = modal.querySelector('.modal-body');
+  // Set the modal title and body content
+  modalTitle.textContent = `Are you sure you want to Delete Fee Note:  ${params3} ?`; // Replace with your desired title
+  modalBody.innerHTML = `
+  <form  action="/delete-fee-note?id=${params1}&path=${params2}" method="POST">
+                <div class="mb-3">
+                                     
+                                <div class="mb-3">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-primary">Delete</button>
+                                </div>
+                            </form>   
+                                  
+  `;
+            }
+    </script>
   </body>
   

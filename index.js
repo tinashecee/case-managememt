@@ -26,17 +26,53 @@ const job = new CronJob('0 8 * * *', function()  {
     pool.query(
         `SELECT *
         FROM contracts
-        WHERE end_date < CURRENT_DATE + INTERVAL '1 month'`,
+        WHERE end_date = CURRENT_DATE + INTERVAL '1 month'`,
         [],
-        (err, result3) => {
+        (err, results1) => {
             if(err){
                 console.log(err)
                 errors.push({message: err});
                 
             }
+            pool.query(
+                `SELECT *
+                FROM users`,
+                [],
+                (err, results2) => {
+                    if(err){
+                        console.log(err)
+                        errors.push({message: err});
+                    }
+                    results2.rows.forEach(e=>{
+                    const message = "Expiring Contract Alert"
+                    const options = {
+                        from: "CASE MANAGEMENT SYSTEM <mochonam19@gmail.com>", // sender address
+                        to: e.email, // receiver email
+                        subject: "A contract is about to expire in a month!", // Subject line
+                        text: message,
+                        html: `<p>Hi ${e.name},</p>
+                        <p>This is a reminder that the contract for ${results1.rows[0].vendor} is about to expire on ${results1.rows[0].end_date}.</p>
+                        <p>Please review the contract details below:</p>
+                        <ul>
+                        <li>Contract Name: ${results1.rows[0].name}</li>
+                        <li>Contract Description: ${results1.rows[0].notes}</li>
+                        <li>Contract Value: $ ${results1.rows[0].contract_value}</li>
+                        <li>Expiry Date: ${results1.rows[0].end_date}</li>
+                        </ul>
+                        <p>Please contact us if you have any questions or need to renew the contract.</p>
+                        <p>Thank you,</p>
+                        <p>Prolegal Team</p>`
+                    }        
+                    // send mail with defined transport object and mail options
+                SENDMAIL(options, (info) => {
+                });
+            })
+
+                }
+            )
         });
 }, null, true, 'Etc/UTC');
-//job.start();
+job.start();
 }
 const HTML_TEMPLATE = require("./mail-template.js");
 const SENDMAIL = require("./mailer.js") 
@@ -669,9 +705,9 @@ app.get('/budget',checkNotAuthenticated,  async (req,res) => {
                     const limit = 10; // Number of items per page
                     const startIndex = (page - 1) * limit;
                     const endIndex = page * limit;
-                    const reso = results1.rows.slice(startIndex, endIndex);
+                    const reso = results1.rows.sort(compare).slice(startIndex, endIndex);
                    
-                     res.render('budget',{layout:'./layouts/budget-layout', user_role, user:nam,errors:errors,budget_statement:budget_statement,data:results.rows, data1:reso.sort(compare),page, dollarUS:dollarUS,total_expenditure:total_expenditure,expenditure_left:expenditure_left, current_balance:current_balance})
+                     res.render('budget',{layout:'./layouts/budget-layout', user_role, user:nam,errors:errors,budget_statement:budget_statement,data:results.rows, data1:reso,page, dollarUS:dollarUS,total_expenditure:total_expenditure,expenditure_left:expenditure_left, current_balance:current_balance})
                 }
             )
         }
@@ -746,9 +782,9 @@ app.get('/cases',checkNotAuthenticated,  async (req,res) => {
                                     const limit = 10; // Number of items per page
                                     const startIndex = (page - 1) * limit;
                                     const endIndex = page * limit;
-                                    const reso = results.rows.slice(startIndex, endIndex);
+                                    const reso = results.rows.sort(compare).slice(startIndex, endIndex);
                    
-                     res.render('cases',{layout:'./layouts/cases-layout', user_role, unfilteredRows:results.rows, user:nam,errors:errors,cases:results.rows, data: reso.sort(compare),
+                     res.render('cases',{layout:'./layouts/cases-layout', user_role, unfilteredRows:results.rows, user:nam,errors:errors,cases:results.rows, data: reso,
                      page,
                      totalItems: results.rows.length,
                      totalPages: Math.ceil(results.rows.length / limit), dataA:results1.rows,dataB:results2.rows,users:results3.rows,case_status:results4.rows,total_cases:results.rows})
@@ -950,10 +986,10 @@ app.get('/contracts',checkNotAuthenticated,  async (req,res) => {
                  const limit = 10; // Number of items per page
                  const startIndex = (page - 1) * limit;
                  const endIndex = page * limit;
-                 const reso = results.rows.slice(startIndex, endIndex);
+                 const reso = results.rows.sort(compare).slice(startIndex, endIndex);
              
                 
-                 res.render('contracts',{layout:'./layouts/contracts-layout', user_role, user:nam,errors:errors,contracts:results.rows,data:reso.sort(compare),page,dollarUS:dollarUS,vendors:results1.rows,contract_status:results2.rows,dataB:results3.rows,total_contracts:results.rows})
+                 res.render('contracts',{layout:'./layouts/contracts-layout', user_role, user:nam,errors:errors,contracts:results.rows,data:reso,page,dollarUS:dollarUS,vendors:results1.rows,contract_status:results2.rows,dataB:results3.rows,total_contracts:results.rows})
                     })
                 })
             }
@@ -1126,9 +1162,9 @@ app.get('/lawfirms',checkNotAuthenticated, async (req,res) => {
                     const limit = 10; // Number of items per page
                     const startIndex = (page - 1) * limit;
                     const endIndex = page * limit;
-                    const reso = results.rows.slice(startIndex, endIndex);
+                    const reso = results.rows.sort( compare ).slice(startIndex, endIndex);
              
-             res.render('lawfirms',{layout:'./layouts/lawfirms-layout', user_role, user:nam,errors:errors,lawfirms:results.rows,data:reso.sort( compare ),page, active:active, not_active:not_active,total_lawfirms:results.rows})
+             res.render('lawfirms',{layout:'./layouts/lawfirms-layout', user_role, user:nam,errors:errors,lawfirms:results.rows,data:reso,page, active:active, not_active:not_active,total_lawfirms:results.rows})
             }
         }
     )
@@ -1188,6 +1224,132 @@ app.get('/resources',checkNotAuthenticated,  async (req,res) => {
     let errors =[]
     res.render('resources',{layout:'./layouts/resources-layout', user_role, user:nam,errors:errors})
 });
+app.post('/add-fee-note' , async(req, res)=>{
+      //Use the name of the input field (i.e. "avatar") to retrieve the uploaded file
+      let avatar = req.files.avatar;
+      let desc = req.body.desc
+      let amount = req.body.amount
+      let fee_date = req.body.fee_date     
+      //Use the mv() method to place the file in the upload directory (i.e. "uploads")
+      avatar.mv('./public/uploads2/' + avatar.name);
+      let errors =[]
+      let query = req.query.id
+      let fee_notes = []
+      pool.query(
+          'SELECT * FROM law_firms WHERE law_firm_id = $1',
+         [query], 
+         (err, resulto) => {
+             if(err){
+                 errors.push({message: err});;
+             }
+             if(resulto.rows[0].fee_notes == null){
+               fee_notes = []
+           }else{
+             fee_notes = resulto.rows[0].fee_notes
+           }
+             let erykah = {
+                description:desc,
+                amount:amount,
+                fee_date:fee_date,
+                file:avatar.name
+             }
+             fee_notes.push(erykah)
+             
+             pool.query(
+              'UPDATE law_firms SET fee_notes = $1 WHERE law_firm_id = $2',
+             [fee_notes, query], 
+             (err, results) => {
+                 if(err){
+                     errors.push({message: err});;
+                 }
+             }
+          )
+         }
+      )
+      pool.query(
+        `SELECT * FROM law_firms WHERE law_firm_id = $1`,
+        [query],
+        (err, results) => {
+            if(err){
+                console.log(err)
+                errors.push({message: err});;
+                
+            }
+            let dollarUS = Intl.NumberFormat("en-US", {
+                style: "currency",
+                currency: "USD", 
+            });
+            req.flash('success','You have successfully added a fee note');
+            res.redirect('/lawfirm_notes?id='+query)
+        }
+    )
+    
+})
+app.post('/delete-fee-note' , async(req, res)=>{
+    const path = './public/uploads2/'+req.query.path
+    const query = req.query.id
+   
+    fs.unlink(path, (err) => {
+      if (err) {
+        console.error(err)
+        return
+      }
+    
+            let errors =[]
+            let fee_notes = []
+            
+            
+            pool.query(
+                'SELECT * FROM law_firms WHERE law_firm_id = $1',
+               [query], 
+               (err, resulto) => {
+                   if(err){
+                       errors.push({message: err});;
+                   }
+                  if(resulto.rows[0].fee_notes == null){
+                     fee_notes = []
+                  }else{
+                    fee_notes = resulto.rows[0].fee_notes
+                  }
+                  
+                   let count = 0
+                   fee_notes.forEach(e=>{
+                    if(e.file == req.query.path){
+                        fee_notes.splice(count, 1); 
+                    }
+                    count+=1
+                   })
+                   
+                   pool.query(
+                    'UPDATE law_firms SET fee_notes = $1 WHERE law_firm_id = $2',
+                   [fee_notes, query], 
+                   (err, results) => {
+                       if(err){
+                           errors.push({message: err});;
+                       }
+                   }
+                )
+               }
+            )
+            pool.query(
+                `SELECT * FROM law_firms WHERE law_firm_id = $1`,
+                [query],
+                (err, results) => {
+                    if(err){
+                        console.log(err)
+                        errors.push({message: err});;
+                        
+                    }
+                    let dollarUS = Intl.NumberFormat("en-US", {
+                        style: "currency",
+                        currency: "USD", 
+                    });
+                    req.flash('success','You have successfully deleted a fee note');
+                    res.redirect('/lawfirm_notes?id='+query)
+                }
+            )
+        })
+})
 app.post('/resources-gazettes', async (req,res) => {
     
   let year = req.body.year
@@ -1461,13 +1623,13 @@ app.get('/tasks',checkNotAuthenticated,  async (req,res) => {
                     const limit = 10; // Number of items per page
                     const startIndex = (page - 1) * limit;
                     const endIndex = page * limit;
-                    const reso = active_tasks.slice(startIndex, endIndex);
+                    const reso = active_tasks.sort(compare).slice(startIndex, endIndex);
                     const page1 = parseInt(req.query.page1) || 1; // Current page number
                     const startIndex1 = (page1 - 1) * limit;
                     const endIndex1 = page1 * limit;
-                    const reso1 = completed_tasks.slice(startIndex1, endIndex1);
+                    const reso1 = completed_tasks.sort(compare).slice(startIndex1, endIndex1);
                 
-                    res.render('tasks',{layout:'./layouts/tasks-layout', user_role, active,completed,user:nam,errors:errors,data:reso.sort(compare),data1:reso1.sort(compare),page,page1,users:results1.rows})
+                    res.render('tasks',{layout:'./layouts/tasks-layout', user_role, active,completed,user:nam,errors:errors,data:reso,data1:reso1,page,page1,users:results1.rows})
                 })
             
              
@@ -1511,9 +1673,9 @@ app.get('/vendors',checkNotAuthenticated, async (req,res) => {
                     const limit = 10; // Number of items per page
                     const startIndex = (page - 1) * limit;
                     const endIndex = page * limit;
-                    const reso = results.rows.slice(startIndex, endIndex);
+                    const reso = results.rows.sort(compare).slice(startIndex, endIndex);
                 
-             res.render('vendors',{layout:'./layouts/vendors-layout', user_role, user:nam,errors:errors,vendors:results.rows, data:reso.sort(compare),page,dataB:results2.rows,total_vendors:results.rows})
+             res.render('vendors',{layout:'./layouts/vendors-layout', user_role, user:nam,errors:errors,vendors:results.rows, data:reso,page,dataB:results2.rows,total_vendors:results.rows})
                 })
           
         }
@@ -1566,6 +1728,7 @@ app.post('/update-lawfirm-profile', (req, res)=>{
        if(err){
            errors.push({message: err});;
        }
+       req.flash('success','You have successfully updated lawfirm');
        res.redirect('/lawfirm_view?id='+query);
    }
 )
@@ -1595,6 +1758,7 @@ app.post('/update-lawfirm-contact', (req, res)=>{
                if(err){
                    errors.push({message: err});;
                }
+               req.flash('success','You have successfully updated lawfirm');
                res.redirect('/lawfirm_contacts?id='+query);
            }
         )
@@ -1644,7 +1808,7 @@ app.post('/update-lawfirm', (req, res)=>{
             if(err){
                 errors.push({message: err});;
             }
-            req.flash('success','You have successfully updated status of  Cases');
+            req.flash('success','You have successfully updated Law firm');
             res.redirect('/case_view?id='+query);
         }
     )
@@ -1678,7 +1842,7 @@ app.post('/update-case-startdate', (req, res)=>{
             if(err){
                 errors.push({message: err});;
             }
-            req.flash('success','You have successfully updated status of  Cases');
+            req.flash('success','You have successfully updated start start date of Case');
             res.redirect('/case_view?id='+query);
         }
     )
@@ -1702,7 +1866,7 @@ app.post('/update-case-members', (req, res)=>{
                        errors.push({message: err});;
                    }
             sendEmail1(staff_members,results1.rows[0].case_name,results1.rows[0].notes,results1.rows[0].start_date,results1.rows[0].end_date)
-            req.flash('success','You have successfully updated status of  Cases');
+            req.flash('success','You have successfully updated case members');
             res.redirect('/case_view?id='+query);
                 })
         }
@@ -1721,7 +1885,7 @@ app.post('/update-case-description', (req, res)=>{
             if(err){
                 errors.push({message: err});;
             }
-            req.flash('success','You have successfully updated status of  Cases');
+            req.flash('success','You have successfully updated description of  Cases');
             res.redirect('/case_view?id='+query);
         }
     )
@@ -1751,7 +1915,7 @@ app.post('/update-case-updates', (req, res)=>{
                if(err){
                    errors.push({message: err});;
                }
-               req.flash('success','You have successfully updated status of  Cases');
+               req.flash('success','You have successfully updated Case');
                res.redirect('/case_view?id='+query);
            }
        )
@@ -1772,6 +1936,7 @@ app.post('/update-contract-value', (req, res)=>{
             if(err){
                 errors.push({message: err});;
             }
+            req.flash('success','You have successfully updated case contract value');
             res.redirect('/contract_view?id='+query);
         }
     )
@@ -1790,6 +1955,7 @@ app.post('/update-contract-duration', (req, res)=>{
             if(err){
                 errors.push({message: err});;
             }
+            req.flash('success','You have successfully updated contract duration');
             res.redirect('/contract_view?id='+query);
         }
     )
@@ -1807,6 +1973,7 @@ app.post('/update-contract-terms', (req, res)=>{
             if(err){
                 errors.push({message: err});;
             }
+            req.flash('success','You have successfully updated contract terms');
             res.redirect('/contract_view?id='+query);
         }
     )
@@ -1824,6 +1991,7 @@ app.post('/update-contract-status', (req, res)=>{
             if(err){
                 errors.push({message: err});;
             }
+            req.flash('success','You have successfully updated contract status');
             res.redirect('/contract_view?id='+query);
         }
     )
@@ -1841,6 +2009,7 @@ app.post('/update-contract-description', (req, res)=>{
             if(err){
                 errors.push({message: err});;
             }
+            req.flash('success','You have successfully updated contract description');
             res.redirect('/contract_view?id='+query);
         }
     )
