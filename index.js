@@ -561,7 +561,128 @@ app.post('/delete-case-file', async (req, res) => {
             
     })       
 })
+app.post('/upload-document', async (req, res) => {
+    try {
+        if(!req.files) {
+            res.send({
+                status: false,
+                message: 'No file uploaded'
+            });
+        } else {
+            //Use the name of the input field (i.e. "avatar") to retrieve the uploaded file
+            let avatar = req.files.avatar;
+            
+            //Use the mv() method to place the file in the upload directory (i.e. "uploads")
+            avatar.mv('./public/uploads4/' + avatar.name);
+            let query = req.query.id
+            let errors =[]
+            let docs = []
+           // console.log(query)
+            
+            pool.query(
+                'SELECT * FROM documents WHERE document_id = $1',
+               [query], 
+               (err, resulto) => {
+                   if(err){
+                       errors.push({message: err});;
+                   }
+                  if(resulto.rows[0].docs == null ||  resulto.rows[0].docs == []){
+                    docs = []
+                  }else{
+                    docs = resulto.rows[0].docs
+                  }
+                  
+                  docs.push(avatar.name)
+                   pool.query(
+                    'UPDATE documents SET docs = $1 WHERE document_id = $2',
+                   [docs, query], 
+                   (err, resultis) => {
+                       if(err){
+                           errors.push({message: err});
+                           console.log(err)
+                       }
+                       console.log(resultis)
+                           
+                           
+                                req.flash('success','You have successfully added a file');   
+                                res.redirect('/documents-view?id='+query)
+                                })
+                   
+               }
+            )
+           
+                }
+            
+    } catch (err) {
+        res.status(500).send(err);
+    }
+});
+app.post('/delete-document-file', async (req, res) => {
+    const path = './public/uploads4/'+req.query.path
+    const query = req.query.id
+   
+    fs.unlink(path, (err) => {
+      if (err) {
+        console.error(err)
+        return
+      }
     
+            let errors =[]
+            let docs = []
+            
+            
+            pool.query(
+                'SELECT * FROM documents WHERE document_id = $1',
+               [query], 
+               (err, resulto) => {
+                   if(err){
+                       errors.push({message: err});
+                       console.log(err)
+                   }
+                  if(resulto.rows[0].docs == null){
+                    docs = []
+                  }else{
+                    docs = resulto.rows[0].docs
+                  }
+                  
+                   let count = 0
+                   docs.forEach(e=>{
+                    if(e == req.query.path){
+                        docs.splice(count, 1); 
+                    }
+                    count+=1
+                   })
+                   
+                   pool.query(
+                    'UPDATE documents SET docs = $1 WHERE document_id = $2',
+                   [docs, query], 
+                   (err, results) => {
+                       if(err){
+                           errors.push({message: err});;
+                       }
+                   }
+                )
+               }
+            )
+            pool.query(
+                `SELECT * FROM docs WHERE document_id = $1`,
+                [query],
+                (err, results) => {
+                    if(err){
+                        console.log(err)
+                        errors.push({message: err});;
+                        
+                    }
+                   
+                   
+                        req.flash('success','You have successfully deleted a file');   
+                        res.redirect('/documents-view?id='+query)
+                                            
+                }
+            )
+        })
+    
+})    
   app.get('/display-message', (req, res) => {
       res.render("display-message",{layout:'./layouts/index-layout'});
   });
@@ -1149,10 +1270,10 @@ app.get('/lawfirms',checkNotAuthenticated, async (req,res) => {
                 }
              })
              function compare( a, b ) {
-                if ( a.name > b.name ){
+                if ( a.name < b.name ){
                   return -1;
                 }
-                if ( a.name < b.name ){
+                if ( a.name > b.name ){
                   return 1;
                 }
                 return 0;
@@ -1216,6 +1337,122 @@ app.get('/lawfirm_view',checkNotAuthenticated, async (req,res) => {
         }
     )
 });
+
+app.get('/documents',checkNotAuthenticated,  async (req,res) => {
+    let errors =[]
+    let message=[]
+
+    pool.query(
+        
+        `SELECT * FROM documents`,
+        [],
+        (err, results) => {
+            if(err){
+                console.log(err)
+                errors.push({message: err});;
+                
+            }
+        
+            pool.query( `SELECT * FROM users`,
+            [],
+            (err, results2) => {
+                if(err){
+                    console.log(err)
+                    errors.push({message: err});;
+                    
+                    
+                }
+                pool.query( `SELECT * FROM department`,
+                [],
+                (err, results3) => {
+                    if(err){
+                        console.log(err)
+                        errors.push({message: err});;
+                        
+                        
+                    }
+                    function compare( a, b ) {
+                        if ( a.name < b.name ){
+                          return -1;
+                        }
+                        if ( a.name > b.name ){
+                          return 1;
+                        }
+                    }
+             const page = parseInt(req.query.page) || 1; // Current page number
+             const limit = 10; // Number of items per page
+             const startIndex = (page - 1) * limit;
+             const endIndex = page * limit;
+             const reso = results.rows.sort(compare).slice(startIndex, endIndex);
+         
+            
+             res.render('documents',{layout:'./layouts/document-layout',user_role, user:nam,errors:errors,documents:results.rows,data:reso,page,dataB:results3.rows,users:results2.rows,total_documents:results.rows})
+                })
+            })
+        }
+    )
+})
+app.get('/documents-view',checkNotAuthenticated,  async (req,res) => {
+    let errors =[]
+    let message=[]
+    let query = req.query.id
+    pool.query(
+        `SELECT * FROM documents WHERE document_id = $1`,
+        [query],
+        (err, results) => {
+            if(err){
+                console.log(err)
+                errors.push({message: err});;
+                
+            }
+            pool.query(
+                `SELECT * FROM users`,
+                [],
+                (err, results1) => {
+                    if(err){
+                        console.log(err)
+                        errors.push({message: err});;
+                        
+                    }
+                    pool.query( `SELECT * FROM department`,
+                    [],
+                    (err, results2) => {
+                        if(err){
+                            console.log(err)
+                            errors.push({message: err});;
+                            
+                        }
+                    let directory_name = "./public/uploads4";
+                    let filenames = fs.readdirSync(directory_name);
+                      
+                  
+                    res.render('document_viewer',{layout:'./layouts/document-viewer-layout', user_role, user:nam,errors:errors,data:results.rows, dataB:results2.rows,id:query, files:filenames,id:query,users:results1.rows})
+                })
+                })
+                }
+            )
+})
+app.post('/add-document', async(req, res)=>{
+    let name = req.body.document_name
+    let department = req.body.department
+    let members = req.body.members
+    let description = req.body.comments
+    console.log(department)
+    let yourDate = new Date()
+    date_created = formatDate(yourDate)
+    pool.query(
+        `INSERT INTO documents (name, department, assigned_to, description, date_created,documents)
+        VALUES ($1, $2, $3, $4, $5, $6)`,
+        [name, department, members, description, date_created,[]], 
+        (err, results) => {
+            if(err){
+                errors.push({message: err});;
+            }
+            req.flash('success','You have successfully added a document');
+            res.redirect('/documents');
+        }
+    )
+})
 app.get('/learn',checkNotAuthenticated,  async (req,res) => {
     
     res.render('learn',{layout:'./layouts/learn-layout'})
@@ -2212,6 +2449,78 @@ app.post('/change-lawfirm-status', (req, res)=>{
             res.redirect('/lawfirms');
         }
     )
+});
+app.post('/update-document-assignee', (req, res)=>{
+    let query = req.query.id
+    let assigned_to = req.body.members
+    let yourDate = new Date()
+    date_created = formatDate(yourDate)
+    pool.query(
+         'UPDATE documents SET assigned_to = $1 WHERE document_id = $2',
+        [assigned_to, query], 
+        (err, results) => {
+            if(err){
+                errors.push({message: err});;
+            }
+            req.flash('success','You have successfully updated assignee');
+            res.redirect('/documents-view?id='+query);
+        }
+    )
+    
+});
+app.post('/update-document-department', (req, res)=>{
+    let query = req.query.id
+    let department = req.body.department
+    let yourDate = new Date()
+    date_created = formatDate(yourDate)
+    pool.query(
+         'UPDATE documents SET department = $1 WHERE document_id = $2',
+        [department, query], 
+        (err, results) => {
+            if(err){
+                errors.push({message: err});;
+            }
+            req.flash('success','You have successfully updated department');
+            res.redirect('/documents-view?id='+query);
+        }
+    )
+    
+});
+app.post('/update-document-description', (req, res)=>{
+    let query = req.query.id
+    let description = req.body.description
+    let yourDate = new Date()
+    date_created = formatDate(yourDate)
+    pool.query(
+         'UPDATE documents SET description = $1 WHERE document_id = $2',
+        [description, query], 
+        (err, results) => {
+            if(err){
+                errors.push({message: err});;
+            }
+            req.flash('success','You have successfully updated description');
+            res.redirect('/documents-view?id='+query);
+        }
+    )
+    
+});
+app.post('/update-document-name', (req, res)=>{
+    let query = req.query.id
+    let name = req.body.document_name
+    let yourDate = new Date()
+    date_created = formatDate(yourDate)
+    pool.query(
+         'UPDATE documents SET name = $1 WHERE document_id = $2',
+        [name, query], 
+        (err, results) => {
+            if(err){
+                errors.push({message: err});;
+            }
+            req.flash('success','You have successfully updated name');
+            res.redirect('/documents-view?id='+query);
+        }
+    )
+    
 });
 app.post('/add-case', (req, res)=>{
    // console.log(req.body)

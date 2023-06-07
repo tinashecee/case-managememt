@@ -1,0 +1,290 @@
+
+<div class="container-fluid pt-3">
+    <%  for (let error of errors) { %>
+      <div class="alert alert-danger" role="alert">
+      <%= error.message %>
+     </div>
+       <% } %>
+       <% if(message.success){ %>
+         <div class="alert alert-success"  role="alert">
+             <%= message.success %>
+         </div>
+         <% } %>
+    <div class="row removable">
+      <div class="col-lg-12">
+        <h1 class=""><%= data[0].name %></h1>
+      </div>
+    </div>
+    <div class="row removable">
+      <div class="col-lg-4">
+        <div class="card">
+          <div class="card-header border-0 pb-0">
+            <h4 class="mb-0">Details</h4>
+            <div class="card">
+              
+              <div class="card-body text-left">
+                <div class="accordion p-0" id="accordionExample">
+                  <div class="card shadow-none mb-0">
+                    <div
+                      class="card-header px-0"
+                      id="headingOne"
+                      data-toggle="collapse"
+                      data-target="#collapseOne"
+                      aria-expanded="true"
+                      aria-controls="collapseOne"
+                    >
+                      <h5 class="mb-0">Document Description</h5>
+                    </div>
+                    <div
+                      id="collapseOne"
+                      class="collapse show"
+                      aria-labelledby="headingOne"
+                      data-parent="#accordionExample"
+                      style=""
+                    >
+                      <div class="card-body px-0">
+                        <p>
+                          <%= data[0].description %>
+                        </p>
+                        <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#exampleModal5"><i class="fa fa-edit"></i
+                          ></button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="card-body pt-0 pb-2 px-0">
+                    <div
+                      class="border-bottom border-top d-flex align-items-center justify-content-between px-4 py-2"
+                    >
+                      <div class="d-flex align-items-center">
+                        <i class="fa text-primary text-lg fa-cogs"></i>
+                        <div class="ml-3">
+                          <h5 class="mb-0">Documents Name</h5>
+                          <p class="text-sm mb-0"><%= data[0].name %></p>
+                        </div>
+                      </div>
+                      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal1"
+                    ><i class="fa fa-edit"></i
+                  ></button>
+                    </div>
+                    <div
+                      class="border-bottom d-flex align-items-center justify-content-between px-4 py-2"
+                    >
+                      <div class="d-flex align-items-center">
+                        <i class="fa text-primary fa-clock"></i>
+                        <div class="ml-3">
+                          <h5 class="mb-0">Department</h5>
+                          <p class="text-sm mb-0"><%= data[0].department %></p>
+                        </div>
+                      </div>
+                      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal2"
+                      ><i class="fa fa-edit"></i
+                    ></button>
+                    </div>
+                    <div
+                      class="border-bottom d-flex align-items-center justify-content-between px-4 py-2"
+                    >
+                      <div class="d-flex align-items-center">
+                        <i class="fa text-primary text-lg fa-user"></i>
+                        <div class="ml-3">
+                          <h5 class="mb-0">assigned To</h5>
+                          <p class="text-sm mb-0">
+                            <%= data[0].assigned_to %>
+                          </p>
+                        </div>
+                      </div>
+                      <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal3"
+                    ><i class="fa fa-edit"></i
+                  ></button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-8">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="card-title">PDF Preview</h5>
+          </div>
+          <div class="card-body">
+            <div class="embed-responsive embed-responsive-16by9">
+              <embed
+                class="embed-responsive-item"
+                id="embed-pdf"
+                type="application/pdf"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="row removable">
+          <div class="col-lg-12"></div>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <h5 class="card-title">Documents</h5>
+            <form action="/upload-document?id=<%= id %>" method="post" enctype="multipart/form-data">
+              <input id='files' name="avatar" class="btn btn-primary" type="file" >
+              <input class="btn btn-primary" type="submit">
+            </form>
+          </div>
+          <% if(data[0].docs != null) { %>
+          <% if(data[0].docs.length != 0) { %>
+            <ul class="list-group list-group-flush">
+              <% for (let dat of data[0].docs) { %>
+    <li class="list-group-item">
+      <div class="row align-items-center">
+        <div class="col-md-1">
+        <button type="button" class="btn btn-primary" onclick="changeSrc('<%= dat %>')"
+          ><i class="fa fa-eye"></i
+        ></button>
+      </div>
+      <div class="col-md-1"></div>
+        <div class="col-md-8">
+          
+          <h6 class="card-subtitle mb-2 text-muted">File Name</h6>
+          <p class="card-text"><%= dat %></p>
+        </div>
+      <div class="col-md-1">
+      <button class="btn  btn-danger" onclick="deleteFile('<%= dat %>' , '<%= id %>')"  data-toggle="modal" data-target="#exampleModal8" data-original-title="Edit product">
+        <i class="fas fa-trash"></i>
+    </button>
+      </div>
+        
+      
+      </div>
+    </li>
+    <% } %>
+  </ul>
+  <% } %>
+  <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<div class="modal fade" id="exampleModal2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+          <form action='update-document-department?id=<%= id %>' method="POST">
+          <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Edit Department</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">X</span>
+              </button>
+          </div>
+          <div class="modal-body">
+               
+            <div class="col-md-12">
+                <label for="department" class="form-label">Department</label>
+                <select class="form-select" id="department" name="department" required="">
+                    <% for (let dat of dataB) { %>
+                    <option value="<%= dat.department_name %>"><%= dat.department_name %></option>
+                    <% } %>
+                </select>
+          </div>            
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary">Submit</button>
+          </div>
+      </form> 
+      </div>
+</div>
+</div>
+<div class="modal fade" id="exampleModal3" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+          <form action='update-document-assignee?id=<%= id %>' method="POST">
+          <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Edit Assignee</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">X</span>
+              </button>
+          </div>
+          <div class="modal-body">
+        <div class="col-md-12">
+            <label for="members" class="form-label">Assigned To</label>
+            <select class="form-select" id="members" name="members" required="">
+                <% for (let dat of users) { %>
+                    <option value="<%= dat.name %>"><%= dat.name %></option>
+                    <% } %>
+            </select>
+        </div>
+                     
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary">Submit</button>
+          </div>
+      </form> 
+      </div>
+</div>
+</div>
+<div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+          <form action='update-document-name?id=<%= id %>' method="POST">
+          <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Edit Name</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">X</span>
+              </button>
+          </div>
+          <div class="modal-body">
+            <div class="col-md-12">
+            <label for="document_name" class="form-label">Name</label>
+            <input type="text" class="form-control" id="document_name" name="document_name" required="">
+            </div>
+                     
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary">Submit</button>
+          </div>
+      </form> 
+      </div>
+</div>
+</div>
+<div class="modal fade" id="exampleModal5" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+          <form action='update-document-description?id=<%= id %>' method="POST">
+          <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Edit Description</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">X</span>
+              </button>
+          </div>
+          <div class="modal-body">
+            <div class="col-md-12">
+            <label for="description" class="form-label">Description</label>
+            <input type="text" class="form-control" id="description" name="description" required="">
+            </div>
+                     
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary">Submit</button>
+          </div>
+      </form> 
+      </div>
+</div>
+</div>
+<div class="modal fade" id="exampleModal8" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Delete File</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">X</span>
+              </button>
+          </div>
+          <div class="modal-body">
+             
+          </div>
+        
+      </div>
+  </div>
+</div> 

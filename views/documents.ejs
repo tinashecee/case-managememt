@@ -1,0 +1,275 @@
+
+<div class="container-fluid pt-3">
+    <%  for (let error of errors) { %>
+        <div class="alert alert-danger" role="alert">
+        <%= error.message %>
+       </div>
+         <% } %>
+         <% if(message.success){ %>
+           <div class="alert alert-success"  role="alert">
+               <%= message.success %>
+           </div>
+           <% } %>
+           <h3 class="">Documents Summary&nbsp;</h3>
+           <div class="row mt-3 mb-4 mx-0 removable">
+             <div class="card-group w-100">
+               <div class="card border shadow-none">
+                 <div class="card-body">
+                   <div class="row">
+                     <div class="col d-flex align-items-center">
+                       <h5 class="card-title text-uppercase text-muted mb-0">
+                         Total Documents
+                       </h5>
+                       <span
+                         class="badge badge-secondary border ml-2 text-md font-weight-bold mb-0"
+                         >+ <%= total_documents.length %></span
+                       >
+                     </div>
+                   </div>
+                   <p class="mt-2 text-dark font-weight-700 display-3 mb-0"><%= total_documents.length %></p>
+                 </div>
+               </div>
+              
+             </div>
+           </div>
+
+
+    <div class="row removable">
+        <div class="col-lg-12">
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                New Document
+             </button>
+            <div class="card">
+                
+
+
+                     <div class="col-lg-4">
+                            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                    <div class="modal-content">
+                                        <form action="/add-document" method="POST">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">Add Document</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">X</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                          
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <label for="case-name" class="form-label">Document Name</label>
+                                <input type="text" class="form-control" id="document_name" name="document_name" required="">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label for="department" class="form-label">Department</label>
+                                <select class="form-select" id="department" name="department" required="">
+                                    <% for (let dat of dataB) { %>
+                                    <option value="<%= dat.department_name %>"><%= dat.department_name %></option>
+                                    <% } %>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="members" class="form-label">Assigned To</label>
+                                    <select class="form-select" id="members" name="members" required="">
+                                        <% for (let dat of users) { %>
+                                            <option value="<%= dat.name %>"><%= dat.name %></option>
+                                            <% } %>
+                                    </select>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="comments" class="form-label">Description</label>
+                            <textarea class="form-control" id="comments" name="comments"></textarea>
+                        </div>
+                                                     
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                            <button type="submit" class="btn btn-primary">Submit</button>
+                                        </div>
+                                    </form> 
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+                <div class="card">
+                    <div class="card-header border-0">
+                        <div class="row align-items-center">
+                          <div class="col">
+                            <div class="form-group mb-0">
+                              <div class="input-group">
+                              
+                                <button type="button" class="btn" data-toggle="modal" data-target="#exampleModalSearch">
+                                    <i class="fas fa-search"></i
+                                        > Search
+                                 </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="table-responsive" >
+                        <% if (data.length > 0) { %>
+                    <table class="table align-items-center table-flush paginated" >
+                        <thead class="thead-light">
+                            <tr>
+                                <th scope="col">Document #</th>
+                                <th scope="col">Documents Name</th>
+                                <th scope="col">Department</th>
+                                <th scope="col">Created on</th>
+                                <th scope="col">Assigned To</th>
+                                <th scope="col">Quantity</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                                <% for (let dat of data) { %>
+                            <tr>
+                                
+                                <th scope="row">
+                                    <%= dat.document_id %>
+                                </th>
+                                <td><a href='/documents-view?id=<%= dat.document_id %>'><%= dat.name %></a></td>
+                                <td><%= dat.department %></td>
+                                <td>
+                                    <%= moment(dat.date_created).format('Do MMMM, YYYY') %></td>
+                                <td>
+                                   <p><%= dat.assigned_to %></p> </td>
+                                   <% if(dat.length != null) { %>
+                                   <td>
+                                    <%= dat.docs.length %>
+                                   </td>
+                                   <% } %>
+                            </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                    <% } else { %>
+                        <div style="padding: auto;margin:auto;position: relative;left:40%"><p>No Documents to show!</p></div>
+                        
+                      <% } %> 
+                      </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row removable">
+        <div class="col-lg-12">
+            <div class="row removable">
+                <div class="col-lg-12">
+                    <div class="row removable">
+                        <div class="col-lg-4">
+                            <div class="row removable">
+                                <div class="col-lg-4">
+                                    <nav aria-label="..." class="">
+                                        <ul class="pagination">
+                                            <li class="page-item">
+                                
+                                                <% if (page > 1) { %>
+                                                  <a class="page-link" href="/documents?page=<%= page - 1 %>">
+                                                    <i class="fa fa-angle-left"></i>
+                                                    <span class="sr-only">Previous</span>
+                                                  </a>
+                                              <% } %>
+                                            </li>
+                                            <li class="page-item">
+                                               
+                                                <% if (data.length === 10) { %>
+                                                  <a class="page-link" href="/documents?page=<%= page + 1 %>">
+                                                    <i class="fa fa-angle-right"></i>
+                                                    <span class="sr-only">Next</span>
+                                                  </a>
+                                              <% } %>
+                                            </li>
+                                            <li class="page-item">
+                                                <a class="page-link" href="#"><%= page %></a>
+                                                </li>
+                                        </ul>
+                                    </nav>
+                                </div>
+                                <div class="col-lg-4"></div>
+                                <div class="col-lg-4"></div>
+                            </div>
+                        </div>
+                       
+                        <div class="col-lg-4">
+                            <div class="row removable">
+                                <div class="col-lg-6"></div>
+                                <div class="col-lg-6"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="exampleModalSearch"  tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" style="max-width: 960px;
+        width: 100%;" role="document">
+            <div class="modal-content" >
+                <div class="modal-header">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text"
+                            ><i class="fas fa-search"></i
+                          ></span>
+                        </div>
+                        <input
+                          class="form-control"
+                          placeholder="Search"
+                          type="text"
+                          id="searchInput"
+                        />
+                      </div>
+                </div>
+                <div class="modal-body">
+                    <div class="table-responsive" >
+                        <% if (documents.length > 0) { %>
+                    <table class="table align-items-center table-flush paginated" >
+                        <thead class="thead-light">
+                            <tr>
+                                <th scope="col">Document #</th>
+                                <th scope="col">Documents Name</th>
+                                <th scope="col">Department</th>
+                                <th scope="col">Created on</th>
+                                <th scope="col">Assigned To</th>
+                                <th scope="col">Quantity</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                                <% for (let dat of documents) { %>
+                            <tr>
+                                
+                                <th scope="row">
+                                    <%= dat.document_id %>
+                                </th>
+                                <td><a href='/documents-view?id=<%= dat.document_id %>'><%= dat.name %></a></td>
+                                <td><%= dat.description %></td>
+                                <td>
+                                    <%= moment(dat.date_created).format('Do MMMM, YYYY') %></td>
+                                <td>
+                                   <p><%= dat.assigned_to %></p> </td>
+                                   <% if(dat.length != null) { %>
+                                   <td>
+                                    <%= dat.docs.length %>
+                                   </td>
+                                   <% } %>
+                            </tr>
+                            <% } %>
+                        </tbody>
+                    </table>
+                    <% } else { %>
+                        <div style="padding: auto;margin:auto;position: relative;left:40%"><p>No Documents to show!</p></div>
+                        
+                      <% } %> 
+                      </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>   
