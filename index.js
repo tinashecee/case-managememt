@@ -292,10 +292,6 @@ app.post('/upload-case', async (req, res) => {
                                     errors.push({message: err});;
                                     
                                 }
-                            let directory_name = "./public/uploads";
-                            //let filenames = fs.readdirSync(directory_name);
-                              
-                           // console.log("\nFilenames in directory:");
                             attachments.forEach((file) => {
                               //  console.log("File:", file);
                             });
@@ -543,9 +539,6 @@ app.post('/delete-case-file', async (req, res) => {
                               errors.push({message: err});;
                               
                           }
-                      let directory_name = "./public/uploads";
-                      //let filenames = fs.readdirSync(directory_name);
-                        
                     //  console.log("\nFilenames in directory:");
                       attachments.forEach((file) => {
                      //     console.log("File:", file);
@@ -1022,12 +1015,7 @@ app.get('/case_view',checkNotAuthenticated,  async (req,res) => {
                         }
                     let directory_name = "./public/uploads";
                     let filenames = fs.readdirSync(directory_name);
-                      
-                  //  console.log("\nFilenames in directory:");
-                    filenames.forEach((file) => {
-                        console.log("File:", file);
-                    });
-                  //  console.log(results.rows[0])
+                   
                     pool.query( `SELECT * FROM users`,
                             [],
                             (err, results3) => {
@@ -1038,7 +1026,7 @@ app.get('/case_view',checkNotAuthenticated,  async (req,res) => {
 
                                 }
                   
-                    res.render('case_view',{layout:'./layouts/case_view_layout', user_role, user:nam,errors:errors,data:results.rows, dataA:results1.rows,id:query, files:filenames,case_status:results2.rows,id:query,users:results3.rows})
+                    res.render('case_view',{layout:'./layouts/case_view_layout', user_role, user:nam,errors:errors,data:results.rows, dataA:results1.rows,id:query, case_status:results2.rows,id:query,users:results3.rows})
                 })
                 })
                 }
@@ -1422,11 +1410,9 @@ app.get('/documents-view',checkNotAuthenticated,  async (req,res) => {
                             errors.push({message: err});;
                             
                         }
-                    let directory_name = "./public/uploads4";
-                    let filenames = fs.readdirSync(directory_name);
                       
                   
-                    res.render('document_viewer',{layout:'./layouts/document-viewer-layout', user_role, user:nam,errors:errors,data:results.rows, dataB:results2.rows,id:query, files:filenames,id:query,users:results1.rows})
+                    res.render('document_viewer',{layout:'./layouts/document-viewer-layout', user_role, user:nam,errors:errors,data:results.rows, dataB:results2.rows,id:query,id:query,users:results1.rows})
                 })
                 })
                 }
