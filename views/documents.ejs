@@ -252,11 +252,6 @@
                                     <%= moment(dat.date_created).format('Do MMMM, YYYY') %></td>
                                 <td>
                                    <p><%= dat.assigned_to %></p> </td>
-                                   <% if(dat.length != null) { %>
-                                   <td>
-                                    <%= dat.docs.length %>
-                                   </td>
-                                   <% } %>
                             </tr>
                             <% } %>
                         </tbody>
