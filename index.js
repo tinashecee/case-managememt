@@ -15,6 +15,7 @@ const fs = require("fs");
 const puppeteer = require('puppeteer');
 const fileUpload = require('express-fileupload');
 const cors = require('cors');
+const Excel = require('exceljs');
 const morgan = require('morgan');
 const CronJob = require('cron').CronJob
 const _ = require('lodash');
@@ -81,6 +82,7 @@ const SENDMAIL = require("./mailer.js")
 
 const moment = require("moment");
 const { count } = require('console');
+const { name } = require('ejs');
 const app = express();
 initializePassport(passport);
 const PORT = process.env.PORT || 8080
@@ -1716,7 +1718,10 @@ app.post('/delete-statement' , async(req, res)=>{
 app.post('/resources-gazettes', async (req,res) => {
     
   let year = req.body.year
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch({
+    executablePath: "/usr/bin/chromium-browser",
+    args: ['--no-sandbox']
+});
   const page = await browser.newPage();
  //console.log(year)
   await page.goto(`https://zimlii.org/gazettes/${year}`);
@@ -1748,7 +1753,10 @@ app.post('/resources-gazettes', async (req,res) => {
 app.post('/resources-cases-and-judgements', async (req,res) => {
     
     let court = req.body.court
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({
+        executablePath: "/usr/bin/chromium-browser",
+        args: ['--no-sandbox']
+    });
     const page = await browser.newPage();
    //console.log(court)
     
@@ -1791,7 +1799,10 @@ app.get('/resources-results',checkNotAuthenticated,  async (req,res) => {
         keyword = 'cases and judgements zimbabwe'
     }
     if(req.query.query == 'legislation'){
-        const browser = await puppeteer.launch();
+        const browser = await puppeteer.launch({
+            executablePath: "/usr/bin/chromium-browser",
+            args: ['--no-sandbox']
+        });
         const page = await browser.newPage();
       
         // Increase the navigation timeout to 60 seconds (60000 milliseconds)
@@ -1834,7 +1845,10 @@ app.get('/resources-results',checkNotAuthenticated,  async (req,res) => {
     }
     if(req.query.query == 'regulations'){
         keyword = 'regulations zimbabwe' 
-        const browser = await puppeteer.launch();
+        const browser = await puppeteer.launch({
+            executablePath: "/usr/bin/chromium-browser",
+            args: ['--no-sandbox']
+        });
   const page = await browser.newPage();
 
   const baseUrl = 'https://www.veritaszim.net/taxonomy/term/8';
@@ -1876,7 +1890,10 @@ app.post('/resources-search-results',  async (req,res) => {
    //  const keyword = 'legal cases zimbabwe';
 //scrapeWebsites(keyword);
       // Launch a headless browser instance
-      const browser = await puppeteer.launch();
+      const browser = await puppeteer.launch({
+        executablePath: "/usr/bin/chromium-browser",
+        args: ['--no-sandbox']
+    });
       const page = await browser.newPage();
     
       // Perform a Google search with the provided keyword
@@ -3035,8 +3052,7 @@ SENDMAIL(options, (info) => {
  
 })
 app.get('/download',async (req,res) =>{
-    let createCsvWriter = csvwriter.createObjectCsvWriter;
-
+   
     let usersArray = []
   
     compliance_data.forEach(e=>{
@@ -3051,162 +3067,426 @@ app.get('/download',async (req,res) =>{
         //console.log( JSON.stringify(e.questions))
         usersArray.push(b)
       })
-    const path = 'sample.csv';
-   
-    const csvWriter = createCsvWriter({
-      path: path,
-      header: [{ id:'department',title:'Department'},{ id:'contact_person',title:'Contact Person'},{id:'contact_email',title:'Contact Email'},{id:'score',title:'Score'},{id:'questions',title:'Questions'},{id:'date_completed',title:'Date Completed'}]});
-
-    try 
-    {
-         
-         csvWriter.writeRecords(usersArray)
-         .then(() => {res.download(path); 
-           
+        // Create Excel workbook and worksheet
+        const workbook = new Excel.Workbook();
+        let yourDate = new Date()
+        date_created = formatDate(yourDate)
+        workbook.creator = nam;
+        workbook.lastModifiedBy = nam;
+        workbook.created = yourDate;
+        const worksheet = workbook.addWorksheet('Compliance Data',{
+            headerFooter: {oddFooter: "Page &P of &N", oddHeader: 'Compliance Data'},properties:{tabColor:{argb:'FFC0000'}}
         });
-    }
-    catch (error) 
-    {
-      console.log(error);
-    }
+    
+        // Define columns in the worksheet, these columns are identified using a key.
+        worksheet.columns = [
+            { header: 'Department', key: 'department', width: 20 },
+            { header: 'Contact Person', key: 'contact_person', width: 20 },
+            { header: 'Contact Email', key: 'contact_email', width: 20 },
+            { header: 'Score', key: 'score', width: 20 },
+            { header: 'Questions', key: 'questions', width: 20 },
+            { header: 'Date Completed', key: 'date_completed', width: 20 }
+        ]
+        worksheet.autoFilter = 'A1:D1';
+
+        // Process each row for beautification 
+            worksheet.eachRow(function (row, rowNumber) {
+        
+                row.eachCell((cell, colNumber) => {
+                    if (rowNumber == 1) {
+                        // First set the background of header row
+                        cell.fill = {
+                            type: 'pattern',
+                            pattern: 'solid',
+                            fgColor: { argb: '3b7197' }, bgColor:{argb:'FF0000FF'
+                        }
+                        }
+                    }
+                    // Set border of each cell 
+                    cell.border = {
+                        top: { style: 'thin' },
+                        left: { style: 'thin' },
+                        bottom: { style: 'thin' },
+                        right: { style: 'thin' }
+                    };
+                    cell.font = {
+                        name: 'Arial Black',
+                        color: { argb: '000000' },
+                        family: 2,
+                        size: 8
+                       };
+                       cell.alignment = { wrapText: true,indent: 1 };
+                })
+                //Commit the changed row to the stream
+                row.commit();
+            });
+        // Add rows from database to worksheet 
+        worksheet.addRows(usersArray);
+    
+        // write to a new buffer
+     await workbook.xlsx.writeFile('ComplianceData.xlsx').then(() => {
+        res.download('ComplianceData.xlsx'); 
+    }); 
 });
 app.get('/download1',async (req,res) =>{
-    let createCsvWriter = csvwriter.createObjectCsvWriter;
-    const path = 'sample1.csv';
-    let questions = []
-    compliance_data.forEach(e=>{
-        questions.push(e.questions)
-      })
-      //console.log(compliance_data)
-     // console.log(questions)
-    const csvWriter = createCsvWriter({
-        path: path,
-        header: [{ id:'title',title:'Question'},{ id:'response',title:'Response'}]});
-        try 
-        {
-             
-             csvWriter.writeRecords(questions[0])
-             .then(() => {res.download(path);
-            });
-        }
-        catch (error) 
-        {
-          console.log(error);
-        }    
+    
+        let questions = []
+        compliance_data.forEach(e=>{
+            questions.push(e.questions)
+          })
+          // Create Excel workbook and worksheet
+     const workbook = new Excel.Workbook();
+     let yourDate = new Date()
+     date_created = formatDate(yourDate)
+     workbook.creator = nam;
+     workbook.lastModifiedBy = nam;
+     workbook.created = yourDate;
+     const worksheet = workbook.addWorksheet('Compliance Questions',{
+         headerFooter: {oddFooter: "Page &P of &N", oddHeader: 'Compliance Questions'},properties:{tabColor:{argb:'FFC0000'}}
+     });
+     // Define columns in the worksheet, these columns are identified using a key.
+     worksheet.columns = [
+         { header: 'Question', key: 'title',  width: 20 },
+         { header: 'Response', key: 'response',  width: 20 }
+     ]
+     
+     // Add rows from database to worksheet 
+     worksheet.addRows(questions[0]);
+      // Add autofilter on each column
+ worksheet.autoFilter = 'A1:D1';
+
+ // Process each row for beautification 
+     worksheet.eachRow(function (row, rowNumber) {
+ 
+         row.eachCell((cell, colNumber) => {
+             if (rowNumber == 1) {
+                 // First set the background of header row
+                 cell.fill = {
+                     type: 'pattern',
+                     pattern: 'solid',
+                     fgColor: { argb: '3b7197' }, bgColor:{argb:'FF0000FF'
+                 }
+                 }
+             }
+             // Set border of each cell 
+             cell.border = {
+                 top: { style: 'thin' },
+                 left: { style: 'thin' },
+                 bottom: { style: 'thin' },
+                 right: { style: 'thin' }
+             };
+             cell.font = {
+                 name: 'Arial Black',
+                 color: { argb: '000000' },
+                 family: 2,
+                 size: 8
+                };
+                cell.alignment = { wrapText: true,indent: 1 };
+         })
+         //Commit the changed row to the stream
+         row.commit();
+     });
+     // write to a new buffer
+     await workbook.xlsx.writeFile('ComplianceQuestions.xlsx').then(() => {
+                 res.download('ComplianceQuestions.xlsx'); 
+             });  
 })
 app.get('/download3',async (req,res) =>{
-    let createCsvWriter = csvwriter.createObjectCsvWriter;
-
-    let usersArray = array
   
-    
-    const path = 'sample2.csv';
-   
-    const csvWriter = createCsvWriter({
-      path: path,
-      header: [{ id:'law_firm_id',title:'ID'},{ id:'name',title:'Name'},{id:'email',title:'Email'},{id:'address',title:'Address'},{id:'phone_number',title:'Phone Number'},{id:'vat_number',title:'VAT Number'},{id:'website',title:'Website'}]});
-
-    try 
-    {
-         
-         csvWriter.writeRecords(usersArray)
-         .then(() => {
-            res.download(path); 
-           
+        // Create Excel workbook and worksheet
+        const workbook = new Excel.Workbook();
+        let yourDate = new Date()
+        date_created = formatDate(yourDate)
+        workbook.creator = nam;
+        workbook.lastModifiedBy = nam;
+        workbook.created = yourDate;
+        const worksheet = workbook.addWorksheet('Lawfirms',{
+            headerFooter: {oddFooter: "Page &P of &N", oddHeader: 'law Firms Report'},properties:{tabColor:{argb:'FFC0000'}}
         });
-    }
-    catch (error) 
-    {
-      console.log(error);
-    }
+        // Define columns in the worksheet, these columns are identified using a key.
+        worksheet.columns = [
+            { header: 'ID', key: 'law_firm_id',  width: 5 },
+            { header: 'Name', key: 'name',  width: 20 },
+            { header: 'Email', key: 'email',  width: 20 },
+            { header: 'Address', key: 'address',  width: 20 },
+            { header: 'Status', key: 'status',  width: 10 },
+            { header: 'Date Added', key: 'date_created',  width: 10 },
+            { header: 'Phone Number', key: 'phone_number',  width: 20 },
+            { header: 'Vat Number', key: 'vat_number',  width: 15 },
+            { header: 'Website', key: 'website',  width: 25 },
+            { header: 'Contacts', key: 'contacts',  width: 20 },
+            { header: 'Statements', key: 'statements',  width: 15 },
+            { header: 'Fee Notes', key: 'fee_notes',  width: 25 }
+        ]
+       
+        // Add rows from database to worksheet 
+        for (const row of array) {
+            let a={
+                law_firm_id: row.law_firm_id,
+                name: row.name,
+                address: row.address,
+                phone_number: row.phone_number,
+                status: row.status,
+                groups: row.groups,
+                date_created: row.date_created,
+                email: row.email,
+                vat_number: row.vat_number,
+                website: row.website,
+                contacts: row.contacts == null ? '' : Object.keys(row.contacts).map(function(k){return row.contacts[k]}).join(","),
+                statements: row.statements == null ? '' : Object.keys(row.statements).map(function(k){return row.statements[k]}).join(","),
+                fee_notes: row.fee_notes == null ? '' : Object.keys(row.fee_notes).map(function(k){return row.fee_notes[k]}).join(","),
+            }
+            worksheet.addRow(a);
+            console.log(a)
+        }
+        worksheet.addRows(array);
+         // Add autofilter on each column
+    worksheet.autoFilter = 'A1:D1';
+
+    // Process each row for beautification 
+        worksheet.eachRow(function (row, rowNumber) {
+    
+            row.eachCell((cell, colNumber) => {
+                if (rowNumber == 1) {
+                    // First set the background of header row
+                    cell.fill = {
+                        type: 'pattern',
+                        pattern: 'solid',
+                        fgColor: { argb: '3b7197' }, bgColor:{argb:'FF0000FF'
+                    }
+                    }
+                }
+                // Set border of each cell 
+                cell.border = {
+                    top: { style: 'thin' },
+                    left: { style: 'thin' },
+                    bottom: { style: 'thin' },
+                    right: { style: 'thin' }
+                };
+                cell.font = {
+                    name: 'Arial Black',
+                    color: { argb: '000000' },
+                    family: 2,
+                    size: 8
+                   };
+                   cell.alignment = { wrapText: true,indent: 1 };
+            })
+            //Commit the changed row to the stream
+            row.commit();
+        });
+        // write to a new buffer
+        await workbook.xlsx.writeFile('LawFirms.xlsx').then(() => {
+                    res.download('LawFirms.xlsx'); 
+                });
 });
 app.get('/download4',async (req,res) =>{
-    let createCsvWriter = csvwriter.createObjectCsvWriter;
+ 
+     // Create Excel workbook and worksheet
+     const workbook = new Excel.Workbook();
+     let yourDate = new Date()
+     date_created = formatDate(yourDate)
+     workbook.creator = nam;
+     workbook.lastModifiedBy = nam;
+     workbook.created = yourDate;
+     const worksheet = workbook.addWorksheet('Budget Items',{
+         headerFooter: {oddFooter: "Page &P of &N", oddHeader: 'Budget Items Report'},properties:{tabColor:{argb:'FFC0000'}}
+     });
+     // Define columns in the worksheet, these columns are identified using a key.
+     worksheet.columns = [
+         { header: 'ID', key: 'budget_id',  width: 5 },
+         { header: 'Budget', key: 'budget',  width: 20 },
+         { header: 'Actual', key: 'actual',  width: 20 },
+         { header: 'Variance', key: 'variance',  width: 20 },
+         { header: 'Status', key: 'status',  width: 10 },
+         { header: 'Start Date', key: 'start_date',  width: 10 },
+         { header: 'End Date', key: 'end_date',  width: 20 },
+         { header: 'Budget Name', key: 'budget_name',  width: 15 }
+     ]
+    
+     // Add rows from database to worksheet 
+     worksheet.addRows(budgetLineItems);
+      // Add autofilter on each column
+ worksheet.autoFilter = 'A1:D1';
 
-    let usersArray = budgetLineItems
-   
-    //console.log(budgetLineItems)
-    const path = 'sample3.csv';
-    const csvWriter = createCsvWriter({
-      path: path,
-      header: [{ id:'budget_id',title:'ID'},{ id:'budget',title:'Budget'},{id:'actual',title:'Actual'},{id:'variance',title:'Variance'},{id:'start_date',title:'Start Date'},{id:'end_date',title:'End Date'},{id:'budget_name',title:'Budget Name'}]});
-
-    try 
-    {
-         
-         csvWriter.writeRecords(usersArray)
-         .then(() => {
-            res.download(path); 
-           
-        });
-    }
-    catch (error) 
-    {
-      console.log(error);
-    }
+ // Process each row for beautification 
+     worksheet.eachRow(function (row, rowNumber) {
+ 
+         row.eachCell((cell, colNumber) => {
+             if (rowNumber == 1) {
+                 // First set the background of header row
+                 cell.fill = {
+                     type: 'pattern',
+                     pattern: 'solid',
+                     fgColor: { argb: '3b7197' }, bgColor:{argb:'FF0000FF'
+                 }
+                 }
+             }
+             // Set border of each cell 
+             cell.border = {
+                 top: { style: 'thin' },
+                 left: { style: 'thin' },
+                 bottom: { style: 'thin' },
+                 right: { style: 'thin' }
+             };
+             cell.font = {
+                 name: 'Arial Black',
+                 color: { argb: '000000' },
+                 family: 2,
+                 size: 8
+                };
+                cell.alignment = { wrapText: true,indent: 1 };
+         })
+         //Commit the changed row to the stream
+         row.commit();
+     });
+     // write to a new buffer
+     await workbook.xlsx.writeFile('BudgetItems.xlsx').then(() => {
+                 res.download('BudgetItems.xlsx'); 
+             });
 });
 app.get('/download5',async (req,res) =>{
-    let createCsvWriter = csvwriter.createObjectCsvWriter;
+   
+     // Create Excel workbook and worksheet
+     const workbook = new Excel.Workbook();
+     let yourDate = new Date()
+     date_created = formatDate(yourDate)
+     workbook.creator = nam;
+     workbook.lastModifiedBy = nam;
+     workbook.created = yourDate;
+     const worksheet = workbook.addWorksheet('Budget Expenditure',{
+         headerFooter: {oddFooter: "Page &P of &N", oddHeader: 'Budget Expenditure'},properties:{tabColor:{argb:'FFC0000'}}
+     });
+     // Define columns in the worksheet, these columns are identified using a key.
+     worksheet.columns = [
+         { header: 'Expenditure Date', key: 'expenditure_date',  width: 20 },
+         { header: 'Expenditure Description', key: 'expenditure_desc',  width: 20 },
+         { header: 'Expenditure', key: 'expenditure',  width: 20 },
+         { header: 'Balance', key: 'balance',  width: 20 }
+     ]
+     let  arrayD = []
+     budgetLineItems.forEach(e=>{
+         if(e.expenditure.length > 0){ 
+         e.expenditure.forEach(f=>{
+             arrayD.push(f)
+         })
+     }
+     
+     })
+     // Add rows from database to worksheet 
+     worksheet.addRows(arrayD);
+      // Add autofilter on each column
+ worksheet.autoFilter = 'A1:D1';
 
-    
-    let  arrayD = []
-    budgetLineItems.forEach(e=>{
-        if(e.expenditure.length > 0){ 
-        e.expenditure.forEach(f=>{
-            arrayD.push(f)
-        })
-    }
-    
-    })
-    let usersArray = arrayD
-    const path = 'sample4.csv';
-    const csvWriter = createCsvWriter({
-      path: path,
-      header: [{ id:'expenditure_date',title:'Expenditure Date'},{ id:'expenditure_desc',title:'Expenditure Description'},{id:'expenditure',title:'Expenditure'},{id:'balance',title:'Balance'}]});
-
-    try 
-    {
-         
-         csvWriter.writeRecords(usersArray)
-         .then(() => {
-            res.download(path); 
-           
-        });
-    }
-    catch (error) 
-    {
-      console.log(error);
-    }
+ // Process each row for beautification 
+     worksheet.eachRow(function (row, rowNumber) {
+ 
+         row.eachCell((cell, colNumber) => {
+             if (rowNumber == 1) {
+                 // First set the background of header row
+                 cell.fill = {
+                     type: 'pattern',
+                     pattern: 'solid',
+                     fgColor: { argb: '3b7197' }, bgColor:{argb:'FF0000FF'
+                 }
+                 }
+             }
+             // Set border of each cell 
+             cell.border = {
+                 top: { style: 'thin' },
+                 left: { style: 'thin' },
+                 bottom: { style: 'thin' },
+                 right: { style: 'thin' }
+             };
+             cell.font = {
+                 name: 'Arial Black',
+                 color: { argb: '000000' },
+                 family: 2,
+                 size: 8
+                };
+                cell.alignment = { wrapText: true,indent: 1 };
+         })
+         //Commit the changed row to the stream
+         row.commit();
+     });
+     // write to a new buffer
+     await workbook.xlsx.writeFile('BudgetExpenditure.xlsx').then(() => {
+                 res.download('BudgetExpenditure.xlsx'); 
+             });
 });
 app.get('/download6',async (req,res) =>{
-    let createCsvWriter = csvwriter.createObjectCsvWriter;
-
-    
+  
     pool.query(
         'SELECT * FROM contracts',
        [], 
-       (err, results) => {
+       async (err, results) => {
            if(err){
                errors.push({message: err});;
            }
-    const path = 'sample5.csv';
-    const csvWriter = createCsvWriter({
-      path: path,
-      header: [{ id:'name',title:'Name'},{ id:'notes',title:'Description'},{id:'start_date',title:'Start Date'},{id:'end_date',title:'End Date'},{id:'vendor',title:'Vendor'},,{id:'department',title:'Department'},{id:'payment_cycle',title:'Payment Cycle'},{id:'payment_type',title:'Payment Terms'},{id:'status',title:'Status'},{id:'contract_value',title:'Contract View'}]});
+   
+    // Create Excel workbook and worksheet
+    const workbook = new Excel.Workbook();
+    let yourDate = new Date()
+    date_created = formatDate(yourDate)
+    workbook.creator = nam;
+    workbook.lastModifiedBy = nam;
+    workbook.created = yourDate;
+    const worksheet = workbook.addWorksheet('Contracts',{
+        headerFooter: {oddFooter: "Page &P of &N", oddHeader: 'Contracts'},properties:{tabColor:{argb:'FFC0000'}}
+    });
+    // Define columns in the worksheet, these columns are identified using a key.
+    worksheet.columns = [
+        { header: 'Name', key: 'name',  width: 20 },
+        { header: 'Description', key: 'notes',  width: 20 },
+        { header: 'Start Date', key: 'start_date',  width: 20 },
+        { header: 'End Date', key: 'end_date',  width: 20 },
+        { header: 'Vendor', key: 'vendor',  width: 20 },
+        { header: 'Department', key: 'department',  width: 20 },
+        { header: 'Payment Cycle', key: 'payment_cycle',  width: 20 },
+        { header: 'Payment Type', key: 'payment_type',  width: 20 },
+        { header: 'Status', key: 'status',  width: 20 },
+        { header: 'Contract Value', key: 'contract_value',  width: 20 }
+    ]
+   
+    // Add rows from database to worksheet 
+    worksheet.addRows(results.rows);
+     // Add autofilter on each column
+worksheet.autoFilter = 'A1:D1';
 
-    try 
-    {
-         
-         csvWriter.writeRecords(results.rows)
-         .then(() => {
-            res.download(path); 
-           
-        });
-    }
-    catch (error) 
-    {
-      console.log(error);
-    }
+// Process each row for beautification 
+    worksheet.eachRow(function (row, rowNumber) {
+
+        row.eachCell((cell, colNumber) => {
+            if (rowNumber == 1) {
+                // First set the background of header row
+                cell.fill = {
+                    type: 'pattern',
+                    pattern: 'solid',
+                    fgColor: { argb: '3b7197' }, bgColor:{argb:'FF0000FF'
+                }
+                }
+            }
+            // Set border of each cell 
+            cell.border = {
+                top: { style: 'thin' },
+                left: { style: 'thin' },
+                bottom: { style: 'thin' },
+                right: { style: 'thin' }
+            };
+            cell.font = {
+                name: 'Arial Black',
+                color: { argb: '000000' },
+                family: 2,
+                size: 8
+               };
+               cell.alignment = { wrapText: true,indent: 1 };
+        })
+        //Commit the changed row to the stream
+        row.commit();
+    });
+    // write to a new buffer
+    await workbook.xlsx.writeFile('Contracts.xlsx').then(() => {
+                res.download('Contracts.xlsx'); 
+            });
 })
 });
 app.post('/update-compliance-comment',(req,res) =>{
