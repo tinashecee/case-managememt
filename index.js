@@ -3141,8 +3141,8 @@ app.get('/download1',async (req,res) =>{
      workbook.creator = nam;
      workbook.lastModifiedBy = nam;
      workbook.created = yourDate;
-     const worksheet = workbook.addWorksheet('Compliance Questions',{
-         headerFooter: {oddFooter: "Page &P of &N", oddHeader: 'Compliance Questions'},properties:{tabColor:{argb:'FFC0000'}}
+     const worksheet = workbook.addWorksheet('Compliance Responses',{
+         headerFooter: {oddFooter: "Page &P of &N", oddHeader: 'Compliance Responses'},properties:{tabColor:{argb:'FFC0000'}}
      });
      // Define columns in the worksheet, these columns are identified using a key.
      worksheet.columns = [
