@@ -134,23 +134,11 @@
                     <div class="col">
                         <h3 class="mb-0"></h3>
                     </div>
-                    <div class="col text-right"><a
-                      type="button"
-                      class="btn btn-sm btn-primary"
-                      href="/download5"
-                        >
-                        <font style="vertical-align: inherit">
-                          <font style="vertical-align: inherit">Download Expenditure</font>
-                        </font>
-                      </a><a
-                        type="button"
-                        class="btn btn-sm btn-primary"
-                        href="/download4"
-                          >
-                          <font style="vertical-align: inherit">
-                            <font style="vertical-align: inherit">Download Line Budget</font>
-                          </font>
-                        </a>
+                    <div class="col text-right">
+                      
+                <button  data-toggle="modal" data-target="#exampleModalExport1" class="btn btn-sm btn-primary">Export Budget Expenditure</button>
+                <button  data-toggle="modal" data-target="#exampleModalExport2" class="btn btn-sm btn-primary">Export Line Budget</button>
+
                     </div>
                 </div>
             </div>
@@ -547,3 +535,79 @@
           </div>
       </div>
   </div>   
+  <div class="modal fade" id="exampleModalExport1"  tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <form action="/download5" method="get">
+        <div class="modal-content" >
+            <div class="modal-header">
+              
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="export_type" class="form-label"
+                      >Export As</label
+                    >
+                    <select
+                      class="form-select"
+                      id="export_type"
+                      name="export_type"
+                      required
+                    >
+                      <option value="pdf">PDF</option>
+                      <option value="excel">Excel</option>
+                      <option  disabled value="word">Word</option>
+                    </select>
+                  </div>
+                  <div class="mb-3">
+                    <label for="expenditure_date" class="form-label"
+                      >Starting Date</label
+                    >
+                    <input
+                      type="date"
+                      class="form-control"
+                      id="expenditure_date"
+                      name="expenditure_date"
+                      required
+                    />
+                  </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-secondary">Export</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+        </form>
+    </div>
+</div>  
+<div class="modal fade" id="exampleModalExport2"  tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+      <form action="/download4" method="get">
+      <div class="modal-content" >
+          <div class="modal-header">
+            
+          </div>
+          <div class="modal-body">
+              <div class="mb-3">
+                  <label for="export_type" class="form-label"
+                    >Export As</label
+                  >
+                  <select
+                    class="form-select"
+                    id="export_type"
+                    name="export_type"
+                    required
+                  >
+                    <option value="pdf">PDF</option>
+                    <option value="excel">Excel</option>
+                    <option  disabled value="word">Word</option>
+                  </select>
+                </div>
+          </div>
+          <div class="modal-footer">
+              <button type="submit" class="btn btn-secondary">Export</button>
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+      </div>
+      </form>
+  </div>
+</div>  

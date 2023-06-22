@@ -16,9 +16,16 @@ const puppeteer = require('puppeteer');
 const fileUpload = require('express-fileupload');
 const cors = require('cors');
 const Excel = require('exceljs');
+const PDFGenerator = require('pdfkit')
 const morgan = require('morgan');
 const CronJob = require('cron').CronJob
 const _ = require('lodash');
+'use strict'
+
+const InvoiceGenerator = require('./pdf-generator')
+const InvoiceGenerator1 = require('./pdf-generator1')
+const InvoiceGenerator2 = require('./pdf-generator2')
+const InvoiceGenerator3 = require('./pdf-generator3')
 // enable files upload
 
 //cron job
@@ -3038,7 +3045,7 @@ app.post('/compliance-form-part-3', (req, res)=>{
             to: compliance_contact_email, // receiver email
             subject: "Compliance Survey for the department of "+compliance_department, // Subject line
             text: message,
-            html: `<div>Greetings ${compliance_contact_name} , Please  click this link to complete Compliance Form  <br> <h1> http://localhost:8080/compliance-survey </h1> </div>`
+            html: `<div>Greetings ${compliance_contact_name} , Please  click this link to complete Compliance Form  <br> <h1> http://196.220.119.16/compliance-survey </h1> </div>`
         }        
         // send mail with defined transport object and mail options
 SENDMAIL(options, (info) => {
@@ -3280,7 +3287,23 @@ app.get('/download3',async (req,res) =>{
                 });
 });
 app.get('/download4',async (req,res) =>{
- 
+    let data = budgetLineItems
+    let bliData={
+        start_date:req.query.start_date,
+        end_date:req.query.end_date,
+        items:data
+    }
+    if(req.query.export_type == 'pdf'){
+    const ig = new InvoiceGenerator3(bliData)
+    ig.generate()
+    setTimeout(function() {
+
+        res.download('BudgetItemsReport.pdf');
+        
+        }, 2500);
+     
+    }
+    else{
      // Create Excel workbook and worksheet
      const workbook = new Excel.Workbook();
      let yourDate = new Date()
@@ -3304,7 +3327,7 @@ app.get('/download4',async (req,res) =>{
      ]
     
      // Add rows from database to worksheet 
-     worksheet.addRows(budgetLineItems);
+     worksheet.addRows(data);
       // Add autofilter on each column
  worksheet.autoFilter = 'A1:D1';
 
@@ -3343,9 +3366,36 @@ app.get('/download4',async (req,res) =>{
      await workbook.xlsx.writeFile('BudgetItems.xlsx').then(() => {
                  res.download('BudgetItems.xlsx'); 
              });
+            }
 });
 app.get('/download5',async (req,res) =>{
-   
+    let  arrayD = []
+    
+     budgetLineItems.forEach(e=>{
+         if(e.expenditure.length > 0){ 
+         e.expenditure.forEach(f=>{
+            if(moment(f.expenditure_date).format('Do MMMM, YYYY') >= req.query.expenditure_date){
+             arrayD.push(f)
+            }
+         })
+     }
+     
+     })
+    let expenditureData={
+        expenditure_date:req.query.expenditure_date,
+        items:arrayD
+    }
+    if(req.query.export_type == 'pdf'){
+    const ig = new InvoiceGenerator2(expenditureData)
+    ig.generate()
+    setTimeout(function() {
+
+        res.download('BudgetExpenditureReport.pdf');
+        
+        }, 2500);
+     
+    }
+    else{
      // Create Excel workbook and worksheet
      const workbook = new Excel.Workbook();
      let yourDate = new Date()
@@ -3363,15 +3413,7 @@ app.get('/download5',async (req,res) =>{
          { header: 'Expenditure', key: 'expenditure',  width: 20 },
          { header: 'Balance', key: 'balance',  width: 20 }
      ]
-     let  arrayD = []
-     budgetLineItems.forEach(e=>{
-         if(e.expenditure.length > 0){ 
-         e.expenditure.forEach(f=>{
-             arrayD.push(f)
-         })
-     }
      
-     })
      // Add rows from database to worksheet 
      worksheet.addRows(arrayD);
       // Add autofilter on each column
@@ -3412,16 +3454,41 @@ app.get('/download5',async (req,res) =>{
      await workbook.xlsx.writeFile('BudgetExpenditure.xlsx').then(() => {
                  res.download('BudgetExpenditure.xlsx'); 
              });
+            }
 });
 app.get('/download6',async (req,res) =>{
-  
     pool.query(
         'SELECT * FROM contracts',
        [], 
        async (err, results) => {
            if(err){
-               errors.push({message: err});;
+               errors.push({message: err});
            }
+    let data = []
+    results.rows.forEach(e=>{
+     if(moment(e.start_date).format('Do MMMM, YYYY') >= req.query.start_date && moment(e.end_date).format('Do MMMM, YYYY') <= req.query.end_date && e.status == req.query.status){
+       
+        data.push(e)
+     }
+    })
+    let contractData={
+        start_date:req.query.start_date,
+        end_date:req.query.end_date,
+        status:req.query.status,
+        items:data
+    }
+    if(req.query.export_type == 'pdf'){
+    const ig = new InvoiceGenerator1(contractData)
+    ig.generate()
+    setTimeout(function() {
+
+        res.download('ContractsReport.pdf');
+        
+        }, 2500);
+     
+    }
+    else{
+    
    
     // Create Excel workbook and worksheet
     const workbook = new Excel.Workbook();
@@ -3448,7 +3515,7 @@ app.get('/download6',async (req,res) =>{
     ]
    
     // Add rows from database to worksheet 
-    worksheet.addRows(results.rows);
+    worksheet.addRows(data);
      // Add autofilter on each column
 worksheet.autoFilter = 'A1:D1';
 
@@ -3487,7 +3554,105 @@ worksheet.autoFilter = 'A1:D1';
     await workbook.xlsx.writeFile('Contracts.xlsx').then(() => {
                 res.download('Contracts.xlsx'); 
             });
+        }
 })
+    
+});
+
+app.get('/download7',async (req,res) =>{
+    
+    let data = []
+    array3.forEach(e=>{
+     if(moment(e.start_date).format('Do MMMM, YYYY') >= req.query.start_date && moment(e.end_date).format('Do MMMM, YYYY') <= req.query.end_date && e.status == req.query.status){
+       
+        data.push(e)
+     }
+    })
+    let caseData={
+        start_date:req.query.start_date,
+        end_date:req.query.end_date,
+        status:req.query.status,
+        items:data
+    }
+    if(req.query.export_type == 'pdf'){
+    const ig = new InvoiceGenerator(caseData)
+    ig.generate()
+    setTimeout(function() {
+
+        res.download('CasesReport.pdf');
+        
+        }, 2500);
+     
+    }
+    else{
+        let usersArray = data
+   
+   
+         // Create Excel workbook and worksheet
+         const workbook = new Excel.Workbook();
+         let yourDate = new Date()
+         date_created = formatDate(yourDate)
+         workbook.creator = nam;
+         workbook.lastModifiedBy = nam;
+         workbook.created = yourDate;
+         const worksheet = workbook.addWorksheet('Cases Data',{
+             headerFooter: {oddFooter: "Page &P of &N", oddHeader: 'Cases Data'},properties:{tabColor:{argb:'FFC0000'}}
+         });
+     
+         // Define columns in the worksheet, these columns are identified using a key.
+         worksheet.columns = [
+             { header: 'Case ID', key: 'case_id', width: 10 },
+             { header: 'Case Name', key: 'case_name', width: 40 },
+             { header: 'Status', key: 'status', width: 20 },
+             { header: 'Date Started', key: 'start_date', width: 20 },
+             { header: 'Department', key: 'department', width: 20 },
+             { header: 'Assigned To', key: 'staff_members', width: 20 },
+             { header: 'Deadline', key: 'end_date', width: 20 }
+ 
+         ]
+         worksheet.autoFilter = 'A1:D1';
+ 
+         // Process each row for beautification 
+             worksheet.eachRow(function (row, rowNumber) {
+         
+                 row.eachCell((cell, colNumber) => {
+                     if (rowNumber == 1) {
+                         // First set the background of header row
+                         cell.fill = {
+                             type: 'pattern',
+                             pattern: 'solid',
+                             fgColor: { argb: '3b7197' }, bgColor:{argb:'FF0000FF'
+                         }
+                         }
+                     }
+                     // Set border of each cell 
+                     cell.border = {
+                         top: { style: 'thin' },
+                         left: { style: 'thin' },
+                         bottom: { style: 'thin' },
+                         right: { style: 'thin' }
+                     };
+                     cell.font = {
+                         name: 'Arial Black',
+                         color: { argb: '000000' },
+                         family: 2,
+                         size: 8
+                        };
+                        cell.alignment = { wrapText: true,indent: 1 };
+                 })
+                 //Commit the changed row to the stream
+                 row.commit();
+             });
+         // Add rows from database to worksheet 
+         worksheet.addRows(usersArray);
+     
+         // write to a new buffer
+      await workbook.xlsx.writeFile('CasesData.xlsx').then(() => {
+         res.download('CasesData.xlsx'); 
+     }); 
+    }
+    
+
 });
 app.post('/update-compliance-comment',(req,res) =>{
    let query = req.query.id
@@ -3610,7 +3775,7 @@ app.post('/reset-password', async (req,res) => {
                 <p>Hi, <b>${results.rows[0].name}</b>,</p>
                 <p>We received a request to reset your password for your Prolegal Case Management account. If you did not request this, please disregard this email.</p>
                 <p>To reset your password, please click on the following link:</p>
-                <a href="http://localhost:8080/set-password?email=${email}">RESET PASSWORD LINK</a>
+                <a href="http://196.220.119.16/set-password?email=${email}">RESET PASSWORD LINK</a>
                 <p>This link will only be valid for 24 hours.</p>
                 <p>If you are unable to click on the link, please copy and paste it into your browser.</p>
                 <p>Once you have clicked on the link, you will be taken to a page where you can enter a new password for your account. Please choose a strong password that is at least 8 characters long and includes a mix of upper and lowercase letters, numbers, and symbols.</p>
@@ -3863,7 +4028,7 @@ app.post('/new_user', (req,res) => {
                 html: `<div>
                 <p>Hi <b>${user_name}</b>,</p>
         <p>Your account on the Prolegal Case Management System has been created successfully. To verify your account and set your password, please click on the following link:</p>
-        <a href="http://localhost:8080/set-password?email=${email}">ACTIVATION LINK</a>
+        <a href="http://196.220.119.16/set-password?email=${email}">ACTIVATION LINK</a>
         <p>Once you have clicked on the link, you will be prompted to enter a new password for your account. Please choose a strong password that is at least 8 characters long and includes a mix of upper and lowercase letters, numbers, and symbols.</p>
         <p>After you have entered your new password, you will be able to log in to your account.</p>
         <p>If you have any questions, please do not hesitate to contact us.</p>

@@ -137,6 +137,9 @@
                                   </div>
                                 </div>
                               </div>
+                              <div class="col text-right">
+                                <button  data-toggle="modal" data-target="#exampleModalExport" class="btn btn-sm btn-primary">Export</button>
+                              </div>
                             </div>
                           </div>
                           <div class="table-responsive" >
@@ -296,3 +299,67 @@
                 </div>
             </div>
         </div>   
+        <div class="modal fade" id="exampleModalExport"  tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <form action="/download7" method="get">
+                <div class="modal-content" >
+                    <div class="modal-header">
+                      
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="export_type" class="form-label"
+                              >Export As</label
+                            >
+                            <select
+                              class="form-select"
+                              id="export_type"
+                              name="export_type"
+                              required
+                            >
+                              <option value="pdf">PDF</option>
+                              <option value="excel">Excel</option>
+                              <option  disabled value="word">Word</option>
+                            </select>
+                          </div>
+                          <div class="mb-3">
+                            <label for="export_type" class="form-label"
+                              >Filter By Status</label
+                            >
+                            <select class="form-select" id="status" name="status" required="">
+                                <% for (let dat of case_status) { %>                   
+                                <option value="<%= dat.case_status_name %>"><%= dat.case_status_name %></option>
+                                <% } %>
+                            </select>
+                          </div>
+                          <div class="mb-3">
+                            <label for="start_date" class="form-label"
+                              >Start Date</label
+                            >
+                            <input
+                              type="date"
+                              class="form-control"
+                              id="start_date"
+                              name="start_date"
+                              required
+                            />
+                          </div>
+                          <div class="mb-3">
+                            <label for="end_date" class="form-label">End Date</label>
+                            <input
+                              type="date"
+                              class="form-control"
+                              id="end_date"
+                              name="end_date"
+                              required
+                            />
+                          </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-secondary">Export</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+                </form>
+            </div>
+        </div>  
