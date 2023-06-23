@@ -49,8 +49,7 @@
               </div>
           </div>
  <div class="col text-right">
-      <a href="/download" class="btn btn-sm btn-primary btn-round btn-icon" >Export
-      </a>
+      <button  data-toggle="modal" data-target="#exampleModalExport" class="btn btn-sm btn-primary">Export</button>
   </div>
       </div>
       <div class="table-responsive">
@@ -100,7 +99,7 @@
                               </tr>
                              
                                 <% } %>
-                                <a href="/download1">Download</a>
+                                <button  data-toggle="modal" data-target="#exampleModalExport1" class="btn btn-sm btn-primary">Export</button>
                             </tbody>
                           </table>
                         </div>
@@ -255,3 +254,65 @@
         </div>
     </div>
 </div>   
+<div class="modal fade" id="exampleModalExport"  tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <form action="/download" method="get">
+        <div class="modal-content" >
+            <div class="modal-header">
+              
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="export_type" class="form-label"
+                      >Export As</label
+                    >
+                    <select
+                      class="form-select"
+                      id="export_type"
+                      name="export_type"
+                      required
+                    >
+                      <option value="pdf">PDF</option>
+                      <option value="excel">Excel</option>
+                    </select>
+                  </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-secondary">Export</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+        </form>
+    </div>
+  </div>
+  <div class="modal fade" id="exampleModalExport1"  tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <form action="/download1" method="get">
+        <div class="modal-content" >
+            <div class="modal-header">
+              
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="export_type" class="form-label"
+                      >Export As</label
+                    >
+                    <select
+                      class="form-select"
+                      id="export_type"
+                      name="export_type"
+                      required
+                    >
+                      <option value="pdf">PDF</option>
+                      <option value="excel">Excel</option>
+                    </select>
+                  </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-secondary">Export</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+        </form>
+    </div>
+  </div>

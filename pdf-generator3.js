@@ -105,7 +105,7 @@ class InvoiceGenerator {
 
         this.generateTable(theOutput)
 
-        this.generateFooter(theOutput)
+        //this.generateFooter(theOutput)
         
 
         // write out file

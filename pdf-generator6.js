@@ -5,24 +5,24 @@ class InvoiceGenerator {
     constructor(invoice) {
         this.invoice = invoice
     }
-
+    
     generateHeaders(doc) {
 
         doc
             .image('./public/img/logo.png', 50, 0, { width: 150})
             .fillColor('#000')
             .fontSize(20)
-            .text('Nust Case Management System Report', 275, 50, {align: 'right'})
+            .text('Nust Case Management System Report', 255, 50, {align: 'right'})
             .fontSize(10)
                 
-        const beginningOfPage = 50
-        const endOfPage = 550
+        const beginningOfPage = 20
+        const endOfPage = 570
 
         doc.moveTo(beginningOfPage,200)
             .lineTo(endOfPage,200)
             .stroke()
                 
-        doc.text(`Cases Report | ${this.invoice.status} : From ${moment(this.invoice.start_date).format('Do MMMM, YYYY')} to ${moment(this.invoice.end_date).format('Do MMMM, YYYY')}`, 50, 210,{bold: true})
+        doc.text(`Compliance Survey Report `, 20, 210,{bold: true})
 
         doc.moveTo(beginningOfPage,250)
             .lineTo(endOfPage,250)
@@ -32,63 +32,54 @@ class InvoiceGenerator {
 
     generateTable(doc) {
         const tableTop = 270
-        const aX = 50
-        const bX = 80
-        const cX = 180
-        const dX = 260
-        const eX = 340
-        const fX = 420
+        const aX = 20
+        const bX = 120
+        const cX = 220
+        const dX = 320
+        const eX = 400
 
         doc
-            .fontSize(8)
-            .text('Case ID', aX, tableTop, {bold: true})
-            .text('Case Name', bX, tableTop, {bold: true})
-            .text('Date Started', cX, tableTop, {bold: true})
-            .text('Department', dX, tableTop, {bold: true})
-            .text('Assigned To', eX, tableTop, {bold: true})
-            .text('Deadline', fX, tableTop, {bold: true})
+            .fontSize(6)
+            .text('Department', aX, tableTop, {bold: true})
+            .text('Contact Person', bX, tableTop, {bold: true})
+            .text('Contact Email', cX, tableTop, {bold: true})
+            .text('Score', dX, tableTop, {bold: true})
+            .text('Date Completed', eX, tableTop, {bold: true})
 
         const items = this.invoice.items
         let i = 0
 
-
+       
         for (i = 0; i < items.length; i++) {
             const item = items[i]
             const y = tableTop + 25 + (i * 25)
-
+            
             doc
-                .fontSize(8)
-                .text(item.case_id, aX, y)
-                .text(item.case_name, bX, y,{
+                .fontSize(6)
+                .text(item.department, aX, y)
+                .text(item.contact_person, bX, y,{
                     columns: 1,
                     columnGap: 10,
                     height: 50,
                     width: 90,
                     align: 'justify'
                   })
-                .text(moment(item.start_date).format('Do MMMM, YYYY'), cX, y)
-                .text(item.department, dX, y,{
+                .text(item.contact_email, cX, y)
+                .text(item.score, dX, y,{
                     columns: 1,
                     columnGap: 10,
                     height: 50,
-                    width: 70,
+                    width: 80,
                     align: 'justify'
                   })
-                .text(item.staff_members, eX, y,{
-                    columns: 1,
-                    columnGap: 10,
-                    height: 50,
-                    width: 50,
-                    align: 'justify'
-                  })
-                .text(moment(item.end_date).format('Do MMMM, YYYY'), fX, y)
+                .text(moment(item.date_completed).format('Do MMMM, YYYY'), eX, y)
         }
     }
 
     generateFooter(doc) {
         doc
             .fontSize(10)
-            .text(`Case Report. `, 50, 700, {
+            .text(` Report. `, 50, 700, {
                 align: 'center'
             })
     }
@@ -97,7 +88,7 @@ class InvoiceGenerator {
         let theOutput = new PDFGenerator 
 
 
-        const fileName = `CasesReport.pdf`
+        const fileName = `ComplianceSurveyReport.pdf`
 
         // pipe to a writable stream which would save the result into the same directory
         theOutput.pipe(fs.createWriteStream(fileName))

@@ -26,6 +26,9 @@ const InvoiceGenerator = require('./pdf-generator')
 const InvoiceGenerator1 = require('./pdf-generator1')
 const InvoiceGenerator2 = require('./pdf-generator2')
 const InvoiceGenerator3 = require('./pdf-generator3')
+const InvoiceGenerator4 = require('./pdf-generator4')
+const InvoiceGenerator5 = require('./pdf-generator5')
+const InvoiceGenerator6 = require('./pdf-generator6')
 // enable files upload
 
 //cron job
@@ -3074,6 +3077,20 @@ app.get('/download',async (req,res) =>{
         //console.log( JSON.stringify(e.questions))
         usersArray.push(b)
       })
+      let bliData={
+        items:usersArray
+    }
+    if(req.query.export_type == 'pdf'){
+    const ig = new InvoiceGenerator6(bliData)
+    ig.generate()
+    setTimeout(function() {
+
+        res.download('ComplianceSurveyReport.pdf');
+        
+        }, 2500);
+     
+    }
+    else{
         // Create Excel workbook and worksheet
         const workbook = new Excel.Workbook();
         let yourDate = new Date()
@@ -3091,7 +3108,6 @@ app.get('/download',async (req,res) =>{
             { header: 'Contact Person', key: 'contact_person', width: 20 },
             { header: 'Contact Email', key: 'contact_email', width: 20 },
             { header: 'Score', key: 'score', width: 20 },
-            { header: 'Questions', key: 'questions', width: 20 },
             { header: 'Date Completed', key: 'date_completed', width: 20 }
         ]
         worksheet.autoFilter = 'A1:D1';
@@ -3134,13 +3150,28 @@ app.get('/download',async (req,res) =>{
      await workbook.xlsx.writeFile('ComplianceData.xlsx').then(() => {
         res.download('ComplianceData.xlsx'); 
     }); 
+}
 });
 app.get('/download1',async (req,res) =>{
-    
-        let questions = []
+    let questions = []
         compliance_data.forEach(e=>{
             questions.push(e.questions)
           })
+    let bliData={
+        items:questions[0]
+    }
+    if(req.query.export_type == 'pdf'){
+    const ig = new InvoiceGenerator5(bliData)
+    ig.generate()
+    setTimeout(function() {
+
+        res.download('ComplianceReport.pdf');
+        
+        }, 2500);
+     
+    }
+    else{
+        
           // Create Excel workbook and worksheet
      const workbook = new Excel.Workbook();
      let yourDate = new Date()
@@ -3197,9 +3228,23 @@ app.get('/download1',async (req,res) =>{
      await workbook.xlsx.writeFile('ComplianceQuestions.xlsx').then(() => {
                  res.download('ComplianceQuestions.xlsx'); 
              });  
+            }
 })
 app.get('/download3',async (req,res) =>{
-  
+    let bliData={
+        items:array
+    }
+    if(req.query.export_type == 'pdf'){
+    const ig = new InvoiceGenerator4(bliData)
+    ig.generate()
+    setTimeout(function() {
+
+        res.download('LawfirmsReport.pdf');
+        
+        }, 2500);
+     
+    }
+    else{
         // Create Excel workbook and worksheet
         const workbook = new Excel.Workbook();
         let yourDate = new Date()
@@ -3285,6 +3330,7 @@ app.get('/download3',async (req,res) =>{
         await workbook.xlsx.writeFile('LawFirms.xlsx').then(() => {
                     res.download('LawFirms.xlsx'); 
                 });
+            }
 });
 app.get('/download4',async (req,res) =>{
     let data = budgetLineItems
