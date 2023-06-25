@@ -41,7 +41,7 @@ class InvoiceGenerator {
 
         doc
             .fontSize(8)
-            .text('Case ID', aX, tableTop, {bold: true})
+            .text('ID', aX, tableTop, {bold: true})
             .text('Case Name', bX, tableTop, {bold: true})
             .text('Date Started', cX, tableTop, {bold: true})
             .text('Department', dX, tableTop, {bold: true})
