@@ -9,29 +9,29 @@ class InvoiceGenerator {
     generateHeaders(doc) {
 
         doc
-            .image('./public/img/logo.png', 50, 0, { width: 150})
+            .image('./public/img/logo.png', 50, 5, { width: 45})
             .fillColor('#000')
             .fontSize(20)
-            .text('Nust Case Management System Report', 255, 50, {align: 'right'})
+            .text('Prolegal Case Management System Report', 255, 5, {align: 'right'})
             .fontSize(10)
                 
         const beginningOfPage = 20
         const endOfPage = 570
 
-        doc.moveTo(beginningOfPage,200)
-            .lineTo(endOfPage,200)
+        doc.moveTo(beginningOfPage,80)
+            .lineTo(endOfPage,80)
             .stroke()
                 
-        doc.text(`Compliance Survey Report `, 20, 210,{bold: true})
+        doc.text(`Compliance Survey Report `, 20, 90,{bold: true})
 
-        doc.moveTo(beginningOfPage,250)
-            .lineTo(endOfPage,250)
+        doc.moveTo(beginningOfPage,110)
+            .lineTo(endOfPage,110)
             .stroke()
 
     }
 
     generateTable(doc) {
-        const tableTop = 270
+        const tableTop = 130
         const aX = 20
         const bX = 120
         const cX = 220
