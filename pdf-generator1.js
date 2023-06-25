@@ -12,7 +12,7 @@ class InvoiceGenerator {
             .image('./public/img/logo.png', 50, 5, { width: 45})
             .fillColor('#000')
             .fontSize(20)
-            .text('Nust Case Management System Report', 255, 5, {align: 'right'})
+            .text('Prolegal Case Management System Report', 255, 5, {align: 'right'})
             .fontSize(10)
                 
         const beginningOfPage = 5
