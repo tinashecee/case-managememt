@@ -3510,13 +3510,16 @@ app.get('/download6',async (req,res) =>{
            if(err){
                errors.push({message: err});
            }
+           
     let data = []
+    
     results.rows.forEach(e=>{
-     if(moment(e.start_date).format('Do MMMM, YYYY') >= req.query.start_date && moment(e.end_date).format('Do MMMM, YYYY') <= req.query.end_date && e.status == req.query.status){
+        if(moment(e.start_date).format('Do MMMM, YYYY') >= req.query.start_date && moment(e.end_date).format('Do MMMM, YYYY') <= req.query.end_date && e.status.toLowerCase() == req.query.status.toLowerCase()){
        
         data.push(e)
      }
     })
+    console.log(data)
     let contractData={
         start_date:req.query.start_date,
         end_date:req.query.end_date,
@@ -3609,7 +3612,7 @@ app.get('/download7',async (req,res) =>{
     
     let data = []
     array3.forEach(e=>{
-     if(moment(e.start_date).format('Do MMMM, YYYY') >= req.query.start_date && moment(e.end_date).format('Do MMMM, YYYY') <= req.query.end_date && e.status == req.query.status){
+     if(moment(e.start_date).format('Do MMMM, YYYY') >= req.query.start_date && moment(e.end_date).format('Do MMMM, YYYY') <= req.query.end_date && e.status.toLowerCase() == req.query.status.toLocaleLowerCase()){
        
         data.push(e)
      }
