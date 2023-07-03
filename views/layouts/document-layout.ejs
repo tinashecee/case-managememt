@@ -228,6 +228,40 @@ var modalBody = modal.querySelector('.modal-body');
                 </form>             
   `;
             }
+            var input = document.getElementById('searchInput');
+var table = document.getElementById('table');
+
+// Add event listener to input
+input.addEventListener('input', function() {
+  filterTableRows(input.value);
+});
+
+// Function to filter table rows
+function filterTableRows(filter) {
+  // Get all table rows from the tbody element
+  var rows = table.getElementsByTagName('tr');
+
+  // Loop through all rows, starting from index 1 (skip the header row)
+  for (var i = 1; i < rows.length; i++) {
+    var row = rows[i];
+    var shouldDisplay = false;
+
+    // Loop through all cells in the row
+    for (var j = 0; j < row.cells.length; j++) {
+      var cell = row.cells[j];
+      var cellText = cell.textContent || cell.innerText;
+
+      // Check if the cell text contains the filter value
+      if (cellText.toLowerCase().indexOf(filter.toLowerCase()) > -1) {
+        shouldDisplay = true;
+        break;
+      }
+    }
+
+    // Set the display style of the row based on the filter
+    row.style.display = shouldDisplay ? '' : 'none';
+  }
+}
       </script>
     </body>
     

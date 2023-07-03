@@ -154,97 +154,70 @@
         <div class="card-header">
           <h5 class="card-title">Calendar</h5>
          
-        <div class="card-body">
-          <div id="calendar">
-            <div class="yellow">
-              <div id="calendar">
-                <div id="toolbar"></div>
-                <div id="dates" class="show">
-                  <div id="lastMt">&lsaquo;</div>
-                  <div id="nextMt">&rsaquo;</div>
-                  <div id="months-cont">
-                    <div id="months">
-                    <span class="active month">January</span><span class="month">February</span><span class="month">March</span><span class="month">April</span><span class="month">May</span><span class="month">June</span><span class="month">July</span><span class="month">August</span><span class="month">September</span><span class="month">October</span><span class="month">November</span><span class="month">December</span>
-                  </div>
-                  </div>
-                  <div id="daysotweek">
-                    <div class="day">S</div>
-                    <div class="day">M</div>
-                    <div class="day">T</div>
-                    <div class="day">W</div>
-                    <div class="day">T</div>
-                    <div class="day">F</div>
-                    <div class="day">S</div>
-                  </div>
-                  <div id="days">
-                  </div>
-                </div>
-                <div id="info" class="hide">
-                  <div id="actual-date"></div>
-                  <div id="back"><</div>
-                    <div id="month-name"></div>
-                    <div id="weather">
-                      <div id="sun"></div>
-                      <div id="mountains"></div>
-                      <div id="rain">
-                        <div class="raindrop" id="drop-1"></div>
-                        <div class="raindrop center" id="drop-2"></div>
-                        <div class="raindrop center" id="drop-3"></div>
-                        <div class="raindrop" id="drop-4"></div>
-                      </div>
-                      <div id="temp">57&deg;<span>F</span></div>
-                    </div>
-                    <div id="bg-card">
-                      <div class="content"></div>
-                    </div>
-                  <div id="card">
-                    <div class="content">
-                      <div id="event-name"></div>
-                      <div id="event-details">
-                      <div class="col-3">
-                        <i class="fa fa-map-marker" aria-hidden="true"></i>
-                        <h3>Location</h3>
-                        <p>12345 Generic Ave., Some City, Some State, 12345
-                      </div>
-                      <div class="col-3">
-                        <i class="fa fa-clock-o" aria-hidden="true"></i>
-                        <h3>Time</h3>
-                        <p> 12:00 AM </p>
-                      </div>
-                      <div class="col-3">
-                        <i class="fa fa-user" aria-hidden="true"></i>
-                        <h3>Attendee</h3>
-                        <p>Me, You, and 2+</p>
-                      </div>
-                        <div style="clear: both"></div>
-                    </div>
-                  
-                    </div>
-                  </div>
-                </div>
-                <div id="colors" class="hide">
-                  <div id="close">&times;</div>
-                  <p>Choose theme color</p>
-                  <div class="color" id="salmon"></div>
-                  <div class="color" id="dkpink"></div>
-                  <div class="color" id="red"></div>
-                  <div class="color" id="redorg"></div>
-                  <div class="color" id="orange"></div>
-                  <div class="color" id="orgylw"></div>
-                  <div class="color active" id="yellow"></div>
-                  <div class="color" id="green"></div>
-                  <div class="color" id="aqua"></div>
-                  <div class="color" id="teal"></div>
-                  <div class="color" id="sltbl"></div>
-                  <div class="color" id="pwdbl"></div>
-                  <div class="color" id="blue"></div>
-                  <div class="color" id="purple"></div>
-                  <div class="color" id="dkprpl"></div>
-                </div>
+        <div class="card-body" >
+          <div class="calendar" style="padding: auto;margin: auto;">
+            <!-- Calendar Header -->
+            <div class="calendar-header">
+              <span class="month-picker" id="month-picker">
+                February
+              </span>
+              <div class="year-picker">
+                <span class="year-change mt-3" id="prev-year">
+                  <pre> < </pre>
+                </span>
+                <span id="year">2023</span>
+                <span class="year-change mt-3" id="next-year">
+                  <pre> > </pre>
+                </span>
               </div>
             </div>
+            <!-- Calendar Body -->
+            <div class="calendar-body">
+              <div class="calendar-week-day">
+                <div>Sun</div>
+                <div>Mon</div>
+                <div>Tue</div>
+                <div>Wed</div>
+                <div>Thu</div>
+                <div>Fri</div>
+                <div>Sat</div>
+              </div>
+              <div class="calendar-day">
+                <div>
+                  1
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
+                <div>2</div>
+                <div>3</div>
+                <div>4</div>
+                <div>5</div>
+                <div>6</div>
+                <div>7</div>
+                <div>1</div>
+                <div>2</div>
+                <div>3</div>
+                <div>4</div>
+                <div>5</div>
+                <div>6</div>
+                <div>7</div>
+              </div>
+            </div>
+            <!-- Calendar Footer -->
+            <div class="calendar-footer">
+                <div class="toggle">
+                    <span>Dark Mode</span>
+                    <div class="dark-mode-switch">
+                        <div class="dark-mode-switch-ident"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="month-list"></div>
           </div>
-        </div>
+          <link rel="stylesheet" href="/css/stylea.css" />
+          <script src="/js/scripta.js"></script>
       </div>
     </div>
     <div class="col-xl-12">

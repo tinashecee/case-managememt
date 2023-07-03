@@ -929,6 +929,7 @@ app.post('/survey_elems',  async (req,res) => {
 app.get('/compliance',checkNotAuthenticated,  async (req,res) => {
     let errors =[]
     let message=[]
+    let compliance_results = []
     pool.query(
         `SELECT * FROM compliance_results`,
         [],
@@ -938,7 +939,11 @@ app.get('/compliance',checkNotAuthenticated,  async (req,res) => {
                 errors.push({message: err});;
                 
             }
+            
+            if(results){
             compliance_data=results.rows
+            compliance_results=results.rows
+            }
             pool.query( `SELECT * FROM department`,
             [],
             (err, results3) => {
@@ -949,7 +954,7 @@ app.get('/compliance',checkNotAuthenticated,  async (req,res) => {
                     
                 }
                
-            res.render('compliance',{layout:'./layouts/compliance-layout', user_role, user:nam,errors:errors,compliance_results:results.rows,dataB:results3.rows})
+            res.render('compliance',{layout:'./layouts/compliance-layout', user_role, user:nam,errors:errors,compliance_results:compliance_results,dataB:results3.rows})
             })
         }
     )
@@ -1439,7 +1444,7 @@ app.post('/add-document', async(req, res)=>{
     let yourDate = new Date()
     date_created = formatDate(yourDate)
     pool.query(
-        `INSERT INTO documents (name, department, assigned_to, description, date_created,documents)
+        `INSERT INTO documents (name, department, assigned_to, description, date_created,docs)
         VALUES ($1, $2, $3, $4, $5, $6)`,
         [name, department, members, description, date_created,[]], 
         (err, results) => {
@@ -2789,7 +2794,7 @@ app.post('/add-line-budget', (req, res)=>{
 
        if( parseFloat(budget_balance) < parseFloat(req.body[`budget${i}`])){
           //  console.log("budget not enough")
-        }else{expens
+        }else{
             pool.query(
                 `INSERT INTO budget_items (budget_name, budget,variance, actual, expenditure)
                 VALUES ($1, $2, $3, $4, $5)`,
