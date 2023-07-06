@@ -37,7 +37,7 @@
    
 const surveyJson = {
     elements: text.compliance_survey_questions,
-    completedHtml: "<h3>Thank you for completing survey, your responses have been submitted</h3>",
+    completedHtml: "<h3>Thank you for completing the compliance survey, your responses have been submitted</h3>",
 
 };
 console.log('<%= compliance_survey_questions %>')
@@ -50,7 +50,8 @@ function alertResults (sender) {
    fetch('/compliance_results',{
         method: 'POST',
         body: JSON.stringify({
-            responses:sender.data
+            responses:sender.data,
+            id: '<%= id %>'
         }),
         headers: {
             'Content-type': 'application/json; charset=UTF-8'

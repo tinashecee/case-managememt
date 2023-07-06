@@ -139,3 +139,13 @@
   white-space: nowrap;
   border-radius: 6px;
 }
+input, select, textarea{
+  color: #000000;
+}
+
+textarea:focus, input:focus {
+  color: #000000;
+}
+::placeholder{
+  color: #000000;
+}

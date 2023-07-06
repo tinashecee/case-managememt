@@ -12,7 +12,7 @@ class InvoiceGenerator {
             .image('./public/img/logo.png', 50, 5, { width: 45})
             .fillColor('#000')
             .fontSize(20)
-            .text('Prolegal Case Management System Report', 255, 5, {align: 'right'})
+            .text('Prolegal Case Management System Report : '+moment(this.invoice.date_created).format('Do MMMM, YYYY'), 255, 5, {align: 'right'})
             .fontSize(10)
                 
         const beginningOfPage = 5
@@ -22,7 +22,7 @@ class InvoiceGenerator {
         .lineTo(endOfPage,80)
         .stroke()
                 
-        doc.text(`Contracts Report | ${this.invoice.status} :  From ${moment(this.invoice.start_date).format('Do MMMM, YYYY')} to ${moment(this.invoice.end_date).format('Do MMMM, YYYY')}`, 5, 90,{bold: true})
+        doc.text(`Contracts Report | ${this.invoice.status} :  From End Date ${moment(this.invoice.end_date).format('Do MMMM, YYYY')}`, 5, 90,{bold: true})
 
         doc.moveTo(beginningOfPage,110)
         .lineTo(endOfPage,110)
@@ -37,22 +37,20 @@ class InvoiceGenerator {
         const cX = 170
         const dX = 230
         const eX = 300
-        const fX = 380
-        const gX = 440
+        const fX = 370
+        const gX = 430
         const hX = 500
-        const iX = 550
 
         doc
             .fontSize(6)
             .text('Name', aX, tableTop, {bold: true})
             .text('Description', bX, tableTop, {bold: true})
-            .text('Start Date', cX, tableTop, {bold: true})
-            .text('End Date', dX, tableTop, {bold: true})
-            .text('Vendor', eX, tableTop, {bold: true})
-            .text('Department', fX, tableTop, {bold: true})
-            .text('Payment Cycle', gX, tableTop, {bold: true})
-            .text('Payment Type', hX, tableTop, {bold: true})
-            .text('Contract Value', iX, tableTop, {bold: true})
+            .text('End Date', cX, tableTop, {bold: true})
+            .text('Vendor', dX, tableTop, {bold: true})
+            .text('Department', eX, tableTop, {bold: true})
+            .text('Payment Cycle', fX, tableTop, {bold: true})
+            .text('Payment Type', gX, tableTop, {bold: true})
+            .text('Contract Value', hX, tableTop, {bold: true})
 
         const items = this.invoice.items
         let i = 0
@@ -81,37 +79,42 @@ class InvoiceGenerator {
                     width: 85,
                     align: 'justify'
                   })
-                .text(moment(item.start_date).format('Do MMMM, YYYY'), cX, y)
-                .text(moment(item.end_date).format('Do MMMM, YYYY'), dX, y)
-                .text(item.vendor, eX, y,{
+                .text(moment(item.end_date).format('Do MMMM, YYYY'), cX, y)
+                .text(item.vendor, dX, y,{
                     columns: 1,
                     columnGap: 15,
                     height: 50,
                     width: 65,
                     align: 'justify'
                   })
-                .text(item.department, fX, y,{
+                .text(item.department, eX, y,{
                     columns: 1,
                     columnGap: 15,
                     height: 50,
-                    width: 65,
+                    width: 75,
                     align: 'justify'
                   })
-                .text(item.payment_cycle, gX, y,{
+                .text(item.payment_cycle, fX, y,{
                     columns: 1,
                     columnGap: 10,
                     height: 50,
-                    width: 30,
+                    width: 50,
                     align: 'justify'
                   })
-                .text(item.payment_type, hX, y,{
+                .text(item.payment_type, gX, y,{
                     columns: 1,
                     columnGap: 10,
                     height: 50,
-                    width: 30,
+                    width: 70,
                     align: 'justify'
                   })
-                .text(dollarUS.format(item.contract_value), iX, y)
+                .text(dollarUS.format(item.contract_value), hX, y,{
+                    columns: 1,
+                    columnGap: 10,
+                    height: 50,
+                    width: 70,
+                    align: 'justify'
+                  })
         }
     }
 

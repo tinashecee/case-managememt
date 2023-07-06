@@ -12,7 +12,7 @@ class InvoiceGenerator {
             .image('./public/img/logo.png', 50, 5, { width: 45})
             .fillColor('#000')
             .fontSize(20)
-            .text('Prolegal Case Management System Report', 255, 5, {align: 'right'})
+            .text('Prolegal Case Management System Report : '+moment(this.invoice.date_created).format('Do MMMM, YYYY'), 255, 5, {align: 'right'})
             .fontSize(10)
                 
         const beginningOfPage = 50
@@ -46,7 +46,6 @@ class InvoiceGenerator {
             .text('Budget', cX, tableTop, {bold: true})
             .text('Actual', dX, tableTop, {bold: true})
             .text('Variance', eX, tableTop, {bold: true})
-            .text('Expenditure', fX, tableTop, {bold: true})
 
         const items = this.invoice.items
         let i = 0
@@ -59,12 +58,6 @@ class InvoiceGenerator {
         for (i = 0; i < items.length; i++) {
             const item = items[i]
             const y = tableTop + 25 + (i * 25)
-            let count = 0
-            if(item.expenditure.length > 0){
-                item.expenditure.forEach(element => {
-                    count += parseFloat(element.expenditure)
-                });
-            }
             doc
                 .fontSize(10)
                 .text(item.budget_id, aX, y)
@@ -78,7 +71,6 @@ class InvoiceGenerator {
                 .text(dollarUS.format(item.budget), cX, y)
                 .text(dollarUS.format(item.actual), dX, y)
                 .text(dollarUS.format(item.variance), eX, y)
-                .text(dollarUS.format(count), fX, y)
         }
     }
 

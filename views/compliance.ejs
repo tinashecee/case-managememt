@@ -49,11 +49,51 @@
               </div>
           </div>
  <div class="col text-right">
+  
       <button  data-toggle="modal" data-target="#exampleModalExport" class="btn btn-sm btn-primary">Export</button>
   </div>
+  <form method="POST" action="/filter-compliance">
+  <div class="row removable" style="font-size: 10px;">
+    
+    <div class="mb-3">
+  <label for="check1" class="form-label">Department</label>
+  <select class="form-control" id="check1" name="department" required="">
+    <option value="all">All</option>
+      <% for (let dat of dataB) { %>
+          <option value="<%= dat.department_name %>"><%= dat.department_name %></option>
+          <% } %>
+  </select> 
+  </div>
+  <div class="mb-3">
+      <label for="start_date" class="form-label"
+        >Start Date</label
+      >
+      <input
+        type="date"
+        class="form-control"
+        id="start_date"
+        name="start_date"
+        required
+      />
+    </div>
+    <div class="mb-3">
+      <label for="end_date" class="form-label">End Date</label>
+      <input
+        type="date"
+        class="form-control"
+        id="end_date"
+        name="end_date"
+        required
+      />
+    </div>
+       
+
+    </div>
+    <button type="submit" class="btn btn-primary">Filter</button>
+</form>
       </div>
       <div class="table-responsive">
-          <table class="table align-items-center table-flush">
+          <table class="table align-items-center table-flush" id="initial">
               <thead class="thead-light">
                   <tr>
                       <th scope="col">Department</th>
@@ -108,6 +148,7 @@
                 </tr>
                <% } %>
                <% } %>
+               
               </tbody>
           </table>
       </div>

@@ -12,7 +12,7 @@ class InvoiceGenerator {
             .image('./public/img/logo.png', 50, 5, { width: 45})
             .fillColor('#000')
             .fontSize(20)
-            .text('Prolegal Case Management System Report', 275, 5, {align: 'right'})
+            .text('Prolegal Case Management System Report : '+moment(this.invoice.date_created).format('Do MMMM, YYYY'), 275, 5, {align: 'right'})
             .fontSize(10)
                 
         const beginningOfPage = 50

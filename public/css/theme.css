@@ -1891,7 +1891,7 @@ pre code {
     height: calc(1.5em + 1.25rem + 2px);
     padding: 0.625rem 0.75rem;
     transition: all 0.15s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-    color: #8898aa;
+    color: #000000;
     border: 1px solid #dee2e6;
     border-radius: 0.25rem;
     background-color: #fff;

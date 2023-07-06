@@ -19,38 +19,36 @@ class InvoiceGenerator {
         const endOfPage = 570
 
         doc.moveTo(beginningOfPage,80)
-        .lineTo(endOfPage,80)
-        .stroke()
+            .lineTo(endOfPage,80)
+            .stroke()
                 
-        doc.text(`Lawfirm Report `, 20, 90,{bold: true})
+        doc.text(`Vendors Report `, 20, 90,{bold: true})
 
         doc.moveTo(beginningOfPage,110)
-        .lineTo(endOfPage,110)
-        .stroke()
+            .lineTo(endOfPage,110)
+            .stroke()
 
     }
 
     generateTable(doc) {
         const tableTop = 130
         const aX = 20
-        const bX = 50
-        const cX = 150
-        const dX = 240
-        const eX = 360
-        const fX = 410
-        const gX = 450
-        const hX = 550
+        const bX = 60
+        const cX = 120
+        const dX = 220
+        const eX = 300
+        const fX = 380
+        const gX = 480
 
         doc
             .fontSize(6)
             .text('ID', aX, tableTop, {bold: true})
             .text('Name', bX, tableTop, {bold: true})
-            .text('Email', cX, tableTop, {bold: true})
-            .text('Address', dX, tableTop, {bold: true})
-            .text('Phone Number', eX, tableTop, {bold: true})
-            .text('Vat Number', fX, tableTop, {bold: true})
-            .text('Website', gX, tableTop, {bold: true})
-            .text('Date Added', hX, tableTop, {bold: true})
+            .text('Address', cX, tableTop, {bold: true})
+            .text('Phone', dX, tableTop, {bold: true})
+            .text('Contact', eX, tableTop, {bold: true})
+            .text('Email', fX, tableTop, {bold: true})
+            .text('VAT Number', gX, tableTop, {bold: true})
 
         const items = this.invoice.items
         let i = 0
@@ -62,36 +60,47 @@ class InvoiceGenerator {
             
             doc
                 .fontSize(6)
-                .text(item.law_firm_id, aX, y)
-                .text(item.name, bX, y,{
+                .text(item.vendor_id, aX, y)
+                .text(item.company_name, bX, y,{
                     columns: 1,
                     columnGap: 10,
                     height: 50,
                     width: 90,
                     align: 'justify'
                   })
-                .text(item.email, cX, y)
-                .text(item.address, dX, y,{
+                .text(item.physical_address, cX, y,{
                     columns: 1,
                     columnGap: 10,
                     height: 50,
                     width: 90,
                     align: 'justify'
                   })
-                .text(item.phone_number, eX, y)
-                .text(item.vat_number, fX, y)
-                .text(item.website, gX, y,{
+                .text(item.phone_number, dX, y,{
+                    columns: 1,
+                    columnGap: 10,
+                    height: 50,
+                    width: 70,
+                    align: 'justify'
+                  })
+                .text(item.contact_person, eX, y,{
+                    columns: 1,
+                    columnGap: 10,
+                    height: 50,
+                    width: 70,
+                    align: 'justify'
+                  })
+                .text(item.email, fX, y,{
                     columns: 1,
                     columnGap: 10,
                     height: 50,
                     width: 90,
                     align: 'justify'
                   })
-                .text(moment(item.date_created).format('Do MMMM, YYYY'), hX, y,{
+                .text(item.vat_number, gX, y,{
                     columns: 1,
                     columnGap: 10,
                     height: 50,
-                    width: 50,
+                    width: 60,
                     align: 'justify'
                   })
         }
@@ -100,7 +109,7 @@ class InvoiceGenerator {
     generateFooter(doc) {
         doc
             .fontSize(10)
-            .text(`Lawfirm Report. `, 50, 700, {
+            .text(` Report. `, 50, 700, {
                 align: 'center'
             })
     }
@@ -109,7 +118,7 @@ class InvoiceGenerator {
         let theOutput = new PDFGenerator 
 
 
-        const fileName = `LawfirmsReport.pdf`
+        const fileName = `VendorsReport.pdf`
 
         // pipe to a writable stream which would save the result into the same directory
         theOutput.pipe(fs.createWriteStream(fileName))

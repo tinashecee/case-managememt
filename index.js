@@ -29,6 +29,7 @@ const InvoiceGenerator3 = require('./pdf-generator3')
 const InvoiceGenerator4 = require('./pdf-generator4')
 const InvoiceGenerator5 = require('./pdf-generator5')
 const InvoiceGenerator6 = require('./pdf-generator6')
+const InvoiceGenerator7 = require('./pdf-generator7')
 // enable files upload
 
 //cron job
@@ -155,6 +156,7 @@ let compliance_contact_name = ''
 let compliance_contact_email = ''
 let compliance_survey_questions = []
 let compliance_data = []
+let compliance_array = []
 let scrapping_results = []
 let budgetLineItems
 let user_role = ''
@@ -727,7 +729,7 @@ app.get('',checkNotAuthenticated,  async (req,res) => {
                             pool.query(
                                 `SELECT *
                                 FROM contracts
-                                WHERE end_date < CURRENT_DATE + INTERVAL '3 month'`,
+                                WHERE end_date < CURRENT_DATE + INTERVAL '3 month' AND status != 'Completed'`,
                                 [],
                                 (err, result3) => {
                                     if(err){
@@ -954,16 +956,68 @@ app.get('/compliance',checkNotAuthenticated,  async (req,res) => {
                     
                 }
                
-            res.render('compliance',{layout:'./layouts/compliance-layout', user_role, user:nam,errors:errors,compliance_results:compliance_results,dataB:results3.rows})
+            res.render('compliance',{layout:'./layouts/compliance-layout', user_role, user:nam,errors:errors,compliance_results:compliance_results,dataB:results3.rows,compliance_array})
             })
         }
     )
     
     
 });
-app.get('/compliance-survey',  async (req,res) => {
+app.post('/filter-compliance',(req,res) => {
     
-    res.render('compliance_survey',{layout:'./layouts/compliance-survey-layout', user_role, compliance_survey_questions:compliance_survey_questions})
+    let errors =[]
+    let message=[]
+    let compliance_results = []
+    pool.query(
+        `SELECT * FROM compliance_results`,
+        [],
+        (err, results) => {
+            if(err){
+                console.log(err)
+                errors.push({message: err});;
+                
+            }
+            
+            if(results){
+            compliance_data=[]
+            let dep = req.body.department
+    let start = req.body.start_date
+    let end = req.body.end_date
+    
+    results.rows.forEach(e=>{
+       if(e.department == dep ){
+                if(moment(e.date_completed).format('Do MMMM, YYYY') >= moment(start).format('Do MMMM, YYYY') ){
+                    console.log(moment(e.date_completed).format('Do MMMM, YYYY') +">"+ moment(start).format('Do MMMM, YYYY') +"|"+ moment(e.date_completed).format('Do MMMM, YYYY') +"<"+  moment(end).format('Do MMMM, YYYY'), e.department , dep)
+                    compliance_data.push(e)
+            compliance_results.push(e)
+            
+        }
+       }
+       if(dep == 'all'){
+        if(moment(e.date_completed).format('Do MMMM, YYYY') >= moment(start).format('Do MMMM, YYYY') && moment(e.date_completed).format('Do MMMM, YYYY') <=  moment(end).format('Do MMMM, YYYY')){
+            compliance_data.push(e)
+            compliance_results.push(e)
+        }
+       }
+    })
+            }
+            pool.query( `SELECT * FROM department`,
+            [],
+            (err, results3) => {
+                if(err){
+                    console.log(err)
+                    errors.push({message: err});;
+                    
+                    
+                }  
+            res.render('compliance',{layout:'./layouts/compliance-layout', user_role, user:nam,errors:errors,compliance_results:compliance_results,dataB:results3.rows})
+            })
+        }
+    )
+})
+app.get('/compliance-survey',  async (req,res) => {
+    let id = req.query.id
+    res.render('compliance_survey',{layout:'./layouts/compliance-survey-layout', user_role, compliance_survey_questions:compliance_survey_questions,id})
 });
 app.get('/contract_view',checkNotAuthenticated,  async (req,res) => {
     let query = req.query.id
@@ -2625,24 +2679,29 @@ app.post('/edit-expenditure', (req, res)=>{
             errors.push({message: err});;
         }
         expenditureArray = results.rows[0].expenditure
-        
+        budgeted = results.rows[0].budget
         console.log()
         let count = 0
         expenditureArray.forEach(elem=>{
            // console.log(elem.expenditure_desc,expe)
-           actual+=parseFloat(elem.expenditure)
+           
             if(elem.expenditure_desc  == expe){
                expenditureArray[count]={expenditure:expenditure,expenditure_desc:expenditure_desc,expenditure_date:expenditure_date,balance:(parseFloat(elem.expenditure)+elem.balance-expenditure)}
             }
             count+=1
         })
        // console.log(expenditureArray)
-        pool.query( 'UPDATE budget_items SET expenditure = $1, actual = $2  WHERE budget_id = $3',
-        [expenditureArray, actual, id], 
+       let totalExp = 0
+       expenditureArray.forEach(el=>{
+        totalExp+=parseFloat(el.expenditure)
+       })
+        pool.query( 'UPDATE budget_items SET expenditure = $1, actual = $2, variance = $3  WHERE budget_id = $4',
+        [expenditureArray, totalExp, budgeted-totalExp, id], 
         (err, results) => {
             if(err){
                 errors.push({message: err});;
             }
+            
             req.flash('success','You have successfully edited Expenditure');
             res.redirect('/budget');
         })
@@ -2983,6 +3042,7 @@ app.post('/compliance-form-part-2', (req, res)=>{
 })
 app.post('/compliance-form-part-3', (req, res)=>{
     compliance_survey_questions = []
+    
     for(let i=1;i<compliance_count+1;i++){
         if(req.body[`response${i}`] == 'text_input'){
             let a= {
@@ -3014,56 +3074,38 @@ app.post('/compliance-form-part-3', (req, res)=>{
                compliance_survey_questions.push(b)
                compliance_survey_questions.push(c)
         }    }
-        pool.query(
-            'SELECT * FROM compliance_results WHERE department = $1',
-           [compliance_department], 
-           (err, results) => {
-               if(err){
-                   errors.push({message: err});;
-               }
-               let yourDate = new Date()
-               date_created = formatDate(yourDate)
-               if(results.rows[0]){
-                
-                pool.query(
-                    'UPDATE compliance_results SET questions = $1, responses = $2, score = $3, contact_person = $4, contact_email = $5, date_completed = $6 WHERE department = $7',
-                   [compliance_survey_questions, {}, 0, compliance_contact_name, compliance_contact_email,date_created,compliance_department], 
-                   (err, results) => {
-                       if(err){
-                           errors.push({message: err});;
-                       }
-                   }
-                )
-               }else{
+        let yourDate = new Date()
+        date_created = formatDate(yourDate)
+        let id 
                 pool.query(
                     `INSERT INTO compliance_results (department, questions, responses, score, contact_person, contact_email, date_completed, comment)
-                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id`,
                     [compliance_department, compliance_survey_questions, [], 0, compliance_contact_name, compliance_contact_email,date_created, ''], 
                     (err, results1) => {
                         if(err){
                             errors.push({message: err});;
                         }
+                        console.log(results1.rows[0].id)
+                        const message = "Email for completing compliance form."
+                        const options = {
+                            from: "CASE MANAGEMENT SYSTEM <mochonam19@gmail.com>", // sender address
+                            to: compliance_contact_email, // receiver email
+                            subject: "Compliance Survey for the department of "+compliance_department, // Subject line
+                            text: message,
+                            html: `<div>Greetings ${compliance_contact_name} , Please  click this link to complete Compliance Form  <br> <h1> http://localhost:8080/compliance-survey?id=${results1.rows[0].id} </h1> </div>`
+                        }        
+                        // send mail with defined transport object and mail options
+                SENDMAIL(options, (info) => {
+                    //console.log("Email sent successfully");
+                    //console.log("MESSAGE ID: ", info.messageId);
+                    req.flash('success','Survey successfully sent via Email');
+                   res.redirect('/compliance')
+                      
+                
+                 });
                     }
                 )
-               }
-            })
-            const message = "Email for completing compliance form."
-        const options = {
-            from: "CASE MANAGEMENT SYSTEM <mochonam19@gmail.com>", // sender address
-            to: compliance_contact_email, // receiver email
-            subject: "Compliance Survey for the department of "+compliance_department, // Subject line
-            text: message,
-            html: `<div>Greetings ${compliance_contact_name} , Please  click this link to complete Compliance Form  <br> <h1> http://196.220.119.16/compliance-survey </h1> </div>`
-        }        
-        // send mail with defined transport object and mail options
-SENDMAIL(options, (info) => {
-    //console.log("Email sent successfully");
-    //console.log("MESSAGE ID: ", info.messageId);
-    req.flash('success','Survey successfully sent via Email');
-   res.redirect('/compliance')
-      
-
- });
+          
  
 })
 app.get('/download',async (req,res) =>{
@@ -3082,8 +3124,12 @@ app.get('/download',async (req,res) =>{
         //console.log( JSON.stringify(e.questions))
         usersArray.push(b)
       })
+      let yourDate = new Date()
+    date_created = formatDate(yourDate)
       let bliData={
-        items:usersArray
+        items:usersArray,
+        date_created:date_created
+
     }
     if(req.query.export_type == 'pdf'){
     const ig = new InvoiceGenerator6(bliData)
@@ -3162,8 +3208,11 @@ app.get('/download1',async (req,res) =>{
         compliance_data.forEach(e=>{
             questions.push(e.questions)
           })
+          let yourDate = new Date()
+    date_created = formatDate(yourDate)
     let bliData={
-        items:questions[0]
+        items:questions[0],
+        date_created:date_created
     }
     if(req.query.export_type == 'pdf'){
     const ig = new InvoiceGenerator5(bliData)
@@ -3236,8 +3285,11 @@ app.get('/download1',async (req,res) =>{
             }
 })
 app.get('/download3',async (req,res) =>{
+    let yourDate = new Date()
+    date_created = formatDate(yourDate)
     let bliData={
-        items:array
+        items:array,
+        date_created:date_created
     }
     if(req.query.export_type == 'pdf'){
     const ig = new InvoiceGenerator4(bliData)
@@ -3339,10 +3391,13 @@ app.get('/download3',async (req,res) =>{
 });
 app.get('/download4',async (req,res) =>{
     let data = budgetLineItems
+    let yourDate = new Date()
+    date_created = formatDate(yourDate)
     let bliData={
         start_date:req.query.start_date,
         end_date:req.query.end_date,
-        items:data
+        items:data,
+        date_created:date_created
     }
     if(req.query.export_type == 'pdf'){
     const ig = new InvoiceGenerator3(bliData)
@@ -3421,12 +3476,20 @@ app.get('/download4',async (req,res) =>{
 });
 app.get('/download5',async (req,res) =>{
     let  arrayD = []
-    
+    let yourDate = new Date()
+    date_created = formatDate(yourDate)
+    balance = 0
      budgetLineItems.forEach(e=>{
          if(e.expenditure.length > 0){ 
          e.expenditure.forEach(f=>{
             if(moment(f.expenditure_date).format('Do MMMM, YYYY') >= req.query.expenditure_date){
-             arrayD.push(f)
+                let g={
+                    expenditure_date:f.expenditure_date,
+                    expenditure_desc:f.expenditure_desc,
+                    expenditure:f.expenditure,
+                    balance:balance+=parseFloat(f.expenditure)
+                }
+             arrayD.push(g)
             }
          })
      }
@@ -3434,7 +3497,8 @@ app.get('/download5',async (req,res) =>{
      })
     let expenditureData={
         expenditure_date:req.query.expenditure_date,
-        items:arrayD
+        items:arrayD,
+        date_created:date_created
     }
     if(req.query.export_type == 'pdf'){
     const ig = new InvoiceGenerator2(expenditureData)
@@ -3519,17 +3583,19 @@ app.get('/download6',async (req,res) =>{
     let data = []
     
     results.rows.forEach(e=>{
-        if(moment(e.start_date).format('Do MMMM, YYYY') >= req.query.start_date && moment(e.end_date).format('Do MMMM, YYYY') <= req.query.end_date && e.status.toLowerCase() == req.query.status.toLowerCase()){
+        if( moment(e.end_date).format('Do MMMM, YYYY') <= req.query.end_date && e.status.toLowerCase() == req.query.status.toLowerCase()){
        
         data.push(e)
      }
     })
     console.log(data)
+    let yourDate = new Date()
+    date_created = formatDate(yourDate)
     let contractData={
-        start_date:req.query.start_date,
         end_date:req.query.end_date,
         status:req.query.status,
-        items:data
+        items:data,
+        date_created:date_created
     }
     if(req.query.export_type == 'pdf'){
     const ig = new InvoiceGenerator1(contractData)
@@ -3558,7 +3624,6 @@ app.get('/download6',async (req,res) =>{
     worksheet.columns = [
         { header: 'Name', key: 'name',  width: 20 },
         { header: 'Description', key: 'notes',  width: 20 },
-        { header: 'Start Date', key: 'start_date',  width: 20 },
         { header: 'End Date', key: 'end_date',  width: 20 },
         { header: 'Vendor', key: 'vendor',  width: 20 },
         { header: 'Department', key: 'department',  width: 20 },
@@ -3622,11 +3687,14 @@ app.get('/download7',async (req,res) =>{
         data.push(e)
      }
     })
+    let yourDate = new Date()
+    date_created = formatDate(yourDate)
     let caseData={
         start_date:req.query.start_date,
         end_date:req.query.end_date,
         status:req.query.status,
-        items:data
+        items:data,
+        date_created:date_created
     }
     if(req.query.export_type == 'pdf'){
     const ig = new InvoiceGenerator(caseData)
@@ -3708,6 +3776,105 @@ app.get('/download7',async (req,res) =>{
     
 
 });
+app.get('/download8',async (req,res) =>{
+    pool.query(
+        `SELECT * FROM vendors`,
+        [],
+        async (err, results) => {
+            if(err){
+                console.log(err)
+                errors.push({message: err});;
+                
+            }
+        
+    let data = results.rows
+    
+    let yourDate = new Date()
+    date_created = formatDate(yourDate)
+    let vendorData={
+        items:data,
+        date_created:date_created
+    }
+    if(req.query.export_type == 'pdf'){
+    const ig = new InvoiceGenerator7(vendorData)
+    ig.generate()
+    setTimeout(function() {
+
+        res.download('VendorsReport.pdf');
+        
+        }, 2500);
+     
+    }
+    else{
+        let usersArray = data
+   
+   
+         // Create Excel workbook and worksheet
+         const workbook = new Excel.Workbook();
+         let yourDate = new Date()
+         date_created = formatDate(yourDate)
+         workbook.creator = nam;
+         workbook.lastModifiedBy = nam;
+         workbook.created = yourDate;
+         const worksheet = workbook.addWorksheet('Vendors Data',{
+             headerFooter: {oddFooter: "Page &P of &N", oddHeader: 'Cases Data'},properties:{tabColor:{argb:'FFC0000'}}
+         });
+     
+         // Define columns in the worksheet, these columns are identified using a key.
+         worksheet.columns = [
+             { header: 'Vendor ID', key: 'vendor_id', width: 10 },
+             { header: 'Vendor Name', key: 'company_name', width: 40 },
+             { header: 'Address', key: 'physical_address', width: 50 },
+             { header: 'Phone', key: 'phone_number', width: 20 },
+             { header: 'Contact Person', key: 'contact_person', width: 30 },
+             { header: 'Email', key: 'email', width: 40 },
+             { header: 'VAT Number', key: 'vat_number', width: 20 }
+ 
+         ]
+         worksheet.autoFilter = 'A1:D1';
+ 
+         // Process each row for beautification 
+             worksheet.eachRow(function (row, rowNumber) {
+         
+                 row.eachCell((cell, colNumber) => {
+                     if (rowNumber == 1) {
+                         // First set the background of header row
+                         cell.fill = {
+                             type: 'pattern',
+                             pattern: 'solid',
+                             fgColor: { argb: '3b7197' }, bgColor:{argb:'FF0000FF'
+                         }
+                         }
+                     }
+                     // Set border of each cell 
+                     cell.border = {
+                         top: { style: 'thin' },
+                         left: { style: 'thin' },
+                         bottom: { style: 'thin' },
+                         right: { style: 'thin' }
+                     };
+                     cell.font = {
+                         name: 'Arial Black',
+                         color: { argb: '000000' },
+                         family: 2,
+                         size: 8
+                        };
+                        cell.alignment = { wrapText: true,indent: 1 };
+                 })
+                 //Commit the changed row to the stream
+                 row.commit();
+             });
+         // Add rows from database to worksheet 
+         worksheet.addRows(usersArray);
+     
+         // write to a new buffer
+      await workbook.xlsx.writeFile('VendorsData.xlsx').then(() => {
+         res.download('VendorsData.xlsx'); 
+     }); 
+    }
+    
+})
+});
 app.post('/update-compliance-comment',(req,res) =>{
    let query = req.query.id
    let comment = req.body.description
@@ -3724,6 +3891,7 @@ app.post('/update-compliance-comment',(req,res) =>{
 })
 app.post('/compliance_results',(req,res) =>{
     let responses = req.body.responses
+    let id = req.body.id
     let yourDate = new Date()
     date_created = formatDate(yourDate)
     boolean_count = 0
@@ -3736,16 +3904,22 @@ app.post('/compliance_results',(req,res) =>{
     const keys = Object.keys(responses);
     keys.forEach((key, index) => {
        // console.log(`${key}: ${courses[key]}`);
-       if(responses[key] == true) boolean_yes_count += 1
+       if(responses[key] == true) {
+        boolean_yes_count += 1
+        responses[key] = 'yes'
+    }
+    if(responses[key] == false){
+        responses[key] = 'no'
+    }
        compliance_survey_questions.forEach(e=>{
         if(e.name == key) e.response = responses[key]
      })
     });
     let y = boolean_yes_count+"/"+boolean_count
-    //console.log(y)
+    console.log(responses,y)
     pool.query(
-        'UPDATE compliance_results SET responses = $1, date_completed = $2, questions = $3, score = $4 WHERE department = $5',
-       [responses, date_created, compliance_survey_questions, y, compliance_department], 
+        'UPDATE compliance_results SET responses = $1, date_completed = $2, questions = $3, score = $4 WHERE id = $5',
+       [responses, date_created, compliance_survey_questions, y, id], 
        (err, results) => {
            if(err){
                errors.push({message: err});;
