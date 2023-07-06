@@ -22,7 +22,7 @@ class InvoiceGenerator {
             .lineTo(endOfPage,80)
             .stroke()
                 
-        doc.text(`Compliance Survey Report `, 20, 90,{bold: true})
+        doc.text(`Compliance Survey Report | Department : ${this.invoice.department} `, 20, 90,{bold: true})
 
         doc.moveTo(beginningOfPage,110)
             .lineTo(endOfPage,110)

@@ -154,6 +154,7 @@ let budget_statement  = []
 let compliance_department = ''
 let compliance_contact_name = ''
 let compliance_contact_email = ''
+let compliance_filter_department = 'All'
 let compliance_survey_questions = []
 let compliance_data = []
 let compliance_array = []
@@ -983,7 +984,7 @@ app.post('/filter-compliance',(req,res) => {
             let dep = req.body.department
     let start = req.body.start_date
     let end = req.body.end_date
-    
+    compliance_filter_department = dep
     results.rows.forEach(e=>{
        if(e.department == dep ){
                 if(moment(e.date_completed).format('Do MMMM, YYYY') >= moment(start).format('Do MMMM, YYYY') ){
@@ -993,8 +994,8 @@ app.post('/filter-compliance',(req,res) => {
             
         }
        }
-       if(dep == 'all'){
-        if(moment(e.date_completed).format('Do MMMM, YYYY') >= moment(start).format('Do MMMM, YYYY') && moment(e.date_completed).format('Do MMMM, YYYY') <=  moment(end).format('Do MMMM, YYYY')){
+       if(dep == 'All'){
+        if(moment(e.date_completed).format('Do MMMM, YYYY') >= moment(start).format('Do MMMM, YYYY') ){
             compliance_data.push(e)
             compliance_results.push(e)
         }
@@ -3115,7 +3116,7 @@ app.get('/download',async (req,res) =>{
     compliance_data.forEach(e=>{
         let b = {
             department:e.department,
-            contact_name:e.contact_name,
+            contact_person:e.contact_person,
             contact_email:e.contact_email,
             score: e.score,
             date_completed: e.date_completed,
@@ -3128,6 +3129,7 @@ app.get('/download',async (req,res) =>{
     date_created = formatDate(yourDate)
       let bliData={
         items:usersArray,
+        department:compliance_filter_department,
         date_created:date_created
 
     }
