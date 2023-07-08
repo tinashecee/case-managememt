@@ -154,81 +154,94 @@
         <div class="card-header">
           <h5 class="card-title">Calendar</h5>
          
-        <div class="card-body dark" >
-          <div class="calendar" style="padding: auto;margin: auto;">
-            <!-- Calendar Header -->
-            <div class="calendar-header">
-              <span class="month-picker" id="month-picker">
-                February
-              </span>
-              <div class="year-picker">
-                <span class="year-change mt-3" id="prev-year">
-                  <pre> < </pre>
-                </span>
-                <span id="year">2023</span>
-                <span class="year-change mt-3" id="next-year">
-                  <pre> > </pre>
-                </span>
-              </div>
-            </div>
-            <!-- Calendar Body -->
-            <div class="calendar-body">
-              <div class="calendar-week-day">
-                <div>Sun</div>
-                <div>Mon</div>
-                <div>Tue</div>
-                <div>Wed</div>
-                <div>Thu</div>
-                <div>Fri</div>
-                <div>Sat</div>
-              </div>
-              <div class="calendar-day">
-                <div>
-                  1
-                  <span></span>
-                  <span></span>
-                  <span></span>
-                  <span></span>
-                </div>
-                <div>2</div>
-                <div>3</div>
-                <div>4</div>
-                <div>5</div>
-                <div>6</div>
-                <div>7</div>
-                <div>1</div>
-                <div>2</div>
-                <div>3</div>
-                <div>4</div>
-                <div>5</div>
-                <div>6</div>
-                <div>7</div>
-              </div>
-            </div>
-            <!-- Calendar Footer -->
-            <div class="calendar-footer">
-                <div class="toggle">
-                    <span>Dark Mode</span>
-                    <div class="dark-mode-switch">
-                        <div class="dark-mode-switch-ident"></div>
+        <div class="card-body " >
+   <link rel="stylesheet" href="/css/style.css"> 
+     <section class="ftco-section">
+            <div class="container">
+              <div class="row">
+                <div class="col-md-12">
+                  <div class="content w-100">
+                    <div class="calendar-container">
+                      <div class="calendar"> 
+                        <div class="year-header"> 
+                          <span class="left-button fa fa-chevron-left" id="prev"> </span> 
+                          <span class="year" id="label"></span> 
+                          <span class="right-button fa fa-chevron-right" id="next"> </span>
+                        </div> 
+                        <table class="months-table w-100"> 
+                          <tbody>
+                            <tr class="months-row">
+                              <td class="month">Jan</td> 
+                              <td class="month">Feb</td> 
+                              <td class="month">Mar</td> 
+                              <td class="month">Apr</td> 
+                              <td class="month">May</td> 
+                              <td class="month">Jun</td> 
+                              <td class="month">Jul</td>
+                              <td class="month">Aug</td> 
+                              <td class="month">Sep</td> 
+                              <td class="month">Oct</td>          
+                              <td class="month">Nov</td>
+                              <td class="month">Dec</td>
+                            </tr>
+                          </tbody>
+                        </table> 
+                        
+                        <table class="days-table w-100"> 
+                          <td class="day">Sun</td> 
+                          <td class="day">Mon</td> 
+                          <td class="day">Tue</td> 
+                          <td class="day">Wed</td> 
+                          <td class="day">Thu</td> 
+                          <td class="day">Fri</td> 
+                          <td class="day">Sat</td>
+                        </table> 
+                        <div class="frame"> 
+                          <table class="dates-table w-100"> 
+                            <tbody class="tbody">             
+                            </tbody> 
+                          </table>
+                        </div> 
+                        <button class="button " id="add-button">Add Event</button>
+                      </div>
                     </div>
+                    <div class="events-container navbar-dark bg-primary">
+                    </div>
+                    <div class="dialog" id="dialog">
+                        <h2 class="dialog-header"> Add New Task </h2>
+                        <form class="form" id="form">
+                          <div class="form-container" align="center">
+                            <label class="form-label" id="valueFromMyButton" for="name">Task name</label>
+                            <input class="input" type="text" id="name" maxlength="36">
+                            <label class="form-label" id="valueFromMyButton" for="count">Number of people to invite</label>
+                            <input class="input" type="time" id="count" name="appt"> 
+                            
+                            <input type="button" value="Cancel" class="button" id="cancel-button">
+                            <input type="button" value="OK" class="button button-white" id="ok-button">
+                          </div>
+                        </form>
+                      </div>
+                  </div>
                 </div>
+              </div>
             </div>
-            <div class="month-list"></div>
-          </div>
-          <link rel="stylesheet" href="/css/stylea.css" />
-          <script src="/js/scripta.js"></script>
+          </section>
+          <script src="/js/jquery.min.js"></script>
+          <script src="/js/popper.js"></script>
+          <script src="/js/bootstrap.min.js"></script>
+          <script src="/js/main.js"></script>
       </div>
     </div>
+    </div>
+    </div>
+    </div>
+    <div class="row removable">
     <div class="col-xl-12">
       <div class="card">
         <div class="card-header border-0">
           <div class="row align-items-center">
             <div class="col">
               <h3 class="mb-0">My Tasks</h3>
-            </div>
-            <div class="col text-right">
-              <a href="#!" class="btn btn-sm btn-primary">See all</a>
             </div>
           </div>
         </div>
@@ -349,7 +362,7 @@
         </div>
       </div>
     </div>
-  </div>
+     </div>
 </div>
 <div class="modal fade" id="exampleModal2" style="z-index:45" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">

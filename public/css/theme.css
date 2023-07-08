@@ -15,6 +15,7 @@
 * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 */
+
 :root {
     --blue: #11cdef;
     --indigo: #5603ad;
@@ -21244,3 +21245,4 @@ pre > code.highlight {
   height: 300px; /* specify your height */
   overflow-y: auto;
 }
+

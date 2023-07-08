@@ -42,5 +42,6 @@
     "pdfkit": "^0.13.0",
     "pg": "^8.10.0",
     "puppeteer": "^20.2.1"
-  }
+  },
+  "devDependencies": {}
 }

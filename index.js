@@ -21,7 +21,6 @@ const morgan = require('morgan');
 const CronJob = require('cron').CronJob
 const _ = require('lodash');
 'use strict'
-
 const InvoiceGenerator = require('./pdf-generator')
 const InvoiceGenerator1 = require('./pdf-generator1')
 const InvoiceGenerator2 = require('./pdf-generator2')
