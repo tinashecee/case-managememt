@@ -94,10 +94,10 @@
                                     <label for="start-date" class="form-label">Start Date</label>
                                     <input type="date" class="form-control" id="start_date" name="start_date" required="">
                                 </div>
-                                <div class="col-md-4">
+                               <!---- <div class="col-md-4">
                                     <label for="deadline" class="form-label">Deadline</label>
                                     <input type="date" class="form-control" id="deadline" name="deadline" required="">
-                                </div>
+                                </div>-->
                             </div>
                             <div class="col-md-3">
                                     <label for="members" class="form-label">Members</label>
@@ -151,6 +151,7 @@
                                     <th scope="col">Case Name</th>
                                     <th scope="col">Law Firm</th>
                                     <th scope="col">Case Status</th>
+                                    <th scope="col">Department</th>
                                     <th scope="col">Start Date</th>
                                     <th scope="col">Deadline</th>
                                     <th scope="col">Members</th>
@@ -166,6 +167,7 @@
                                     <td><a href='/case_view?id=<%= dat.case_id %>'><%= dat.case_name %></a></td>
                                     <td><%= dat.law_firm %></td>
                                     <td><%= dat.status %></td>
+                                    <td><%= dat.department %></td>
                                     <td>
                                         <%= moment(dat.start_date).format('Do MMMM, YYYY') %></td>
                                     <td>

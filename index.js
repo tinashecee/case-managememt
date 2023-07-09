@@ -85,6 +85,7 @@ const job = new CronJob('0 8 * * *', function()  {
 }, null, true, 'Etc/UTC');
 job.start();
 }
+
 const HTML_TEMPLATE = require("./mail-template.js");
 const SENDMAIL = require("./mailer.js") 
 
@@ -400,6 +401,49 @@ app.post('/upload-contract', async (req, res) => {
         res.status(500).send(err);
     }
 });
+app.post('/contract-renewal-email', async (req, res) => {
+    let department = req.query.department
+    let expiry = req.query.expiry_date
+    let contract_name = req.query.contract_name
+    let desc = req.query.desc
+    let contract_value = req.query.contract_value
+    pool.query(
+        `SELECT *
+        FROM department WHERE department_name = $1`,
+        [department],
+        (err, results) => {
+            if(err){
+                console.log(err)
+                errors.push({message: err});
+            }
+            let email = results.rows[0].contact_email
+            let name = results.rows[0].contact_person
+    const message = "Expiring Contract Alert"
+    const options = {
+        from: "CASE MANAGEMENT SYSTEM <mochonam19@gmail.com>", // sender address
+        to: email, // receiver email
+        subject: `A contract is about to expire on ${expiry} !`, // Subject line
+        text: message,
+        html: `<p>Hi ${name},</p>
+        <p>This is a reminder that the contract  ${contract_name} is about to expire on ${expiry}.</p>
+        <p>Please review the contract details below:</p>
+        <ul>
+        <li>Contract Name: ${contract_name}</li>
+        <li>Contract Description: ${desc}</li>
+        <li>Contract Value: $ ${contract_value}</li>
+        <li>Expiry Date: ${expiry}</li>
+        </ul>
+        <p>Please contact us if you have any questions or need to renew the contract.</p>
+        <p>Thank you,</p>
+        <p>Prolegal Team</p>`
+    }        
+    // send mail with defined transport object and mail options
+SENDMAIL(options, (info) => {
+});
+req.flash('success','You have successfully sent a renewal email');
+                            res.redirect('')
+})
+})
 app.post('/delete-contract-file', async (req, res) => {
     const path = './public/uploads1/'+req.query.path
     const query = req.query.id
@@ -567,6 +611,51 @@ app.post('/delete-case-file', async (req, res) => {
       )
             
     })       
+})
+app.post('/delete-case', async (req, res) => {
+    let id = req.query.id
+    pool.query(
+        'DELETE FROM cases WHERE case_id = $1',
+       [id], 
+       (err, resulto) => {
+           if(err){
+               errors.push({message: err});
+               console.log(err)
+           }
+           req.flash('success','You have successfully deleted a case');   
+           res.redirect('/cases')
+        })
+
+})
+app.post('/delete-contract', async (req, res) => {
+    let id = req.query.id
+    pool.query(
+        'DELETE FROM contracts WHERE contract_id = $1',
+       [id], 
+       (err, resulto) => {
+           if(err){
+               errors.push({message: err});
+               console.log(err)
+           }
+           req.flash('success','You have successfully deleted a contract');   
+           res.redirect('/contracts')
+        })
+
+})
+app.post('/delete-lawfirm', async (req, res) => {
+    let id = req.query.id
+    pool.query(
+        'DELETE FROM law_firms WHERE law_firm_id = $1',
+       [id], 
+       (err, resulto) => {
+           if(err){
+               errors.push({message: err});
+               console.log(err)
+           }
+           req.flash('success','You have successfully deleted a law firm');   
+           res.redirect('/lawfirms')
+        })
+
 })
 app.post('/upload-document', async (req, res) => {
     try {
@@ -1430,6 +1519,15 @@ app.get('/documents',checkNotAuthenticated,  async (req,res) => {
                         
                         
                     }
+                    pool.query(
+                        `SELECT * FROM cases`,
+                        [],
+                        (err, results4) => {
+                            if(err){
+                                console.log(err)
+                                errors.push({message: err});
+                
+                            }
                     function compare( a, b ) {
                         if ( a.name < b.name ){
                           return -1;
@@ -1445,8 +1543,9 @@ app.get('/documents',checkNotAuthenticated,  async (req,res) => {
              const reso = results.rows.sort(compare).slice(startIndex, endIndex);
          
             
-             res.render('documents',{layout:'./layouts/document-layout',user_role, user:nam,errors:errors,documents:results.rows,data:reso,page,dataB:results3.rows,users:results2.rows,total_documents:results.rows})
+             res.render('documents',{layout:'./layouts/document-layout',user_role, user:nam,errors:errors,documents:results.rows,data:reso,page,dataB:results3.rows,users:results2.rows,total_documents:results.rows,cases:results4.rows})
                 })
+            })
             })
         }
     )
@@ -1482,9 +1581,18 @@ app.get('/documents-view',checkNotAuthenticated,  async (req,res) => {
                             
                         }
                       
-                  
-                    res.render('document_viewer',{layout:'./layouts/document-viewer-layout', user_role, user:nam,errors:errors,data:results.rows, dataB:results2.rows,id:query,id:query,users:results1.rows})
+                        pool.query(
+                            `SELECT * FROM cases`,
+                            [],
+                            (err, results4) => {
+                                if(err){
+                                    console.log(err)
+                                    errors.push({message: err});
+                    
+                                }
+                    res.render('document_viewer',{layout:'./layouts/document-viewer-layout', user_role, user:nam,errors:errors,data:results.rows, dataB:results2.rows,id:query,id:query,users:results1.rows,cases:results4.rows})
                 })
+            })
                 })
                 }
             )
@@ -1494,16 +1602,18 @@ app.post('/add-document', async(req, res)=>{
     let department = req.body.department
     let members = req.body.members
     let description = req.body.comments
+    let cas = req.body.case_name
     console.log(department)
     let yourDate = new Date()
     date_created = formatDate(yourDate)
     pool.query(
-        `INSERT INTO documents (name, department, assigned_to, description, date_created,docs)
-        VALUES ($1, $2, $3, $4, $5, $6)`,
-        [name, department, members, description, date_created,[]], 
+        `INSERT INTO documents (name, department, assigned_to, description, date_created,docs, case_name)
+        VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+        [name, department, members, description, date_created,[], cas], 
         (err, results) => {
             if(err){
-                errors.push({message: err});;
+                errors.push({message: err});
+                console.log(err)
             }
             req.flash('success','You have successfully added a document');
             res.redirect('/documents');
@@ -2110,10 +2220,10 @@ app.get('/vendors',checkNotAuthenticated, async (req,res) => {
                         
                     }
                     function compare( a, b ) {
-                        if ( a.date_created > b.date_created ){
+                        if ( a.company_name < b.company_name ){
                           return -1;
                         }
-                        if ( a.date_created < b.date_created ){
+                        if ( a.company_name > b.company_name ){
                           return 1;
                         }
                         return 0;
@@ -2558,6 +2668,24 @@ app.post('/update-document-department', (req, res)=>{
     )
     
 });
+app.post('/update-document-case', (req, res)=>{
+    let query = req.query.id
+    let cas = req.body.case_name
+    let yourDate = new Date()
+    date_created = formatDate(yourDate)
+    pool.query(
+         'UPDATE documents SET case_name = $1 WHERE document_id = $2',
+        [cas, query], 
+        (err, results) => {
+            if(err){
+                errors.push({message: err});;
+            }
+            req.flash('success','You have successfully updated case');
+            res.redirect('/documents-view?id='+query);
+        }
+    )
+    
+});
 app.post('/update-document-description', (req, res)=>{
     let query = req.query.id
     let description = req.body.description
@@ -2598,7 +2726,7 @@ app.post('/add-case', (req, res)=>{
    // console.log(req.body)
     let department = req.body.department
     let start_date = req.body.start_date
-    let end_date = req.body.deadline
+   // let end_date = req.body.deadline
     let notes = req.body.comments
     let case_name = req.body.case_name
     let status = req.body.status
@@ -2607,9 +2735,9 @@ app.post('/add-case', (req, res)=>{
     let yourDate = new Date()
     date_created = formatDate(yourDate)
     pool.query(
-        `INSERT INTO cases (start_date, end_date, notes, department, case_name, law_firm,  staff_members,attachments,status)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
-        [start_date, end_date, notes, department, case_name, law_firm, staff_members,[],status], 
+        `INSERT INTO cases (start_date,  notes, department, case_name, law_firm,  staff_members,attachments,status)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
+        [start_date,  notes, department, case_name, law_firm, staff_members,[],status], 
         (err, results) => {
             if(err){
                 errors.push({message: err});;
@@ -2633,7 +2761,7 @@ app.post('/add-contract', (req, res)=>{
     
     let description = req.body.contract_description
     let start_date = req.body.start_date
-    let end_date = req.body.end_date
+   // let end_date = req.body.end_date
     let contract_name = req.body.contract_name
     let vendor = req.body.vendor
     let department = req.body.department
@@ -2651,9 +2779,9 @@ app.post('/add-contract', (req, res)=>{
         payment_cycle= req.body.signedStatus1
     }
     pool.query(  
-        `INSERT INTO contracts (  name, description, start_date, end_date, notes,  vendor, department, payment_cycle, payment_terms, status, contract_value,attachments)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11,$12)`,
-        [  contract_name, description, start_date, end_date, notes, vendor, department, 
+        `INSERT INTO contracts (  name, description, start_date,  notes,  vendor, department, payment_cycle, payment_terms, status, contract_value,attachments)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
+        [  contract_name, description, start_date,  notes, vendor, department, 
             payment_cycle, payment_terms, status, contract_value,[]], 
         (err, results) => {
             if(err){

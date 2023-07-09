@@ -81,6 +81,20 @@
                     ></button>
                     </div>
                     <div
+                    class="border-bottom d-flex align-items-center justify-content-between px-4 py-2"
+                  >
+                    <div class="d-flex align-items-center">
+                      <i class="fa text-primary fa-clock"></i>
+                      <div class="ml-3">
+                        <h5 class="mb-0">Case</h5>
+                        <p class="text-sm mb-0"><%= data[0].case_name %></p>
+                      </div>
+                    </div>
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal2a"
+                    ><i class="fa fa-edit"></i
+                  ></button>
+                  </div>
+                    <div
                       class="border-bottom d-flex align-items-center justify-content-between px-4 py-2"
                     >
                       <div class="d-flex align-items-center">
@@ -181,6 +195,35 @@
                 <select class="form-select" id="department" name="department" required="">
                     <% for (let dat of dataB) { %>
                     <option value="<%= dat.department_name %>"><%= dat.department_name %></option>
+                    <% } %>
+                </select>
+          </div>            
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary">Submit</button>
+          </div>
+      </form> 
+      </div>
+</div>
+</div>
+<div class="modal fade" id="exampleModal2a" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+          <form action='update-document-case?id=<%= id %>' method="POST">
+          <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Edit Case</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">X</span>
+              </button>
+          </div>
+          <div class="modal-body">
+               
+            <div class="col-md-12">
+                <label for="department" class="form-label">Case</label>
+                <select class="form-select" id="case" name="case_name" required="">
+                    <% for (let dat of cases) { %>
+                    <option value="<%= dat.case_name %>"><%= dat.case_name %></option>
                     <% } %>
                 </select>
           </div>            
