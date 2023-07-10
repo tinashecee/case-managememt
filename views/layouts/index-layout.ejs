@@ -221,7 +221,7 @@
     <script src="https://rawcdn.githack.com/Loopple/loopple-public-assets/7bb803d2af2ab6d71d429b0cb459c24a4cd0fbb4/argon-dashboard/js/argon.min.js"></script>
     <script src="/js/loopple/loopple.js"></script>
 <script>
-    function renewalEmail(params1,params2,params3) {
+    function renewalEmail(params1,params2,params3,params4,params5) {
     var modal = document.getElementById('exampleModal5');
 var modalTitle = modal.querySelector('.modal-title');
 var modalBody = modal.querySelector('.modal-body');
@@ -234,6 +234,105 @@ var modalBody = modal.querySelector('.modal-body');
                     <div class="mb-3">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                         <button type="submit" class="btn btn-primary">Send Email</button>
+                    </div>
+                </form>  
+                 
+  `;
+            }
+            $(function() {
+  var $tabButtonItem = $('#tab-button li'),
+      $tabSelect = $('#tab-select'),
+      $tabContents = $('.tab-contents'),
+      activeClass = 'is-active';
+
+  $tabButtonItem.first().addClass(activeClass);
+  $tabContents.not(':first').hide();
+
+  $tabButtonItem.find('a').on('click', function(e) {
+    var target = $(this).attr('href');
+
+    $tabButtonItem.removeClass(activeClass);
+    $(this).parent().addClass(activeClass);
+    $tabSelect.val(target);
+    $tabContents.hide();
+    $(target).show();
+    e.preventDefault();
+  });
+
+  $tabSelect.on('change', function() {
+    var target = $(this).val(),
+        targetSelectNum = $(this).prop('selectedIndex');
+
+    $tabButtonItem.removeClass(activeClass);
+    $tabButtonItem.eq(targetSelectNum).addClass(activeClass);
+    $tabContents.hide();
+    $(target).show();
+  });
+});
+function editTimesheet(params1,params2,params3,params4,params5,params6, params7) {
+    var modal = document.getElementById('exampleModal7');
+var modalTitle = modal.querySelector('.modal-title');
+var modalBody = modal.querySelector('.modal-body');
+  // Set the modal title and body content
+  modalTitle.textContent = `Edit Timesheet ?`; // Replace with your desired title
+  modalBody.innerHTML = `
+<div class="container">
+              <form action="/edit-timesheet?id=${params7}" method="POST">
+                <div class="mb-3">
+                  <label for="taskName" class="form-label">Task Name</label>
+                  <input type="text" class="form-control" id="taskName" name="taskName" value="${params1}" required>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-md-6">
+                    <label for="fromDateTime" class="form-label">From</label>
+                    <input type="datetime-local" class="form-control" id="fromDateTime" name="fromDateTime" value="${params2}" required>
+                  </div>
+                  <div class="col-md-6">
+                    <label for="toDateTime" class="form-label">To</label>
+                    <input type="datetime-local" class="form-control" id="toDateTime" name="toDateTime" value="${params3}" required>
+                  </div>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-md-6">
+                    <label for="case" class="form-label">Case</label>
+                    <select class="form-select" id="case" name="case_name" >
+                        <option value="${params4}" selected>${params4}</option>
+                      <% for (let dat of cases) { %>
+                      <option value="<%= dat.case_name %>"><%= dat.case_name %></option>
+                      <% } %>
+                    </select>
+                  </div>
+                  <div class="col-md-6">
+                    <label for="contract" class="form-label">Contract</label>
+                    <select class="form-select" id="contract" name="contract_name" >
+                        <option value="${params5}" selected>${params5}</option>
+                      <% for (let dat of contracts) { %>
+                        <option value="<%= dat.name %>"><%= dat.name %></option>
+                        <% } %>
+                      
+                    </select>
+                  </div>
+                </div>
+                <div class="mb-3">
+                  <label for="taskDescription" class="form-label">Task Description</label>
+                  <input type="text" class="form-control" id="taskDescription" name="taskDescription" value="${params6}" >
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+              </form>
+            </div>`};
+            function deleteTimesheet(params1,params2) {
+    var modal = document.getElementById('exampleModal8');
+var modalTitle = modal.querySelector('.modal-title');
+var modalBody = modal.querySelector('.modal-body');
+  // Set the modal title and body content
+  modalTitle.textContent = `Are you sure you want to Delete this ${params1} Timesheet ?`; // Replace with your desired title
+  modalBody.innerHTML = `
+  <form  action="/delete-timesheet?id=${params2}" method="POST">
+
+                         
+                    <div class="mb-3">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Delete Timesheet</button>
                     </div>
                 </form>  
                  

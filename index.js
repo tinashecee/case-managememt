@@ -82,6 +82,102 @@ const job = new CronJob('0 8 * * *', function()  {
                 }
             )
         });
+        pool.query(
+            `SELECT *
+            FROM contracts
+            WHERE end_date = CURRENT_DATE + INTERVAL '2 month'`,
+            [],
+            (err, results1) => {
+                if(err){
+                    console.log(err)
+                    errors.push({message: err});
+                    
+                }
+                pool.query(
+                    `SELECT *
+                    FROM users`,
+                    [],
+                    (err, results2) => {
+                        if(err){
+                            console.log(err)
+                            errors.push({message: err});
+                        }
+                        results2.rows.forEach(e=>{
+                        const message = "Expiring Contract Alert"
+                        const options = {
+                            from: "CASE MANAGEMENT SYSTEM <mochonam19@gmail.com>", // sender address
+                            to: e.email, // receiver email
+                            subject: "A contract is about to expire in a 2 month!", // Subject line
+                            text: message,
+                            html: `<p>Hi ${e.name},</p>
+                            <p>This is a reminder that the contract for ${results1.rows[0].vendor} is about to expire on ${results1.rows[0].end_date}.</p>
+                            <p>Please review the contract details below:</p>
+                            <ul>
+                            <li>Contract Name: ${results1.rows[0].name}</li>
+                            <li>Contract Description: ${results1.rows[0].notes}</li>
+                            <li>Contract Value: $ ${results1.rows[0].contract_value}</li>
+                            <li>Expiry Date: ${results1.rows[0].end_date}</li>
+                            </ul>
+                            <p>Please contact us if you have any questions or need to renew the contract.</p>
+                            <p>Thank you,</p>
+                            <p>Prolegal Team</p>`
+                        }        
+                        // send mail with defined transport object and mail options
+                    SENDMAIL(options, (info) => {
+                    });
+                })
+    
+                    }
+                )
+            });
+            pool.query(
+                `SELECT *
+                FROM contracts
+                WHERE end_date = CURRENT_DATE + INTERVAL '1 month'`,
+                [],
+                (err, results1) => {
+                    if(err){
+                        console.log(err)
+                        errors.push({message: err});
+                        
+                    }
+                    pool.query(
+                        `SELECT *
+                        FROM users`,
+                        [],
+                        (err, results2) => {
+                            if(err){
+                                console.log(err)
+                                errors.push({message: err});
+                            }
+                            results2.rows.forEach(e=>{
+                            const message = "Expiring Contract Alert"
+                            const options = {
+                                from: "CASE MANAGEMENT SYSTEM <mochonam19@gmail.com>", // sender address
+                                to: e.email, // receiver email
+                                subject: "A contract is about to expire in a 1 month!", // Subject line
+                                text: message,
+                                html: `<p>Hi ${e.name},</p>
+                                <p>This is a reminder that the contract for ${results1.rows[0].vendor} is about to expire on ${results1.rows[0].end_date}.</p>
+                                <p>Please review the contract details below:</p>
+                                <ul>
+                                <li>Contract Name: ${results1.rows[0].name}</li>
+                                <li>Contract Description: ${results1.rows[0].notes}</li>
+                                <li>Contract Value: $ ${results1.rows[0].contract_value}</li>
+                                <li>Expiry Date: ${results1.rows[0].end_date}</li>
+                                </ul>
+                                <p>Please contact us if you have any questions or need to renew the contract.</p>
+                                <p>Thank you,</p>
+                                <p>Prolegal Team</p>`
+                            }        
+                            // send mail with defined transport object and mail options
+                        SENDMAIL(options, (info) => {
+                        });
+                    })
+        
+                        }
+                    )
+                });
 }, null, true, 'Etc/UTC');
 job.start();
 }
@@ -439,9 +535,10 @@ app.post('/contract-renewal-email', async (req, res) => {
     }        
     // send mail with defined transport object and mail options
 SENDMAIL(options, (info) => {
+    req.flash('success','You have successfully sent a renewal email'); 
+    res.redirect('/');
 });
-req.flash('success','You have successfully sent a renewal email');
-                            res.redirect('')
+    
 })
 })
 app.post('/delete-contract-file', async (req, res) => {
@@ -848,9 +945,39 @@ app.get('',checkNotAuthenticated,  async (req,res) => {
                                                 }
                                             })
              array1 = results.rows
-           
-             res.render('index',{layout:'./layouts/index-layout', user_role, dollarUS:dollarUS, expiring_contracts:result3.rows, contracts_length:result2.rows.length ,contract_expiring_length:result3.rows.length ,cases_length:results1.rows.length, tasks,authed:authed,user:nam,users:results4.rows})
+             pool.query(
+                `SELECT * FROM timesheets`,
+                [],
+                (err, results5) => {
+                    if(err){
+                        console.log(err)
+                        errors.push({message: err});
+                        
+                    }
+                    let _all_timesheets = results5.rows
+                    pool.query(
+                        `SELECT * FROM timesheets WHERE timesheet_owner = $1`,
+                        [nam],
+                        (err, results6) => {
+                            if(err){
+                                console.log(err)
+                                errors.push({message: err});
+                                
+                            }
+                            let _my_timesheets = results6.rows
+                            const page = parseInt(req.query.page) || 1; // Current page number
+                    const limit = 10; // Number of items per page
+                    const startIndex = (page - 1) * limit;
+                    const endIndex = page * limit;
+                    const all_timesheets = _all_timesheets.slice(startIndex, endIndex);
+                    const page1 = parseInt(req.query.page1) || 1; // Current page number
+                    const startIndex1 = (page1 - 1) * limit;
+                    const endIndex1 = page1 * limit;
+                    const my_timesheets = _my_timesheets.slice(startIndex1, endIndex1);
+             res.render('index',{layout:'./layouts/index-layout',all_timesheets, my_timesheets,page,page1,errors, user_role, dollarUS:dollarUS, expiring_contracts:result3.rows, contracts_length:result2.rows.length , contracts:result2.rows, contract_expiring_length:result3.rows.length ,cases_length:results1.rows.length, cases:results1.rows, tasks,authed:authed,user:nam,users:results4.rows})
                 })
+            })
+            })
             })
             })
             })
@@ -1627,6 +1754,65 @@ app.get('/learn',checkNotAuthenticated,  async (req,res) => {
 app.get('/resources',checkNotAuthenticated,  async (req,res) => {
     let errors =[]
     res.render('resources',{layout:'./layouts/resources-layout', user_role, user:nam,errors:errors})
+});
+app.post('/add-timesheet' , async(req, res)=>{
+    let task_name = req.body.taskName
+    let start_date = req.body.fromDateTime
+    let end_date = req.body.toDateTime
+    let contract_name = req.body.contract_name
+    let case_name = req.body.case_name
+    let timesheet_owner = nam
+    let task_description = req.body.taskDescription
+    console.log(start_date)
+    console.log(end_date)
+    pool.query(
+        `INSERT INTO timesheets (task_name, timesheet_owner, start_date, end_date, contract_name, case_name , task_description)
+        VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+        [task_name, timesheet_owner, start_date, end_date, contract_name, case_name , task_description], 
+        (err, results) => {
+            if(err){
+                errors.push({message: err});
+            }
+            req.flash('success','You have successfully added a timesheet');
+            res.redirect('/');
+        }
+    ) 
+
+})
+app.post('/edit-timesheet' , async(req, res)=>{
+    let task_name = req.body.taskName
+    let start_date = req.body.fromDateTime
+    let end_date = req.body.toDateTime
+    let contract_name = req.body.contract_name
+    let case_name = req.body.case_name
+    let task_description = req.body.taskDescription
+    let id = req.query.id
+    pool.query(
+        'UPDATE timesheets SET task_name = $1,  start_date = $2, end_date = $3, contract_name = $4, case_name = $5 , task_description = $6  WHERE timesheet_id = $7',
+        [task_name,  start_date, end_date, contract_name, case_name , task_description, id ], 
+        (err, results) => {
+            if(err){
+                errors.push({message: err});
+                console.log(err)
+            }
+            req.flash('success','You have successfully added a timesheet');
+            res.redirect('/');
+        }
+    ) 
+
+})
+app.post('/delete-timesheet', (req, res)=>{
+    pool.query(
+        `DELETE from timesheets WHERE timesheet_id = $1`,
+        [req.query.id], 
+        (err, results) => {
+            if(err){
+                errors.push({message: err});;
+            }
+            req.flash('success','You have successfully deleted a timesheet');
+            res.redirect('/');
+        }
+    )
 });
 app.post('/add-fee-note' , async(req, res)=>{
       //Use the name of the input field (i.e. "avatar") to retrieve the uploaded file
