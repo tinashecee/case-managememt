@@ -8240,7 +8240,7 @@ hj1, hj2, hj3, hj4, hj5,
   transition: .2s ease all;
   color: white;
   border: none;
-  background: #7e0cf5; }
+  background: #3B7197; }
   .button.button-white {
     background: #fff;
     color: #000; }
@@ -8331,8 +8331,8 @@ hj1, hj2, hj3, hj4, hj5,
   border-color: #cd4dcc; }
 
 .event-date {
-  border-color: #7e0cf5;
-  background: #7e0cf5;
+  border-color: #3B7197;
+  background: #3B7197;
   color: #fff; }
   .event-date:after {
     position: absolute;
@@ -8342,14 +8342,15 @@ hj1, hj2, hj3, hj4, hj5,
     height: 10px;
     border-radius: 50%;
     content: '';
-    background: #28a745; }
+    background: #3B7197; }
 
 .active-date {
-  background: #cd4dcc;
+  background: #3B7197;
+  border-radius: 25px;
   color: #fff; }
 
 .event-date.active-date {
-  background: #7e0cf5; }
+  background: #3B7197; }
 
 /* input dialog */
 .dialog {

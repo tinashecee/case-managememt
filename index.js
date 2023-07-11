@@ -10,186 +10,16 @@ const flash = require('connect-flash');
 const passport = require('passport');
 const cookieParser = require('cookie-parser');
 const initializePassport = require('./passportConfig');
-const csvwriter = require('csv-writer');
 const fs = require("fs");
 const puppeteer = require('puppeteer');
 const fileUpload = require('express-fileupload');
 const cors = require('cors');
 const Excel = require('exceljs');
-const PDFGenerator = require('pdfkit')
 const morgan = require('morgan');
 const CronJob = require('cron').CronJob
-const _ = require('lodash');
 'use strict'
-const InvoiceGenerator = require('./pdf-generator')
-const InvoiceGenerator1 = require('./pdf-generator1')
-const InvoiceGenerator2 = require('./pdf-generator2')
-const InvoiceGenerator3 = require('./pdf-generator3')
-const InvoiceGenerator4 = require('./pdf-generator4')
-const InvoiceGenerator5 = require('./pdf-generator5')
-const InvoiceGenerator6 = require('./pdf-generator6')
-const InvoiceGenerator7 = require('./pdf-generator7')
-// enable files upload
-
-//cron job
-if(process.env.NODE_APP_INSTANCE === '0') {
-const job = new CronJob('0 8 * * *', function()  {
-    pool.query(
-        `SELECT *
-        FROM contracts
-        WHERE end_date = CURRENT_DATE + INTERVAL '3 month'`,
-        [],
-        (err, results1) => {
-            if(err){
-                console.log(err)
-                errors.push({message: err});
-                
-            }
-            pool.query(
-                `SELECT *
-                FROM users`,
-                [],
-                (err, results2) => {
-                    if(err){
-                        console.log(err)
-                        errors.push({message: err});
-                    }
-                    results2.rows.forEach(e=>{
-                    const message = "Expiring Contract Alert"
-                    const options = {
-                        from: "CASE MANAGEMENT SYSTEM <mochonam19@gmail.com>", // sender address
-                        to: e.email, // receiver email
-                        subject: "A contract is about to expire in a 3 month!", // Subject line
-                        text: message,
-                        html: `<p>Hi ${e.name},</p>
-                        <p>This is a reminder that the contract for ${results1.rows[0].vendor} is about to expire on ${results1.rows[0].end_date}.</p>
-                        <p>Please review the contract details below:</p>
-                        <ul>
-                        <li>Contract Name: ${results1.rows[0].name}</li>
-                        <li>Contract Description: ${results1.rows[0].notes}</li>
-                        <li>Contract Value: $ ${results1.rows[0].contract_value}</li>
-                        <li>Expiry Date: ${results1.rows[0].end_date}</li>
-                        </ul>
-                        <p>Please contact us if you have any questions or need to renew the contract.</p>
-                        <p>Thank you,</p>
-                        <p>Prolegal Team</p>`
-                    }        
-                    // send mail with defined transport object and mail options
-                SENDMAIL(options, (info) => {
-                });
-            })
-
-                }
-            )
-        });
-        pool.query(
-            `SELECT *
-            FROM contracts
-            WHERE end_date = CURRENT_DATE + INTERVAL '2 month'`,
-            [],
-            (err, results1) => {
-                if(err){
-                    console.log(err)
-                    errors.push({message: err});
-                    
-                }
-                pool.query(
-                    `SELECT *
-                    FROM users`,
-                    [],
-                    (err, results2) => {
-                        if(err){
-                            console.log(err)
-                            errors.push({message: err});
-                        }
-                        results2.rows.forEach(e=>{
-                        const message = "Expiring Contract Alert"
-                        const options = {
-                            from: "CASE MANAGEMENT SYSTEM <mochonam19@gmail.com>", // sender address
-                            to: e.email, // receiver email
-                            subject: "A contract is about to expire in a 2 month!", // Subject line
-                            text: message,
-                            html: `<p>Hi ${e.name},</p>
-                            <p>This is a reminder that the contract for ${results1.rows[0].vendor} is about to expire on ${results1.rows[0].end_date}.</p>
-                            <p>Please review the contract details below:</p>
-                            <ul>
-                            <li>Contract Name: ${results1.rows[0].name}</li>
-                            <li>Contract Description: ${results1.rows[0].notes}</li>
-                            <li>Contract Value: $ ${results1.rows[0].contract_value}</li>
-                            <li>Expiry Date: ${results1.rows[0].end_date}</li>
-                            </ul>
-                            <p>Please contact us if you have any questions or need to renew the contract.</p>
-                            <p>Thank you,</p>
-                            <p>Prolegal Team</p>`
-                        }        
-                        // send mail with defined transport object and mail options
-                    SENDMAIL(options, (info) => {
-                    });
-                })
-    
-                    }
-                )
-            });
-            pool.query(
-                `SELECT *
-                FROM contracts
-                WHERE end_date = CURRENT_DATE + INTERVAL '1 month'`,
-                [],
-                (err, results1) => {
-                    if(err){
-                        console.log(err)
-                        errors.push({message: err});
-                        
-                    }
-                    pool.query(
-                        `SELECT *
-                        FROM users`,
-                        [],
-                        (err, results2) => {
-                            if(err){
-                                console.log(err)
-                                errors.push({message: err});
-                            }
-                            results2.rows.forEach(e=>{
-                            const message = "Expiring Contract Alert"
-                            const options = {
-                                from: "CASE MANAGEMENT SYSTEM <mochonam19@gmail.com>", // sender address
-                                to: e.email, // receiver email
-                                subject: "A contract is about to expire in a 1 month!", // Subject line
-                                text: message,
-                                html: `<p>Hi ${e.name},</p>
-                                <p>This is a reminder that the contract for ${results1.rows[0].vendor} is about to expire on ${results1.rows[0].end_date}.</p>
-                                <p>Please review the contract details below:</p>
-                                <ul>
-                                <li>Contract Name: ${results1.rows[0].name}</li>
-                                <li>Contract Description: ${results1.rows[0].notes}</li>
-                                <li>Contract Value: $ ${results1.rows[0].contract_value}</li>
-                                <li>Expiry Date: ${results1.rows[0].end_date}</li>
-                                </ul>
-                                <p>Please contact us if you have any questions or need to renew the contract.</p>
-                                <p>Thank you,</p>
-                                <p>Prolegal Team</p>`
-                            }        
-                            // send mail with defined transport object and mail options
-                        SENDMAIL(options, (info) => {
-                        });
-                    })
-        
-                        }
-                    )
-                });
-}, null, true, 'Etc/UTC');
-job.start();
-}
-
-const HTML_TEMPLATE = require("./mail-template.js");
 const SENDMAIL = require("./mailer.js") 
-
-
-
 const moment = require("moment");
-const { count } = require('console');
-const { name } = require('ejs');
 const app = express();
 initializePassport(passport);
 const PORT = process.env.PORT || 8080
@@ -201,12 +31,23 @@ app.use(express.static('./public'));
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json())
 app.use(cookieParser('NotSoSecret'));
+
+//Configure redis client
 app.use(
     session({
-        secret:'secret',
-        cookie: {secure: false },
+        secret: 'secret$%^134',
         resave:true,
-        saveUninitialized:true,
+        saveUninitialized:false,
+        cookie:{
+            // Only set to true if you are using HTTPS.
+            // Secure Set-Cookie attribute.
+            secure:false, 
+            // Only set to true if you are using HTTPS.
+            httpOnly:false,
+            // Session max age in milliseconds. (1 min)
+            // Calculates the Expires Set-Cookie attribute
+            maxAge:600000
+        }
     })
 );
 app.use(fileUpload({
@@ -228,7 +69,7 @@ app.use(function(req, res, next){
     next();
 });
 let authed = false;
-let nam = '';
+
 let array = []
 let array1 = []
 let array2 = []
@@ -257,7 +98,164 @@ let compliance_array = []
 let scrapping_results = []
 let budgetLineItems
 let user_role = ''
-
+const InvoiceGenerator = require('./pdf-generator')
+const InvoiceGenerator1 = require('./pdf-generator1')
+const InvoiceGenerator2 = require('./pdf-generator2')
+const InvoiceGenerator3 = require('./pdf-generator3')
+const InvoiceGenerator4 = require('./pdf-generator4')
+const InvoiceGenerator5 = require('./pdf-generator5')
+const InvoiceGenerator6 = require('./pdf-generator6')
+const InvoiceGenerator7 = require('./pdf-generator7')
+//cron job
+if(process.env.NODE_APP_INSTANCE === '0') {
+    const job = new CronJob('0 8 * * *', function()  {
+        pool.query(
+            `SELECT *
+            FROM contracts
+            WHERE end_date = CURRENT_DATE + INTERVAL '3 month'`,
+            [],
+            (err, results1) => {
+                if(err){
+                    console.log(err)
+                    errors.push({message: err});
+                    
+                }
+                pool.query(
+                    `SELECT *
+                    FROM users`,
+                    [],
+                    (err, results2) => {
+                        if(err){
+                            console.log(err)
+                            errors.push({message: err});
+                        }
+                        results2.rows.forEach(e=>{
+                        const message = "Expiring Contract Alert"
+                        const options = {
+                            from: "CASE MANAGEMENT SYSTEM <mochonam19@gmail.com>", // sender address
+                            to: e.email, // receiver email
+                            subject: "A contract is about to expire in a 3 month!", // Subject line
+                            text: message,
+                            html: `<p>Hi ${e.name},</p>
+                            <p>This is a reminder that the contract for ${results1.rows[0].vendor} is about to expire on ${results1.rows[0].end_date}.</p>
+                            <p>Please review the contract details below:</p>
+                            <ul>
+                            <li>Contract Name: ${results1.rows[0].name}</li>
+                            <li>Contract Description: ${results1.rows[0].notes}</li>
+                            <li>Contract Value: $ ${results1.rows[0].contract_value}</li>
+                            <li>Expiry Date: ${results1.rows[0].end_date}</li>
+                            </ul>
+                            <p>Please contact us if you have any questions or need to renew the contract.</p>
+                            <p>Thank you,</p>
+                            <p>Prolegal Team</p>`
+                        }        
+                        // send mail with defined transport object and mail options
+                    SENDMAIL(options, (info) => {
+                    });
+                })
+    
+                    }
+                )
+            });
+            pool.query(
+                `SELECT *
+                FROM contracts
+                WHERE end_date = CURRENT_DATE + INTERVAL '2 month'`,
+                [],
+                (err, results1) => {
+                    if(err){
+                        console.log(err)
+                        errors.push({message: err});
+                        
+                    }
+                    pool.query(
+                        `SELECT *
+                        FROM users`,
+                        [],
+                        (err, results2) => {
+                            if(err){
+                                console.log(err)
+                                errors.push({message: err});
+                            }
+                            results2.rows.forEach(e=>{
+                            const message = "Expiring Contract Alert"
+                            const options = {
+                                from: "CASE MANAGEMENT SYSTEM <mochonam19@gmail.com>", // sender address
+                                to: e.email, // receiver email
+                                subject: "A contract is about to expire in a 2 month!", // Subject line
+                                text: message,
+                                html: `<p>Hi ${e.name},</p>
+                                <p>This is a reminder that the contract for ${results1.rows[0].vendor} is about to expire on ${results1.rows[0].end_date}.</p>
+                                <p>Please review the contract details below:</p>
+                                <ul>
+                                <li>Contract Name: ${results1.rows[0].name}</li>
+                                <li>Contract Description: ${results1.rows[0].notes}</li>
+                                <li>Contract Value: $ ${results1.rows[0].contract_value}</li>
+                                <li>Expiry Date: ${results1.rows[0].end_date}</li>
+                                </ul>
+                                <p>Please contact us if you have any questions or need to renew the contract.</p>
+                                <p>Thank you,</p>
+                                <p>Prolegal Team</p>`
+                            }        
+                            // send mail with defined transport object and mail options
+                        SENDMAIL(options, (info) => {
+                        });
+                    })
+        
+                        }
+                    )
+                });
+                pool.query(
+                    `SELECT *
+                    FROM contracts
+                    WHERE end_date = CURRENT_DATE + INTERVAL '1 month'`,
+                    [],
+                    (err, results1) => {
+                        if(err){
+                            console.log(err)
+                            errors.push({message: err});
+                            
+                        }
+                        pool.query(
+                            `SELECT *
+                            FROM users`,
+                            [],
+                            (err, results2) => {
+                                if(err){
+                                    console.log(err)
+                                    errors.push({message: err});
+                                }
+                                results2.rows.forEach(e=>{
+                                const message = "Expiring Contract Alert"
+                                const options = {
+                                    from: "CASE MANAGEMENT SYSTEM <mochonam19@gmail.com>", // sender address
+                                    to: e.email, // receiver email
+                                    subject: "A contract is about to expire in a 1 month!", // Subject line
+                                    text: message,
+                                    html: `<p>Hi ${e.name},</p>
+                                    <p>This is a reminder that the contract for ${results1.rows[0].vendor} is about to expire on ${results1.rows[0].end_date}.</p>
+                                    <p>Please review the contract details below:</p>
+                                    <ul>
+                                    <li>Contract Name: ${results1.rows[0].name}</li>
+                                    <li>Contract Description: ${results1.rows[0].notes}</li>
+                                    <li>Contract Value: $ ${results1.rows[0].contract_value}</li>
+                                    <li>Expiry Date: ${results1.rows[0].end_date}</li>
+                                    </ul>
+                                    <p>Please contact us if you have any questions or need to renew the contract.</p>
+                                    <p>Thank you,</p>
+                                    <p>Prolegal Team</p>`
+                                }        
+                                // send mail with defined transport object and mail options
+                            SENDMAIL(options, (info) => {
+                            });
+                        })
+            
+                            }
+                        )
+                    });
+    }, null, true, 'Etc/UTC');
+    job.start();
+    }
 function sendEmail(a,b,c,d){
     pool.query(
         `SELECT * FROM users WHERE name = $1`,
@@ -317,7 +315,7 @@ function sendEmail1(a,b,c,d,e){
             <li><strong>Description:</strong> ${c}</li>
             <li><strong>Start Date:</strong> ${d}</li>
             <li><strong>End Date:</strong> ${e}</li>
-            <li><strong>Assigned By:</strong> ${nam}</li>
+            <li><strong>Assigned By:</strong> ${req.session.user}</li>
         </ul>
         <p>Please log in to the system to access the task and view any associated files or instructions. Promptly complete the task within the specified deadline to ensure smooth case progress and effective collaboration.</p>
         <p>If you have any questions, feel free to reach out to the assigner or our support team.</p>
@@ -939,7 +937,7 @@ app.get('',checkNotAuthenticated,  async (req,res) => {
                                             }
                                             results4.rows.forEach(e=>{
                                                
-                                                if(e.name.toLowerCase() == nam.toLowerCase()){
+                                                if(e.name.toLowerCase() == req.session.user.toLowerCase()){
                                                     
                                                  user_role = e.role
                                                 }
@@ -957,24 +955,33 @@ app.get('',checkNotAuthenticated,  async (req,res) => {
                     let _all_timesheets = results5.rows
                     pool.query(
                         `SELECT * FROM timesheets WHERE timesheet_owner = $1`,
-                        [nam],
+                        [req.session.user],
                         (err, results6) => {
                             if(err){
                                 console.log(err)
                                 errors.push({message: err});
                                 
                             }
+                            function compare( a, b ) {
+                                if ( a.start_date > b.start_date){
+                                  return -1;
+                                }
+                                if ( a.start_date < b.start_date ){
+                                  return 1;
+                                }
+                                return 0;
+                              }
                             let _my_timesheets = results6.rows
                             const page = parseInt(req.query.page) || 1; // Current page number
                     const limit = 10; // Number of items per page
                     const startIndex = (page - 1) * limit;
                     const endIndex = page * limit;
-                    const all_timesheets = _all_timesheets.slice(startIndex, endIndex);
+                    const all_timesheets = _all_timesheets.sort(compare).slice(startIndex, endIndex);
                     const page1 = parseInt(req.query.page1) || 1; // Current page number
                     const startIndex1 = (page1 - 1) * limit;
                     const endIndex1 = page1 * limit;
-                    const my_timesheets = _my_timesheets.slice(startIndex1, endIndex1);
-             res.render('index',{layout:'./layouts/index-layout',all_timesheets, my_timesheets,page,page1,errors, user_role, dollarUS:dollarUS, expiring_contracts:result3.rows, contracts_length:result2.rows.length , contracts:result2.rows, contract_expiring_length:result3.rows.length ,cases_length:results1.rows.length, cases:results1.rows, tasks,authed:authed,user:nam,users:results4.rows})
+                    const my_timesheets = _my_timesheets.sort(compare).slice(startIndex1, endIndex1);
+             res.render('index',{layout:'./layouts/index-layout',all_timesheets, my_timesheets,page,page1,errors, user_role, dollarUS:dollarUS, expiring_contracts:result3.rows, contracts_length:result2.rows.length , contracts:result2.rows, contract_expiring_length:result3.rows.length ,cases_length:results1.rows.length, cases:results1.rows, tasks,authed:authed,user:req.session.user,users:results4.rows})
                 })
             })
             })
@@ -1051,7 +1058,7 @@ app.get('/budget',checkNotAuthenticated,  async (req,res) => {
                     const endIndex = page * limit;
                     const reso = results1.rows.sort(compare).slice(startIndex, endIndex);
                    
-                     res.render('budget',{layout:'./layouts/budget-layout', user_role, user:nam,errors:errors,budget_statement:budget_statement,data:results.rows, data1:reso,page, dollarUS:dollarUS,total_expenditure:total_expenditure,expenditure_left:expenditure_left, current_balance:current_balance})
+                     res.render('budget',{layout:'./layouts/budget-layout', user_role, user:req.session.user,errors:errors,budget_statement:budget_statement,data:results.rows, data1:reso,page, dollarUS:dollarUS,total_expenditure:total_expenditure,expenditure_left:expenditure_left, current_balance:current_balance})
                 }
             )
         }
@@ -1128,7 +1135,7 @@ app.get('/cases',checkNotAuthenticated,  async (req,res) => {
                                     const endIndex = page * limit;
                                     const reso = results.rows.sort(compare).slice(startIndex, endIndex);
                    
-                     res.render('cases',{layout:'./layouts/cases-layout', user_role, unfilteredRows:results.rows, user:nam,errors:errors,cases:results.rows, data: reso,
+                     res.render('cases',{layout:'./layouts/cases-layout', user_role, unfilteredRows:results.rows, user:req.session.user,errors:errors,cases:results.rows, data: reso,
                      page,
                      totalItems: results.rows.length,
                      totalPages: Math.ceil(results.rows.length / limit), dataA:results1.rows,dataB:results2.rows,users:results3.rows,case_status:results4.rows,total_cases:results.rows})
@@ -1172,7 +1179,7 @@ app.get('/compliance',checkNotAuthenticated,  async (req,res) => {
                     
                 }
                
-            res.render('compliance',{layout:'./layouts/compliance-layout', user_role, user:nam,errors:errors,compliance_results:compliance_results,dataB:results3.rows,compliance_array})
+            res.render('compliance',{layout:'./layouts/compliance-layout', user_role, user:req.session.user,errors:errors,compliance_results:compliance_results,dataB:results3.rows,compliance_array})
             })
         }
     )
@@ -1226,7 +1233,7 @@ app.post('/filter-compliance',(req,res) => {
                     
                     
                 }  
-            res.render('compliance',{layout:'./layouts/compliance-layout', user_role, user:nam,errors:errors,compliance_results:compliance_results,dataB:results3.rows})
+            res.render('compliance',{layout:'./layouts/compliance-layout', user_role, user:req.session.user,errors:errors,compliance_results:compliance_results,dataB:results3.rows})
             })
         }
     )
@@ -1261,7 +1268,7 @@ app.get('/contract_view',checkNotAuthenticated,  async (req,res) => {
                         
                     }
            
-             res.render('contract_view',{layout:'./layouts/contract_view_layout', user_role, user:nam,errors:errors,data:results.rows,dollarUS:dollarUS,id:query,contract_status:results2.rows,id:query})
+             res.render('contract_view',{layout:'./layouts/contract_view_layout', user_role, user:req.session.user,errors:errors,data:results.rows,dollarUS:dollarUS,id:query,contract_status:results2.rows,id:query})
                 })
         }
     )
@@ -1313,7 +1320,7 @@ app.get('/case_view',checkNotAuthenticated,  async (req,res) => {
 
                                 }
                   
-                    res.render('case_view',{layout:'./layouts/case_view_layout', user_role, user:nam,errors:errors,data:results.rows, dataA:results1.rows,id:query, case_status:results2.rows,id:query,users:results3.rows})
+                    res.render('case_view',{layout:'./layouts/case_view_layout', user_role, user:req.session.user,errors:errors,data:results.rows, dataA:results1.rows,id:query, case_status:results2.rows,id:query,users:results3.rows})
                 })
                 })
                 }
@@ -1385,7 +1392,7 @@ app.get('/contracts',checkNotAuthenticated,  async (req,res) => {
                  const reso = results.rows.sort(compare).slice(startIndex, endIndex);
              
                 
-                 res.render('contracts',{layout:'./layouts/contracts-layout', user_role, user:nam,errors:errors,contracts:results.rows,data:reso,page,dollarUS:dollarUS,vendors:results1.rows,contract_status:results2.rows,dataB:results3.rows,total_contracts:results.rows})
+                 res.render('contracts',{layout:'./layouts/contracts-layout', user_role, user:req.session.user,errors:errors,contracts:results.rows,data:reso,page,dollarUS:dollarUS,vendors:results1.rows,contract_status:results2.rows,dataB:results3.rows,total_contracts:results.rows})
                     })
                 })
             }
@@ -1424,7 +1431,7 @@ app.get('/lawfirm_cases',checkNotAuthenticated,  async (req,res) => {
                         
                     }
                    
-                    res.render('lawfir_cases',{layout:'./layouts/lawfir-cases-layout', user_role, user:nam,errors:errors,data:results.rows,dollarUS:dollarUS,cases:results1.rows,law_firm_id:query})
+                    res.render('lawfir_cases',{layout:'./layouts/lawfir-cases-layout', user_role, user:req.session.user,errors:errors,data:results.rows,dollarUS:dollarUS,cases:results1.rows,law_firm_id:query})
 
                     
                 }
@@ -1451,7 +1458,7 @@ app.get('/lawfirm_contracts',checkNotAuthenticated,  async (req,res) => {
                 currency: "USD", 
             });
            
-            res.render('lawfirm_contracts',{layout:'./layouts/lawfirm-contracts-layout', user_role, user:nam,errors:errors,data:results.rows,dollarUS:dollarUS,law_firm_id:query})
+            res.render('lawfirm_contracts',{layout:'./layouts/lawfirm-contracts-layout', user_role, user:req.session.user,errors:errors,data:results.rows,dollarUS:dollarUS,law_firm_id:query})
         }
     )
 });
@@ -1473,7 +1480,7 @@ app.get('/lawfirm_tasks',checkNotAuthenticated, async (req,res) => {
                 currency: "USD", 
             });
           
-            res.render('lawfirm_contracts',{layout:'./layouts/lawfirm-contracts-layout', user_role, user:nam,errors:errors,data:results.rows,dollarUS:dollarUS,law_firm_id:query})
+            res.render('lawfirm_contracts',{layout:'./layouts/lawfirm-contracts-layout', user_role, user:req.session.user,errors:errors,data:results.rows,dollarUS:dollarUS,law_firm_id:query})
         }
     )
 });
@@ -1495,7 +1502,7 @@ app.get('/lawfirm_contacts',checkNotAuthenticated,  async (req,res) => {
                 currency: "USD", 
             });
           
-            res.render('lawfirmcontacts',{layout:'./layouts/lawfirm-contacts-layout', user_role, user:nam,errors:errors,data:results.rows,dollarUS:dollarUS,law_firm_id:query})
+            res.render('lawfirmcontacts',{layout:'./layouts/lawfirm-contacts-layout', user_role, user:req.session.user,errors:errors,data:results.rows,dollarUS:dollarUS,law_firm_id:query})
         }
     )
 });
@@ -1517,7 +1524,7 @@ app.get('/lawfirm_notes',checkNotAuthenticated,  async (req,res) => {
                 currency: "USD", 
             });
            
-            res.render('lawfirmnotes',{layout:'./layouts/lawfirm-notes-layout', user_role, user:nam,errors:errors,data:results.rows,dollarUS:dollarUS,law_firm_id:query})
+            res.render('lawfirmnotes',{layout:'./layouts/lawfirm-notes-layout', user_role, user:req.session.user,errors:errors,data:results.rows,dollarUS:dollarUS,law_firm_id:query})
         }
     )
 });
@@ -1560,7 +1567,7 @@ app.get('/lawfirms',checkNotAuthenticated, async (req,res) => {
                     const endIndex = page * limit;
                     const reso = results.rows.sort( compare ).slice(startIndex, endIndex);
              
-             res.render('lawfirms',{layout:'./layouts/lawfirms-layout', user_role, user:nam,errors:errors,lawfirms:results.rows,data:reso,page, active:active, not_active:not_active,total_lawfirms:results.rows})
+             res.render('lawfirms',{layout:'./layouts/lawfirms-layout', user_role, user:req.session.user,errors:errors,lawfirms:results.rows,data:reso,page, active:active, not_active:not_active,total_lawfirms:results.rows})
             }
         }
     )
@@ -1585,7 +1592,7 @@ app.get('/lawfirm_statement',checkNotAuthenticated,  async (req,res) => {
                 currency: "USD", 
             });
            
-            res.render('lawfirmstatement',{layout:'./layouts/lawfirm-statement-layout', user_role, user:nam,errors:errors,data:results.rows,dollarUS:dollarUS,law_firm_id:query})
+            res.render('lawfirmstatement',{layout:'./layouts/lawfirm-statement-layout', user_role, user:req.session.user,errors:errors,data:results.rows,dollarUS:dollarUS,law_firm_id:query})
         }
     )
 });
@@ -1608,7 +1615,7 @@ app.get('/lawfirm_view',checkNotAuthenticated, async (req,res) => {
                 currency: "USD", 
             });
         
-            res.render('lawfirmview',{layout:'./layouts/lawfirm-view-layout', user_role, user:nam,errors:errors,data:results.rows,dollarUS:dollarUS,law_firm_id:query})
+            res.render('lawfirmview',{layout:'./layouts/lawfirm-view-layout', user_role, user:req.session.user,errors:errors,data:results.rows,dollarUS:dollarUS,law_firm_id:query})
         }
     )
 });
@@ -1670,7 +1677,7 @@ app.get('/documents',checkNotAuthenticated,  async (req,res) => {
              const reso = results.rows.sort(compare).slice(startIndex, endIndex);
          
             
-             res.render('documents',{layout:'./layouts/document-layout',user_role, user:nam,errors:errors,documents:results.rows,data:reso,page,dataB:results3.rows,users:results2.rows,total_documents:results.rows,cases:results4.rows})
+             res.render('documents',{layout:'./layouts/document-layout',user_role, user:req.session.user,errors:errors,documents:results.rows,data:reso,page,dataB:results3.rows,users:results2.rows,total_documents:results.rows,cases:results4.rows})
                 })
             })
             })
@@ -1717,7 +1724,7 @@ app.get('/documents-view',checkNotAuthenticated,  async (req,res) => {
                                     errors.push({message: err});
                     
                                 }
-                    res.render('document_viewer',{layout:'./layouts/document-viewer-layout', user_role, user:nam,errors:errors,data:results.rows, dataB:results2.rows,id:query,id:query,users:results1.rows,cases:results4.rows})
+                    res.render('document_viewer',{layout:'./layouts/document-viewer-layout', user_role, user:req.session.user,errors:errors,data:results.rows, dataB:results2.rows,id:query,id:query,users:results1.rows,cases:results4.rows})
                 })
             })
                 })
@@ -1753,7 +1760,7 @@ app.get('/learn',checkNotAuthenticated,  async (req,res) => {
 });
 app.get('/resources',checkNotAuthenticated,  async (req,res) => {
     let errors =[]
-    res.render('resources',{layout:'./layouts/resources-layout', user_role, user:nam,errors:errors})
+    res.render('resources',{layout:'./layouts/resources-layout', user_role, user:req.session.user,errors:errors})
 });
 app.post('/add-timesheet' , async(req, res)=>{
     let task_name = req.body.taskName
@@ -2197,7 +2204,7 @@ app.get('/resources-results',checkNotAuthenticated,  async (req,res) => {
            // console.log('URL:', legislation.url);
            // console.log('----------------------');
           });
-          res.render('resources_legislature',{layout:'./layouts/resources-results-layout', user_role, user:nam,errors:errors,results: legislationList})
+          res.render('resources_legislature',{layout:'./layouts/resources-results-layout', user_role, user:req.session.user,errors:errors,results: legislationList})
         } catch (error) {
           console.error('Error:', error);
         } finally {
@@ -2245,7 +2252,7 @@ app.get('/resources-results',checkNotAuthenticated,  async (req,res) => {
 
   await browser.close();
 
-  res.render('resources_legislature',{layout:'./layouts/resources-results-layout', user_role, user:nam,errors:errors,results: legislationList})
+  res.render('resources_legislature',{layout:'./layouts/resources-results-layout', user_role, user:req.session.user,errors:errors,results: legislationList})
     } 
 
    
@@ -2291,12 +2298,12 @@ app.post('/resources-search-results',  async (req,res) => {
 app.get('/resources-gazettes',checkNotAuthenticated,  async (req,res) => {
     let errors =[]
     let message=[]
-    res.render('resources_gazettes',{layout:'./layouts/resources-results-layout', user_role, user:nam,errors:errors,results: scrapping_results})
+    res.render('resources_gazettes',{layout:'./layouts/resources-results-layout', user_role, user:req.session.user,errors:errors,results: scrapping_results})
 });
 app.get('/resources-cases-and-judgements',checkNotAuthenticated,  async (req,res) => {
     let errors =[]
     let message=[]
-    res.render('resources_gazettes',{layout:'./layouts/resources-results-layout', user_role, user:nam,errors:errors,results: scrapping_results})
+    res.render('resources_gazettes',{layout:'./layouts/resources-results-layout', user_role, user:req.session.user,errors:errors,results: scrapping_results})
 });
 app.get('/settings/users',checkNotAuthenticated,  async (req,res) => {
     let errors = []
@@ -2310,7 +2317,7 @@ app.get('/settings/users',checkNotAuthenticated,  async (req,res) => {
                 
             }
           
-             res.render('users',{layout:'./layouts/users-layout', user_role, user:nam,errors:errors,data:results.rows,user:nam, errors:errors})
+             res.render('users',{layout:'./layouts/users-layout', user_role, user:req.session.user,errors:errors,data:results.rows,errors:errors})
           
         }
     )
@@ -2374,7 +2381,7 @@ app.get('/tasks',checkNotAuthenticated,  async (req,res) => {
                     const endIndex1 = page1 * limit;
                     const reso1 = completed_tasks.sort(compare).slice(startIndex1, endIndex1);
                 
-                    res.render('tasks',{layout:'./layouts/tasks-layout', user_role, active,completed,user:nam,errors:errors,data:reso,data1:reso1,page,page1,users:results1.rows})
+                    res.render('tasks',{layout:'./layouts/tasks-layout', user_role, active,completed,user:req.session.user,errors:errors,data:reso,data1:reso1,page,page1,users:results1.rows})
                 })
             
              
@@ -2420,7 +2427,7 @@ app.get('/vendors',checkNotAuthenticated, async (req,res) => {
                     const endIndex = page * limit;
                     const reso = results.rows.sort(compare).slice(startIndex, endIndex);
                 
-             res.render('vendors',{layout:'./layouts/vendors-layout', user_role, user:nam,errors:errors,vendors:results.rows, data:reso,page,dataB:results2.rows,total_vendors:results.rows})
+             res.render('vendors',{layout:'./layouts/vendors-layout', user_role, user:req.session.user,errors:errors,vendors:results.rows, data:reso,page,dataB:results2.rows,total_vendors:results.rows})
                 })
           
         }
@@ -4273,7 +4280,7 @@ app.get('/users/logout', (req,res) => {
 });
 app.get('/login',checkAuthenticated, (req,res) => {
     let errors = []
-    res.render('login',{layout:'./layouts/login-layout', user_role, authed:authed,user:nam, errors:errors});
+    res.render('login',{layout:'./layouts/login-layout', user_role, authed:authed,user:req.session.user, errors:errors});
 });
 app.get('/forgot-password', (req,res) => {
     let errors = []
@@ -4382,7 +4389,7 @@ app.get('/settings/user-roles',checkNotAuthenticated, (req,res) => {
            if(err){
                errors.push({message: err});;
            }
-           res.render('user-roles',{layout:'./layouts/users-layout', user_role, authed:authed,user:nam,errors:errors,data1:results.rows});
+           res.render('user-roles',{layout:'./layouts/users-layout', user_role, authed:authed,user:req.session.user,errors:errors,data1:results.rows});
        }
     )
     
@@ -4398,7 +4405,7 @@ app.get('/settings/departments',checkNotAuthenticated, (req,res) => {
             if(err){
                 errors.push({message: err});;
             }
-            res.render('departments',{layout:'./layouts/users-layout', user_role, authed:authed,user:nam,errors:errors,data1:results1.rows});
+            res.render('departments',{layout:'./layouts/users-layout', user_role, authed:authed,user:req.session.user,errors:errors,data1:results1.rows});
         }
     );
 });
@@ -4419,7 +4426,7 @@ app.get('/settings/case-status',checkNotAuthenticated, (req,res) => {
                     if(err){
                         errors.push({message: err});;
                     }
-                    res.render('case-status',{layout:'./layouts/users-layout', user_role, authed:authed,user:nam,errors:errors,data1:results1.rows,data2:results2.rows});
+                    res.render('case-status',{layout:'./layouts/users-layout', user_role, authed:authed,user:req.session.user,errors:errors,data1:results1.rows,data2:results2.rows});
                 }
             );
            
@@ -4552,7 +4559,7 @@ app.post('/new_user', (req,res) => {
                             if(err){
                                 console.log(err)
                                 errors.push({message: err});
-                                res.render('users',{layout:'./layouts/users-layout', user_role, data:results.rows,user:nam,errors:errors,message:messge})
+                                res.render('users',{layout:'./layouts/users-layout', user_role, data:results.rows,user:req.session.user,errors:errors,message:messge})
                                 
                             }
                            
@@ -4637,6 +4644,7 @@ app.get('/users/logout', (req,res) => {
     authed =false;
     usrId=''
     nam=''
+    req.session.destroy();
     req.flash('success', 'You logged out');
     res.redirect('/login');
 });
@@ -4658,7 +4666,7 @@ app.post('/users/register', async (req,res) => {
    
    if(errors.length >0 ){
        console.log(errors)
-    res.render("login",{layout:'./layouts/login-layout', user_role, authed:authed,user:nam,errors:errors});
+    res.render("login",{layout:'./layouts/login-layout', user_role, authed:authed,user:req.session.user,errors:errors});
    }else{ 
        let hashedPassword = await bcrypt.hash(password, 10);
 
@@ -4673,7 +4681,7 @@ app.post('/users/register', async (req,res) => {
                //console.log(results.rows);
                if(results.rows.length >0){
                 errors.push({message: `Email: ${email} is already registered`});
-                res.render("login",{layout:'./layouts/login-layout', user_role, authed:authed,user:nam, errors:errors});
+                res.render("login",{layout:'./layouts/login-layout', user_role, authed:authed,user:req.session.user, errors:errors});
               }else{
                   pool.query(
                       `INSERT INTO users (name, email, password, role)
@@ -4686,7 +4694,7 @@ app.post('/users/register', async (req,res) => {
                           }
                           console.log(results.row);
                           req.flash('success','You are now registered. Please log in');
-                          res.render('login',{layout:'./layouts/login-layout', user_role, authed:authed,user:nam, errors:errors});
+                          res.render('login',{layout:'./layouts/login-layout', user_role, authed:authed,user:req.session.user, errors:errors});
                       }
                   )
               }
@@ -4702,10 +4710,15 @@ app.post("/users/login", passport.authenticate('local', {
     failureFlash: true
 }),(req,res) => {
     usrId = req.user.id;
-    nam = (req.user.name).charAt(0).toUpperCase() + (req.user.name).slice(1)
     authed = true
-   // console.log(req.isAuthenticated())
-    res.redirect('/')
+      req.session.userId = req.user.id;
+        req.session.user  = req.user.name;
+        req.session.email = req.user.email;
+        req.session.role = req.user.role;
+        req.session.activated = req.user.activated;
+        req.session.id = req.user.id
+        
+   res.redirect('/');
 
 }
 );

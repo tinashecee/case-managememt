@@ -378,6 +378,11 @@
                       <tr>
                         <th scope="col">
                           <font style="vertical-align: inherit">
+                            <font style="vertical-align: inherit"> User</font>
+                          </font>
+                        </th>
+                        <th scope="col">
+                          <font style="vertical-align: inherit">
                             <font style="vertical-align: inherit"> Task Name</font>
                           </font>
                         </th>
@@ -414,6 +419,14 @@
                     <tbody id="resultsContainer">
                         <% for (let dat of my_timesheets) { %>
                       <tr class="car">
+                        <td scope="row">
+                          <div class="d-flex align-items-center">
+                            
+                            <span>
+                              <p class="car-title"><%= dat.timesheet_owner %></p>
+                            </span>
+                          </div>
+                          </td>
                         <td scope="row">
                           <div class="d-flex align-items-center">
                             
@@ -533,6 +546,11 @@
                       <tr>
                         <th scope="col">
                           <font style="vertical-align: inherit">
+                            <font style="vertical-align: inherit"> User</font>
+                          </font>
+                        </th>
+                        <th scope="col">
+                          <font style="vertical-align: inherit">
                             <font style="vertical-align: inherit"> Task Name</font>
                           </font>
                         </th>
@@ -570,6 +588,14 @@
                      
                         <% for (let dat of all_timesheets) { %>
                           <tr class="car">
+                            <td scope="row">
+                              <div class="d-flex align-items-center">
+                                
+                                <span>
+                                  <p class="car-title"><%= dat.timesheet_owner %></p>
+                                </span>
+                              </div>
+                              </td>
                             <td scope="row">
                               <div class="d-flex align-items-center">
                                 
