@@ -523,9 +523,11 @@
                   </div>
               </div>
               </div>
+              <% if (user_role == 'Admin') { %>
               <div id="tab02" class="tab-contents">
                 <div  data-tab class="table-responsive tabcontent">
                   <% if (all_timesheets.length > 0) { %>
+                   
                   <table class="table align-items-center table-flush">
                     <thead class="thead-light">
                       <tr>
@@ -668,6 +670,7 @@
                   </div>
               </div>
               </div>
+              <% } %>
             </div>
       </div>
       </div>
