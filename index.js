@@ -15,6 +15,7 @@ const puppeteer = require('puppeteer');
 const fileUpload = require('express-fileupload');
 const cors = require('cors');
 const Excel = require('exceljs');
+const PDFGenerator = require('pdfkit')
 const morgan = require('morgan');
 const CronJob = require('cron').CronJob
 'use strict'
