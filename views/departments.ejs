@@ -128,9 +128,14 @@
                 <td><%= dat.contact_person %></td>
                 <td><%= dat.contact_email %></td>
                 <td>
-                  <a href="/delete-department?id=<%= dat.id %>" class="btn btn-primary btn-sm"> 
+                  <button  data-toggle="modal"
+                    data-target="#exampleModal2" onclick="editDepartment('<%= dat.id %>','<%= dat.department_name %>','<%= dat.contact_person %>', '<%= dat.contact_email %>')" class="btn btn-primary btn-sm"> 
+                    <i class="fa fa-trash"></i> Edit
+                  </button>
+                  <button data-toggle="modal"
+                  data-target="#exampleModal3" onclick="deleteDepartment('<%= dat.id %>','<%= dat.department_name %>')" class="btn btn-primary btn-sm"> 
                     <i class="fa fa-trash"></i> Delete 
-                </a>
+                  </button>
                 </td>
               </tr>
               <% } %>
@@ -142,3 +147,49 @@
       </div>
     </div>
   </div>
+  <div
+          class="modal fade"
+          id="exampleModal2"
+          tabindex="-1"
+          role="dialog"
+          aria-labelledby="exampleModalLabel"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Update Department</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">X</span>
+                  </button>
+              </div>
+              <div class="modal-body">
+                 
+              </div>
+            
+          </div>
+          </div>
+        </div>
+        <div
+          class="modal fade"
+          id="exampleModal3"
+          tabindex="-1"
+          role="dialog"
+          aria-labelledby="exampleModalLabel"
+          aria-hidden="true"
+        >
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Delete Budget Department</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">X</span>
+                  </button>
+              </div>
+              <div class="modal-body">
+                 
+              </div>
+            
+          </div>
+          </div>
+        </div>

@@ -280,6 +280,101 @@ var modalBody = modal.querySelector('.modal-body');
     <form>             
   `;
             }
+            function editDepartment(params1,params2,params3,params4) {
+    var modal = document.getElementById('exampleModal2');
+var modalTitle = modal.querySelector('.modal-title');
+var modalBody = modal.querySelector('.modal-body');
+  // Set the modal title and body content
+  modalTitle.textContent = 'Edit Expenditure'; // Replace with your desired title
+  modalBody.innerHTML = `
+  <form  action="/edit-department?id=${params1}" method="POST">
+    <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">
+                  Edit Department
+                </h5>
+                <button
+                  type="button"
+                  class="close"
+                  data-dismiss="modal"
+                  aria-label="Close"
+                >
+                  <span aria-hidden="true">X</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                
+                  <div class="mb-3">
+                    <label for="taskName" class="form-label"
+                      >Department Name</label
+                    >
+                    <input
+                      type="text"
+                      class="form-control"
+                      id="department_name"
+                      value="${params2}"
+                      name="department_name"
+                      required
+                    />
+                  </div>
+
+                  <div class="mb-3">
+                    <label for="departmentcontact" class="form-label"
+                      >Contact Person</label
+                    >
+                    <input
+                    type="text"
+                      class="form-control"
+                      id="contact_person"
+                      name="contact_person"
+                      value="${params3}"
+                      required
+                    />
+                  </div>
+                  <div class="mb-3">
+                    <label for="taskName" class="form-label"
+                      >Contact Email</label
+                    >
+                    <input
+                      type="email"
+                      class="form-control"
+                      id="contact_email"
+                      name="contact_email"
+                      value="${params4}"
+                      required
+                    />
+                  </div>
+                
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  data-dismiss="modal"
+                >
+                  Close
+                </button>
+                <button type="submit" class="btn btn-primary">Submit</button>
+              </div>
+                </form>             
+  `;
+            }
+            function deleteDepartment(params1,params2) {
+    var modal = document.getElementById('exampleModal3');
+var modalTitle = modal.querySelector('.modal-title');
+var modalBody = modal.querySelector('.modal-body');
+  // Set the modal title and body content
+  modalTitle.textContent = `Are you sure you want to Delete Department:  ${params2} ?`; // Replace with your desired title
+  modalBody.innerHTML = `
+  <form  action="/delete-department?id=${params1}" method="POST">
+    <div class="mb-3">
+                         
+                    <div class="mb-3">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Delete</button>
+                    </div>
+                </form>             
+  `;
+            }
     </script>
     </body>
   

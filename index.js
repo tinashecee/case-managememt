@@ -99,6 +99,7 @@ let compliance_array = []
 let scrapping_results = []
 let budgetLineItems
 let user_role = ''
+let my_ts = []
 const InvoiceGenerator = require('./pdf-generator')
 const InvoiceGenerator1 = require('./pdf-generator1')
 const InvoiceGenerator2 = require('./pdf-generator2')
@@ -107,6 +108,7 @@ const InvoiceGenerator4 = require('./pdf-generator4')
 const InvoiceGenerator5 = require('./pdf-generator5')
 const InvoiceGenerator6 = require('./pdf-generator6')
 const InvoiceGenerator7 = require('./pdf-generator7')
+const InvoiceGenerator8 = require('./pdf-generator8')
 //cron job
 if(process.env.NODE_APP_INSTANCE === '0') {
     const job = new CronJob('0 8 * * *', function()  {
@@ -257,7 +259,7 @@ if(process.env.NODE_APP_INSTANCE === '0') {
     }, null, true, 'Etc/UTC');
     job.start();
     }
-function sendEmail(a,b,c,d){
+function sendEmail(a,b,c,d,e){
     pool.query(
         `SELECT * FROM users WHERE name = $1`,
         [a],
@@ -280,7 +282,7 @@ function sendEmail(a,b,c,d){
             <li><strong>Task:</strong> ${b}</li>
             <li><strong>Description:</strong> ${c}</li>
             <li><strong>Due Date:</strong> ${d}</li>
-            <li><strong>Assigned By:</strong> ${nam}</li>
+            <li><strong>Assigned By:</strong> ${e}</li>
         </ul>
         <p>Please log in to the system to access the task and view any associated files or instructions. Promptly complete the task within the specified deadline to ensure smooth case progress and effective collaboration.</p>
         <p>If you have any questions, feel free to reach out to the assigner or our support team.</p>
@@ -292,7 +294,7 @@ SENDMAIL(options, (info) => {
 });
         })
 }
-function sendEmail1(a,b,c,d,e){
+function sendEmail1(a,b,c,d,e,f){
     pool.query(
         `SELECT * FROM users WHERE name = $1`,
         [a],
@@ -316,7 +318,7 @@ function sendEmail1(a,b,c,d,e){
             <li><strong>Description:</strong> ${c}</li>
             <li><strong>Start Date:</strong> ${d}</li>
             <li><strong>End Date:</strong> ${e}</li>
-            <li><strong>Assigned By:</strong> ${req.session.user}</li>
+            <li><strong>Assigned By:</strong> ${f}</li>
         </ul>
         <p>Please log in to the system to access the task and view any associated files or instructions. Promptly complete the task within the specified deadline to ensure smooth case progress and effective collaboration.</p>
         <p>If you have any questions, feel free to reach out to the assigner or our support team.</p>
@@ -973,6 +975,7 @@ app.get('',checkNotAuthenticated,  async (req,res) => {
                                 return 0;
                               }
                             let _my_timesheets = results6.rows
+                            my_ts = results6.rows;
                             const page = parseInt(req.query.page) || 1; // Current page number
                     const limit = 10; // Number of items per page
                     const startIndex = (page - 1) * limit;
@@ -1769,7 +1772,7 @@ app.post('/add-timesheet' , async(req, res)=>{
     let end_date = req.body.toDateTime
     let contract_name = req.body.contract_name
     let case_name = req.body.case_name
-    let timesheet_owner = nam
+    let timesheet_owner = req.session.user
     let task_description = req.body.taskDescription
     console.log(start_date)
     console.log(end_date)
@@ -2656,7 +2659,7 @@ app.post('/update-case-members', (req, res)=>{
                    if(err){
                        errors.push({message: err});;
                    }
-            sendEmail1(staff_members,results1.rows[0].case_name,results1.rows[0].notes,results1.rows[0].start_date,results1.rows[0].end_date)
+            sendEmail1(staff_members,results1.rows[0].case_name,results1.rows[0].notes,results1.rows[0].start_date,results1.rows[0].end_date,req.session.user)
             req.flash('success','You have successfully updated case members');
             res.redirect('/case_view?id='+query);
                 })
@@ -2943,7 +2946,7 @@ app.post('/add-case', (req, res)=>{
                    if(err){
                        errors.push({message: err});;
                    }
-            sendEmail1(staff_members,results1.rows[0].case_name,results1.rows[0].notes,results1.rows[0].start_date,results1.rows[0].end_date)
+            sendEmail1(staff_members,results1.rows[0].case_name,results1.rows[0].notes,results1.rows[0].start_date,results1.rows[0].end_date,req.session.user)
             req.flash('success','You have successfully added a case');
             res.redirect('/cases');
                 })
@@ -3326,7 +3329,7 @@ app.post('/add-tasks', (req, res)=>{
             if(err){
                 errors.push({message: err});;
             }
-            sendEmail(assigness,task_name,task_description,due_date)
+            sendEmail(assigness,task_name,task_description,due_date,req.session.user)
             req.flash('success','You have successfully added a task');
             res.redirect('/tasks');
         }
@@ -3469,8 +3472,8 @@ app.get('/download',async (req,res) =>{
         const workbook = new Excel.Workbook();
         let yourDate = new Date()
         date_created = formatDate(yourDate)
-        workbook.creator = nam;
-        workbook.lastModifiedBy = nam;
+        workbook.creator = req.session.user;
+        workbook.lastModifiedBy = req.session.user;
         workbook.created = yourDate;
         const worksheet = workbook.addWorksheet('Compliance Data',{
             headerFooter: {oddFooter: "Page &P of &N", oddHeader: 'Compliance Data'},properties:{tabColor:{argb:'FFC0000'}}
@@ -3553,8 +3556,8 @@ app.get('/download1',async (req,res) =>{
      const workbook = new Excel.Workbook();
      let yourDate = new Date()
      date_created = formatDate(yourDate)
-     workbook.creator = nam;
-     workbook.lastModifiedBy = nam;
+     workbook.creator = req.session.user;
+     workbook.lastModifiedBy = req.session.user;
      workbook.created = yourDate;
      const worksheet = workbook.addWorksheet('Compliance Responses',{
          headerFooter: {oddFooter: "Page &P of &N", oddHeader: 'Compliance Responses'},properties:{tabColor:{argb:'FFC0000'}}
@@ -3629,8 +3632,8 @@ app.get('/download3',async (req,res) =>{
         const workbook = new Excel.Workbook();
         let yourDate = new Date()
         date_created = formatDate(yourDate)
-        workbook.creator = nam;
-        workbook.lastModifiedBy = nam;
+        workbook.creator = req.session.user;
+        workbook.lastModifiedBy = req.session.user;
         workbook.created = yourDate;
         const worksheet = workbook.addWorksheet('Lawfirms',{
             headerFooter: {oddFooter: "Page &P of &N", oddHeader: 'law Firms Report'},properties:{tabColor:{argb:'FFC0000'}}
@@ -3737,8 +3740,8 @@ app.get('/download4',async (req,res) =>{
      const workbook = new Excel.Workbook();
      let yourDate = new Date()
      date_created = formatDate(yourDate)
-     workbook.creator = nam;
-     workbook.lastModifiedBy = nam;
+     workbook.creator = req.session.user;
+     workbook.lastModifiedBy = req.session.user;
      workbook.created = yourDate;
      const worksheet = workbook.addWorksheet('Budget Items',{
          headerFooter: {oddFooter: "Page &P of &N", oddHeader: 'Budget Items Report'},properties:{tabColor:{argb:'FFC0000'}}
@@ -3838,8 +3841,8 @@ app.get('/download5',async (req,res) =>{
      const workbook = new Excel.Workbook();
      let yourDate = new Date()
      date_created = formatDate(yourDate)
-     workbook.creator = nam;
-     workbook.lastModifiedBy = nam;
+     workbook.creator = req.session.user;
+     workbook.lastModifiedBy = req.session.user;
      workbook.created = yourDate;
      const worksheet = workbook.addWorksheet('Budget Expenditure',{
          headerFooter: {oddFooter: "Page &P of &N", oddHeader: 'Budget Expenditure'},properties:{tabColor:{argb:'FFC0000'}}
@@ -3894,6 +3897,100 @@ app.get('/download5',async (req,res) =>{
              });
             }
 });
+app.get('/downloadTimesheet',async (req,res) =>{
+    let  arrayD = []
+    let yourDate = new Date()
+    date_created = formatDate(yourDate)
+    balance = 0
+     my_ts.forEach(e=>{
+        console.log(Date(e.start_date) , Date(req.query.start_date) , e.end_date , Date(req.query.end_date))
+                  // if(moment(e.start_date).format('Do MMMM, YYYY') >= moment(req.query.start_date).format('Do MMMM, YYYY') && moment(e.end_date).format('Do MMMM, YYYY') <= moment(req.query.end_date).format('Do MMMM, YYYY')){
+                    if(Date(e.start_date) >= Date(req.query.start_date) && Date(e.end_date) <= Date(req.query.end_date)){
+
+             arrayD.push(e)
+            }
+         })
+
+    let timesheetData={
+        start_date:req.query.start_date,
+        end_date:req.query.end_date,
+        items:arrayD,
+        date_created:date_created
+    }
+    if(req.query.export_type == 'pdf'){
+    const ig = new InvoiceGenerator8(timesheetData)
+    ig.generate()
+    setTimeout(function() {
+
+        res.download('MyTimesheetsReport.pdf');
+        
+        }, 2500);
+     
+    }
+    else{
+     // Create Excel workbook and worksheet
+     const workbook = new Excel.Workbook();
+     let yourDate = new Date()
+     date_created = formatDate(yourDate)
+     workbook.creator = req.session.user;
+     workbook.lastModifiedBy = req.session.user;
+     workbook.created = yourDate;
+     const worksheet = workbook.addWorksheet('My Timesheet',{
+         headerFooter: {oddFooter: "Page &P of &N", oddHeader: 'My Timesheet'},properties:{tabColor:{argb:'FFC0000'}}
+     });
+     // Define columns in the worksheet, these columns are identified using a key.
+     worksheet.columns = [
+         { header: 'Owner', key: 'timesheet_owner',  width: 20 },
+         { header: 'Task Name', key: 'task_name',  width: 40 },
+         { header: 'Task Description', key: 'task_description',  width: 50 },
+         { header: 'Case', key: 'case_name',  width: 30 },
+         { header: 'Contract', key: 'contract_name',  width: 30 },
+         { header: 'Start Date', key: 'start_date',  width: 25 },
+         { header: 'End Date', key: 'end_date',  width: 25 },
+     ]
+     
+     // Add rows from database to worksheet 
+     worksheet.addRows(arrayD);
+      // Add autofilter on each column
+ worksheet.autoFilter = 'A1:D1';
+
+ // Process each row for beautification 
+     worksheet.eachRow(function (row, rowNumber) {
+ 
+         row.eachCell((cell, colNumber) => {
+             if (rowNumber == 1) {
+                 // First set the background of header row
+                 cell.fill = {
+                     type: 'pattern',
+                     pattern: 'solid',
+                     fgColor: { argb: '3b7197' }, bgColor:{argb:'FF0000FF'
+                 }
+                 }
+             }
+             // Set border of each cell 
+             cell.border = {
+                 top: { style: 'thin' },
+                 left: { style: 'thin' },
+                 bottom: { style: 'thin' },
+                 right: { style: 'thin' }
+             };
+             cell.font = {
+                 name: 'Arial Black',
+                 color: { argb: '000000' },
+                 family: 2,
+                 size: 8
+                };
+                cell.alignment = { wrapText: true,indent: 1 };
+         })
+         //Commit the changed row to the stream
+         row.commit();
+     });
+     // write to a new buffer
+     await workbook.xlsx.writeFile('MyTimesheets.xlsx').then(() => {
+                 res.download('MyTimesheets.xlsx'); 
+             });
+            }
+});
 app.get('/download6',async (req,res) =>{
     pool.query(
         'SELECT * FROM contracts',
@@ -3937,8 +4034,8 @@ app.get('/download6',async (req,res) =>{
     const workbook = new Excel.Workbook();
     let yourDate = new Date()
     date_created = formatDate(yourDate)
-    workbook.creator = nam;
-    workbook.lastModifiedBy = nam;
+    workbook.creator = req.session.user;
+    workbook.lastModifiedBy = req.session.user;
     workbook.created = yourDate;
     const worksheet = workbook.addWorksheet('Contracts',{
         headerFooter: {oddFooter: "Page &P of &N", oddHeader: 'Contracts'},properties:{tabColor:{argb:'FFC0000'}}
@@ -4037,8 +4134,8 @@ app.get('/download7',async (req,res) =>{
          const workbook = new Excel.Workbook();
          let yourDate = new Date()
          date_created = formatDate(yourDate)
-         workbook.creator = nam;
-         workbook.lastModifiedBy = nam;
+         workbook.creator = req.session.user;
+         workbook.lastModifiedBy = req.session.user;
          workbook.created = yourDate;
          const worksheet = workbook.addWorksheet('Cases Data',{
              headerFooter: {oddFooter: "Page &P of &N", oddHeader: 'Cases Data'},properties:{tabColor:{argb:'FFC0000'}}
@@ -4136,8 +4233,8 @@ app.get('/download8',async (req,res) =>{
          const workbook = new Excel.Workbook();
          let yourDate = new Date()
          date_created = formatDate(yourDate)
-         workbook.creator = nam;
-         workbook.lastModifiedBy = nam;
+         workbook.creator = req.session.user;
+         workbook.lastModifiedBy = req.session.user;
          workbook.created = yourDate;
          const worksheet = workbook.addWorksheet('Vendors Data',{
              headerFooter: {oddFooter: "Page &P of &N", oddHeader: 'Cases Data'},properties:{tabColor:{argb:'FFC0000'}}
@@ -4517,6 +4614,24 @@ app.post('/department', (req,res) => {
         }
     )
 });
+app.post('/edit-department', (req,res) => {
+    let id = req.query.id;
+    let department_name = req.body.department_name
+    let contact_email = req.body.contact_email
+    let contact_person = req.body.contact_person
+    console.log(department_name, contact_person, contact_email, id)
+    pool.query(
+        'UPDATE department SET department_name = $1, contact_person = $2, contact_email = $3 WHERE id = $4',
+        [department_name, contact_person, contact_email, id], 
+        (err, results) => {
+            if(err){
+                errors.push({message: err});;
+            }
+            req.flash('success','You have successfully updated a Department');
+            res.redirect('/settings/departments');
+        }
+    )
+});
 app.post('/edit-user', (req,res) => {
     let user_name = req.body.user_name
     let email = req.body.email
@@ -4598,7 +4713,7 @@ app.post('/new_user', (req,res) => {
     )
   
 })
-app.get('/delete-department',checkNotAuthenticated, (req,res) => {
+app.post('/delete-department',checkNotAuthenticated, (req,res) => {
     let id = req.query.id
     pool.query(
         `DELETE FROM department WHERE id = $1`,

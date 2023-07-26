@@ -351,6 +351,8 @@
               </div>
               <div class="col text-right">
                 <button  data-toggle="modal" data-target="#exampleModal6" class="btn btn-sm btn-primary">Add Timesheet</button>
+                <button  data-toggle="modal" data-target="#exampleModalExport1" class="btn btn-sm btn-primary">Export Timesheets</button>
+
               </div>
             </div>
            </div>
@@ -774,24 +776,22 @@
                     <input type="datetime-local" class="form-control" id="toDateTime" name="toDateTime" required>
                   </div>
                 </div>
-                <div class="row mb-3">
-                  <div class="col-md-6">
-                    <label for="case" class="form-label">Case</label>
+                <div class="mb-3">
+                    <label for="case" class="form-label">Case (Optional)</label>
                     <select class="form-select" id="case" name="case_name">
                       <% for (let dat of cases) { %>
                       <option value="<%= dat.case_name %>"><%= dat.case_name %></option>
                       <% } %>
                     </select>
                   </div>
-                  <div class="col-md-6">
-                    <label for="contract" class="form-label">Contract</label>
+                  <div class="mb-3">
+                    <label for="contract" class="form-label">Contract (Optional)</label>
                     <select class="form-select" id="contract" name="contract_name">
                       <% for (let dat of contracts) { %>
                         <option value="<%= dat.name %>"><%= dat.name %></option>
                         <% } %>
                       
                     </select>
-                  </div>
                 </div>
                 <div class="mb-3">
                   <label for="taskDescription" class="form-label">Task Description</label>
@@ -834,3 +834,58 @@
 </div>
 </div>
 </div>
+<div class="modal fade" id="exampleModalExport1"  tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+      <form action="/downloadTimesheet" method="get">
+      <div class="modal-content" >
+          <div class="modal-header">
+            
+          </div>
+          <div class="modal-body">
+              <div class="mb-3">
+                  <label for="export_type" class="form-label"
+                    >Export As</label
+                  >
+                  <select
+                    class="form-select"
+                    id="export_type"
+                    name="export_type"
+                    required
+                  >
+                    <option value="pdf">PDF</option>
+                    <option value="excel">Excel</option>
+                  </select>
+                </div>
+                <div class="mb-3">
+                  <label for="expenditure_date" class="form-label"
+                    >Starting Date</label
+                  >
+                  <input
+                    type="date"
+                    class="form-control"
+                    id="start_date"
+                    name="start_date"
+                    required
+                  />
+                </div>
+                <div class="mb-3">
+                  <label for="expenditure_date" class="form-label"
+                    >End Date</label
+                  >
+                  <input
+                    type="date"
+                    class="form-control"
+                    id="end_date"
+                    name="end_date"
+                    required
+                  />
+                </div>
+          </div>
+          <div class="modal-footer">
+              <button type="submit" class="btn btn-secondary">Export</button>
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          </div>
+      </div>
+      </form>
+  </div>
+</div>  
