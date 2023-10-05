@@ -92,8 +92,10 @@
                   <div
                     class="border-bottom border-top d-flex align-items-center justify-content-between px-4 py-2"
                   >
+                  <% if(user_role == 'Admin') { %>
                   <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#exampleModal9">Delete Law Firm<i class="fa fa-trash"></i
                     ></button>
+                    <% } %>
                   </div>
                 </div>
               </div>
@@ -191,9 +193,11 @@
                     </div>
                   </td>
                   <td>
+                    <% if(user_role == 'Admin') { %>
                     <button type="button" onclick="deleteContact('<%= law_firm_id %>', '<%= dat.name %>')" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal2"
                     ><i class="fa fa-trash"></i
                   ></button>
+                  <% } %>
                   </td>
                 </tr>
                 <% } %>

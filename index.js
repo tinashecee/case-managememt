@@ -338,7 +338,7 @@ app.post('/upload-case', async (req, res) => {
                 message: 'No file uploaded'
             });
         } else {
-            //Use the name of the input field (i.e. "avatar") to retrieve the uploaded file
+            //Use the name of  the input field (i.e. "avatar") to retrieve the uploaded file
             let avatar = req.files.avatar;
             
             //Use the mv() method to place the file in the upload directory (i.e. "uploads")
@@ -427,7 +427,7 @@ app.post('/upload-contract', async (req, res) => {
             res.send({
                 status: false,
                 message: 'No file uploaded'
-            });
+            }); 
         } else {
             //Use the name of the input field (i.e. "avatar") to retrieve the uploaded file
             let avatar = req.files.avatar;
@@ -1825,6 +1825,19 @@ app.post('/delete-timesheet', (req, res)=>{
         }
     )
 });
+app.post('/delete-compliance', (req, res)=>{
+    pool.query(
+        `DELETE from compliance_results WHERE id = $1`,
+        [req.query.id], 
+        (err, results) => {
+            if(err){
+                errors.push({message: err});;
+            }
+            req.flash('success','You have successfully deleted a compliance run');
+            res.redirect('/compliance');
+        }
+    )
+});
 app.post('/add-fee-note' , async(req, res)=>{
       //Use the name of the input field (i.e. "avatar") to retrieve the uploaded file
       let avatar = req.files.avatar;
@@ -2958,11 +2971,12 @@ app.post('/add-contract', (req, res)=>{
     
     let description = req.body.contract_description
     let start_date = req.body.start_date
-   // let end_date = req.body.end_date
+    let end_date = req.body.end_date
     let contract_name = req.body.contract_name
     let vendor = req.body.vendor
     let department = req.body.department
     let payment_cycle;
+    let currency = req.body.currency;
     let payment_terms = req.body.payment_terms
     let status = req.body.signed_status
     let contract_value = req.body.contract_value
@@ -2976,10 +2990,10 @@ app.post('/add-contract', (req, res)=>{
         payment_cycle= req.body.signedStatus1
     }
     pool.query(  
-        `INSERT INTO contracts (  name, description, start_date,  notes,  vendor, department, payment_cycle, payment_terms, status, contract_value,attachments)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)`,
-        [  contract_name, description, start_date,  notes, vendor, department, 
-            payment_cycle, payment_terms, status, contract_value,[]], 
+        `INSERT INTO contracts (  name, description, start_date, end_date,  notes,  vendor, department, payment_cycle, payment_terms, status, currency, contract_value,attachments)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)`,
+        [  contract_name, description, start_date, end_date,  notes, vendor, department, 
+            payment_cycle, payment_terms, status, currency, contract_value,[]], 
         (err, results) => {
             if(err){
                 errors.push({message: err});;
@@ -4803,7 +4817,7 @@ app.post('/users/register', async (req,res) => {
                       `INSERT INTO users (name, email, password, role)
                       VALUES ($1, $2, $3, $4)
                       RETURNING id, password`,
-                      [name, email, hashedPassword, 'ADMIN'], 
+                      [name, email, hashedPassword, 'Admin'], 
                       (err, results) => {
                           if(err){
                               errors.push({message: err});;

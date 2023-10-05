@@ -349,5 +349,23 @@ var modalBody = modal.querySelector('.modal-body');
             redo.style.display = "block";
       
     }
+    function deleteComplianceRun(params1) {
+    var modal = document.getElementById('exampleModal8');
+var modalTitle = modal.querySelector('.modal-title');
+var modalBody = modal.querySelector('.modal-body');
+  // Set the modal title and body content
+  modalTitle.textContent = `Are you sure you want to Delete this Compliance Run ?`; // Replace with your desired title
+  modalBody.innerHTML = `
+  <form  action="/delete-compliance?id=${params1}" method="POST">
+
+                         
+                    <div class="mb-3">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Delete Timesheet</button>
+                    </div>
+                </form>  
+                 
+  `;
+            }
       </script>
 </body>

@@ -168,9 +168,11 @@
                                     <button class="table-action btn btn-sm btn-block btn-neutral expandBtn"  >
                                        View Expenses
                                     </button>
+                                    <% if(user_role == 'Admin') { %>
                                     <button class="table-action btn btn-sm btn-block btn-danger" onclick="deleteBudgetItem('<%= dat.budget_id %>', '<%= dat.budget %>','<%= dat.budget_name %>')"  data-toggle="modal" data-target="#exampleModal6" data-original-title="Edit product">
                                       <i class="fas fa-trash"></i>
                                   </button>
+                                  <% } %>
                                     <button class="table-action btn btn-sm btn-block btn-neutral"  onclick="expenditure('<%= dat.budget %>','<%= dat.budget_id %>','<%= dat.actual %>')" data-toggle="modal" data-target="#exampleModal3" data-original-title="Edit product">
                                         Add Expense
                                     </button>
@@ -195,9 +197,11 @@
                                             <td><%= da.expenditure_desc %></td>
                                             <td><%= dollarUS.format(da.expenditure) %></td>
                                             <td class="table-actions">
+                                              <% if(user_role == 'Admin') { %>
                                               <button class="table-action btn btn-sm btn-block btn-danger" onclick="deleteBudgetItem1('<%= dat.budget_id %>', '<%= da.expenditure %>','<%= da.expenditure_desc %>','<%= da.expenditure %>')"  data-toggle="modal" data-target="#exampleModal7" data-original-title="Edit product">
                                                 <i class="fas fa-trash"></i>
                                             </button>
+                                            <% } %>
                                               <button class="table-action btn btn-sm btn-block btn-neutral"   onclick="editExpenditure('<%= dat.budget_id %>', '<%= da.expenditure_desc %>','<%= da.expenditure %>')"
                                                data-toggle="modal" data-target="#exampleModal5" data-original-title="Edit product">
                                                   <i class="fas fa-edit"></i>

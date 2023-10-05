@@ -84,7 +84,9 @@
                                                                                   </div>
                                 </td>
                                 <td>
+                                    <% if(user_role == 'Admin') { %>
                                     <a href="/delete-case-status?id=<%= dat.id %>" class="btn btn-primary btn-sm"> Delete </a>
+                                    <% } %>
                                 </td>
                             </tr>
                             <% } %>
@@ -164,7 +166,9 @@
                                                                                    </div>
                                 </td>
                                 <td>
+                                    <% if(user_role == 'Admin') { %>
                                     <a href="/delete-contract-status?id=<%= dat.id %>" class="btn btn-primary btn-sm"> Delete </a>
+                                    <% } %>
                                 </td>
                             </tr>
                             <% } %>

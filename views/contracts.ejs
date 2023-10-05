@@ -112,7 +112,7 @@
                       name="start_date"
                     />
                   </div>
-                 <!---- <div class="mb-3">
+                 <div class="mb-3">
                     <label for="end_date" class="form-label">End Date</label>
                     <input
                       type="date"
@@ -120,7 +120,7 @@
                       id="end_date"
                       name="end_date"
                     />
-                  </div> -->
+                  </div> 
                   <div class="mb-3">
                     <label for="payment_terms" class="form-label"
                       >Payment Terms</label
@@ -142,6 +142,20 @@
                       id="contract_name"
                       name="contract_name"
                     />
+                  </div>
+                  <div class="mb-3">
+                    <label for="currency" class="form-label"
+                      >Currency</label
+                    >
+                    <select
+                      class="form-select"
+                      id="currency"
+                      name="currency"
+                      required
+                    >
+                    <option value="ZWL">ZWL</option>
+                    <option value="USD">USD</option>
+                    </select>
                   </div>
                   <div class="mb-3">
                     <label for="contract_value" class="form-label"
@@ -292,7 +306,7 @@
                   </td>
                   <td>
                     <div class="d-flex align-items-center">
-                      <span class="ml-2"><%= dollarUS.format(dat.contract_value) %></span>
+                      <span class="ml-2"><%= dat.currency %><%= dollarUS.format(dat.contract_value) %></span>
                     </div>
                   </td>
                   <td>
