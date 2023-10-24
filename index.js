@@ -2996,8 +2996,10 @@ app.post('/add-contract', (req, res)=>{
             payment_cycle, payment_terms, status, currency, contract_value,[]], 
         (err, results) => {
             if(err){
-                errors.push({message: err});;
+                errors.push({message: err});
+                console.log(err)
             }
+            console.log(results)
             req.flash('success','You have successfully added a contract');
             res.redirect('/contracts');
         }
@@ -3155,7 +3157,7 @@ app.post('/delete-budget-item', (req, res)=>{
         }
         pool.query(
             'UPDATE budget SET balance = $1 WHERE budget_id = $2',
-            [budget_balance+budget,budget_id],
+            [budget_balance+budget,id],
             (err, results) => {
                 if(err){
                     errors.push({message: err});;
@@ -3165,6 +3167,24 @@ app.post('/delete-budget-item', (req, res)=>{
             }
         )
     })
+})
+app.post('/edit-budget-item', (req, res)=>{
+    let id = req.query.budget_id
+    let budget = req.body.budget
+    console.log(id,budget)
+    
+        pool.query(
+            'UPDATE budget_items SET budget = $1 WHERE budget_id = $2',
+            [budget,id],
+            (err, results) => {
+                if(err){
+                    console.log(err)
+                }
+                console.log(results)
+                req.flash('success','You have successfully updated a budget line item');
+                res.redirect('/budget');
+            }
+        )
 })
 app.post('/add-budget', (req, res)=>{
     let amount = req.body.amount

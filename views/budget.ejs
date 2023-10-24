@@ -163,7 +163,7 @@
                                 <td>
                                     <%= dollarUS.format(dat.actual) %></td>
                                 <td>
-                                    <%= dollarUS.format(dat.variance) %></td>
+                                    <%= dollarUS.format(dat.budget - dat.actual) %></td>
                                 <td class="table-actions">
                                     <button class="table-action btn btn-sm btn-block btn-neutral expandBtn"  >
                                        View Expenses
@@ -172,6 +172,9 @@
                                     <button class="table-action btn btn-sm btn-block btn-danger" onclick="deleteBudgetItem('<%= dat.budget_id %>', '<%= dat.budget %>','<%= dat.budget_name %>')"  data-toggle="modal" data-target="#exampleModal6" data-original-title="Edit product">
                                       <i class="fas fa-trash"></i>
                                   </button>
+                                  <button class="table-action btn btn-sm btn-block btn-success" onclick="editBudgetItem('<%= dat.budget_id %>', '<%= dat.budget %>','<%= dat.budget_name %>')"  data-toggle="modal" data-target="#exampleModal7b" data-original-title="Edit product">
+                                    <i class="fas fa-edit"></i>
+                                </button>
                                   <% } %>
                                     <button class="table-action btn btn-sm btn-block btn-neutral"  onclick="expenditure('<%= dat.budget %>','<%= dat.budget_id %>','<%= dat.actual %>')" data-toggle="modal" data-target="#exampleModal3" data-original-title="Edit product">
                                         Add Expense
@@ -539,6 +542,22 @@
           </div>
       </div>
   </div>   
+  <div class="modal fade" id="exampleModal7b" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Edit Budget Line Item Expense</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">X</span>
+                </button>
+            </div>
+            <div class="modal-body">
+               
+            </div>
+          
+        </div>
+    </div>
+</div>  
   <div class="modal fade" id="exampleModalExport1"  tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <form action="/download5" method="get">

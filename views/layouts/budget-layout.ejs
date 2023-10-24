@@ -368,6 +368,36 @@ var modalBody = modal.querySelector('.modal-body');
                 </form>             
   `;
             }
+            function editBudgetItem(params1,params2,params3) {
+    var modal = document.getElementById('exampleModal7b');
+var modalTitle = modal.querySelector('.modal-title');
+var modalBody = modal.querySelector('.modal-body');
+  // Set the modal title and body content
+  modalTitle.textContent = `Edit Budget Line Item :  ${params3} ?`; // Replace with your desired title
+  modalBody.innerHTML = `
+  <form  action="/edit-budget-item?budget_id=${params1}" method="POST">
+    <div class="mb-3">
+                        <label for="budget" class="form-label"
+                          >Amount</label
+                        >
+                        <input
+                          type="number"
+                          class="form-control"
+                          id="budget"
+                          value="${params2}"
+                          name="budget"
+                          required
+                        />
+                    </div>  
+    <div class="mb-3">
+                         
+                    <div class="mb-3">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Update</button>
+                    </div>
+                </form>             
+  `;
+            }
 
 
             
@@ -388,5 +418,6 @@ var modalBody = modal.querySelector('.modal-body');
                 </form>             
   `;
             }
+           
       </script>
 </body>
