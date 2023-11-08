@@ -1,485 +1,547 @@
 <head>
-    <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, shrink-to-fit=no"
-    />
-    <title>NUST ProLegal | Tasks</title>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700"
-    />
-    <link
-      rel="stylesheet"
-      href="https://rawcdn.githack.com/Loopple/loopple-public-assets/ad60f16c8a16d1dcad75e176c00d7f9e69320cd4/argon-dashboard/css/nucleo/css/nucleo.css"
-    />
-    <link rel="stylesheet" href="/css/theme.css" />
-    <link rel="stylesheet" href="/css/loopple/loopple.css" />
-    <style>
-      .tabs {
-  margin: 0 auto;
-  padding: 0 20px;
-}
-#tab-button {
-  display: table;
-  table-layout: fixed;
-  width: 100%;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-#tab-button li {
-  display: table-cell;
-  width: 20%;
-}
-#tab-button li a {
-  display: block;
-  padding: .5em;
-  background: #eee;
-  border: 1px solid #ddd;
-  text-align: center;
-  color: #000;
-  text-decoration: none;
-}
-#tab-button li:not(:first-child) a {
-  border-left: none;
-}
-#tab-button li a:hover,
-#tab-button .is-active a {
-  border-bottom-color: transparent;
-  background: #fff;
-}
-.tab-contents {
-  padding: .5em 2em 1em;
-  border: 1px solid #ddd;
-}
-
-
-
-.tab-button-outer {
-  display: none;
-}
-.tab-contents {
-  margin-top: 20px;
-}
-@media screen and (min-width: 768px) {
-  .tab-button-outer {
-    position: relative;
-    z-index: 2;
-    display: block;
-  }
-  .tab-select-outer {
-    display: none;
-  }
-  .tab-contents {
-    position: relative;
-    top: -1px;
-    margin-top: 0;
-  }
-}
-.check {
- position: relative;
- background: linear-gradient(90deg, #f19af3, #f099b5);
- line-height: 0;
- font-size: 25px;
-}
-
-.check input[type="checkbox"],
-.check label,
-.check label::before,
-.check label::after {
- appearance: none;
- display: inline-block;
- font-size: inherit;
- border-radius: 1em;
- border: 0;
- transition: .35s ease-in-out;
- box-sizing: border-box;
- cursor: pointer;
-}
-
-.check {
- appearance: none;
- display: inline-block;
- border-radius: 1em;
- border: 0;
- transition: .35s ease-in-out;
- box-sizing: border-box;
- cursor: pointer;
-}
-
-.check label {
- width: 2.2em;
- height: 1em;
- background: #d7d7d7;
- overflow: hidden;
-}
-
-.check input[type="checkbox"] {
- position: absolute;
- z-index: 1;
- width: .8em;
- height: .8em;
- top: .1em;
- left: .1em;
- background: linear-gradient(45deg, #dedede, #ffffff);
- box-shadow: 0 6px 7px rgba(0,0,0,0.3);
- outline: none;
-}
-
-.check input[type="checkbox"]:checked {
- left: 1.3em;
-}
-
-.check input[type="checkbox"]:checked + label {
- background: transparent;
-}
-
-.check label::before,
-.check label::after {
- content: "· ·";
- position: absolute;
- overflow: hidden;
- left: .50em;
- top: .5em;
- height: 1em;
- letter-spacing: -.04em;
- color: #9b9b9b;
- font-family: "Times New Roman", serif;
- z-index: 2;
- font-size: .6em;
- border-radius: 0;
- transform-origin: 0 0 -.5em;
- backface-visibility: hidden;
-}
-
-.check label::after {
- content: "?";
- top: .65em;
- left: .6em;
- height: .1em;
- width: .35em;
- font-size: .2em;
- transform-origin: 0 0 -.4em;
-}
-
-.check input[type="checkbox"]:checked + label::before,
-.check input[type="checkbox"]:checked + label::after {
- left: 2.55em;
- top: .4em;
- line-height: .1em;
- transform: rotateY(360deg);
-}
-
-.check input[type="checkbox"]:checked + label::after {
- height: .16em;
- top: .55em;
- left: 2.6em;
- font-size: .6em;
- line-height: 0;
-}
-    </style>
-  </head>
-  <body class="g-sidenav-show">
-    <nav class="sidenav navbar navbar-vertical fixed-left navbar-expand-xs navbar-light bg-white loopple-fixed-start" id="sidenav-main">
-      <div class="sidenav-header text-left" >
-          <a    href="/">
-              <img src="/img/logo.png"  
-              width="96" 
-              style="display: block; margin: auto;padding:20px" alt="...">
-          </a>
-      </div>
-      <div class="navbar-inner">
-          <div class="collapse navbar-collapse" id="sidenav-collapse-main">
-              <ul class="navbar-nav">
-                  <li class="nav-item">
-                      <a class="nav-link active" href="/">
-                          <div class="rounded-circle avatar-xs text-center bg-light py-2 px-1 mr-3 d-flex align-items-center justify-content-center">
-                              <i class="fa fa-desktop text-primary"></i>
-                          </div>
-                          <span class="nav-link-text">Dashboard</span>
-                      </a>
-                  </li>
-                  <li class="nav-item">
-                      <a class="nav-link" href="/lawfirms">
-                          <div class="rounded-circle avatar-xs text-center bg-light py-2 px-1 mr-3 d-flex align-items-center justify-content-center">
-                              <i class="fa fa-building text-info"></i>
-                          </div>
-                          <span class="nav-link-text">Law Firms&nbsp;</span>
-                      </a>
-                  </li>
-                  <li class="nav-item">
-                      <a class="nav-link" href="/budget">
-                          <div class="rounded-circle avatar-xs text-center bg-light py-2 px-1 mr-3 d-flex align-items-center justify-content-center">
-                              <i class="fa fa-dollar-sign text-warning"></i>
-                          </div>
-                          <span class="nav-link-text">Budget&nbsp;</span>
-                      </a>
-                  </li>
-                  <li class="nav-item">
-                      <a class="nav-link" href="/compliance">
-                          <div class="rounded-circle avatar-xs text-center bg-light py-2 px-1 mr-3 d-flex align-items-center justify-content-center">
-                              <i class="fa fa-table text-dark"></i>
-                          </div>
-                          <span class="nav-link-text">Compliance</span>
-                      </a>
-                  </li>
-                  <li class="nav-item dropdown">
-                      <a class="nav-link dropdown-toggle" href="#" id="contractsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                          <div class="rounded-circle avatar-xs text-center bg-light py-2 px-1 mr-3 d-flex align-items-center justify-content-center">
-                              <i class="fa fa-file-contract text-danger"></i>
-                          </div>
-                          <span class="nav-link-text">Contracts</span>
-                      </a>
-                      <div class="dropdown-menu" aria-labelledby="contractsDropdown">
-                          <a class="dropdown-item" href="/vendors">Vendors</a>
-                          <a class="dropdown-item" href="/contracts">Contracts</a>
-                      </div>
-                  </li>
-
-                <li class="nav-item">
-                      <a class="nav-link" href="/cases">
-                          <div class="rounded-circle avatar-xs text-center bg-light py-2 px-1 mr-3 d-flex align-items-center justify-content-center">
-                              <i class="fa fa-suitcase text-primary"></i>
-                          </div>
-                          <span class="nav-link-text">Cases</span>
-                      </a>
-                  </li>
-                  <li class="nav-item">
-                    <a class="nav-link" href="/documents">
-                        <div class="rounded-circle avatar-xs text-center bg-light py-2 px-1 mr-3 d-flex align-items-center justify-content-center">
-                            <i class="fa fa-paperclip text-success"></i>
-                        </div>
-                        <span class="nav-link-text">Documents</span>
-                    </a>
-                </li>
-                  <li class="nav-item">
-                      <a class="nav-link" href="https://prolearn.soxfort.com/" target="_blank">
-                          <div class="rounded-circle avatar-xs text-center bg-light py-2 px-1 mr-3 d-flex align-items-center justify-content-center">
-                              <i class="fa fa-graduation-cap text-dark"></i>
-                          </div>
-                          <span class="nav-link-text">Learn</span>
-                      </a>
-                  </li>
-                  <li class="nav-item">
-                      <a class="nav-link" href="/resources">
-                          <div class="rounded-circle avatar-xs text-center bg-light py-2 px-1 mr-3 d-flex align-items-center justify-content-center">
-                              <i class="fa fa-balance-scale text-warning"></i>
-                          </div>
-                          <span class="nav-link-text">Legal Resources</span>
-                      </a>
-                  </li>
-                  <li class="nav-item">
-                      <a class="nav-link" href="/tasks">
-                          <div class="rounded-circle avatar-xs text-center bg-light py-2 px-1 mr-3 d-flex align-items-center justify-content-center">
-                              <i class="fa fa-tasks text-primary"></i>
-                          </div>
-                          <span class="nav-link-text">Tasks</span>
-                      </a>
-                  </li>
-                  <% if (user_role == 'Admin') { %>
-                  <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="contractsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <div class="rounded-circle avatar-xs text-center bg-light py-2 px-1 mr-3 d-flex align-items-center justify-content-center">
-                            <i class="fa fa-cogs text-danger"></i>
-                        </div>
-                        <span class="nav-link-text">Settings</span>
-                    </a>
-                    <div  class="dropdown-menu" aria-labelledby="contractsDropdown">
-                        <a class="dropdown-item" href="/settings/users">Users</a>
-                        <a class="dropdown-item" href="/settings/user-roles">Users Roles</a>
-                        <a class="dropdown-item" href="/settings/departments">Departments</a>
-                        <a class="dropdown-item" href="/settings/case-status">Case Status</a>
-                    </div>
-                </li>
-                <% } %>
-              </ul>
-
-          </div>
-      </div>
-  </nav>
-  <div class="main-content" id="panel">
-    <nav class="navbar navbar-top navbar-expand navbar-dark bg-primary border-bottom" id="navbarTop">
-      <div class="container-fluid">
-          <div class="collapse navbar-collapse" id="navbarSupportedContent">
-              <form class="navbar-search navbar-search-light form-inline mr-sm-3 mb-0" id="navbar-search-main">
-               
-                  <button type="button" class="close" data-action="search-close" data-target="#navbar-search-main" aria-label="Close">
-                      <span aria-hidden="true">x</span>
-                  </button>
-              </form>
-              <ul class="navbar-nav align-items-center  ml-md-auto ">
-                  <li class="nav-item d-xl-none">
-                      <div class="pr-3 sidenav-toggler sidenav-toggler-dark active" data-action="sidenav-pin" data-target="#sidenav-main">
-                          <div class="sidenav-toggler-inner">
-                              <i class="sidenav-toggler-line"></i>
-                              <i class="sidenav-toggler-line"></i>
-                              <i class="sidenav-toggler-line"></i>
-                          </div>
-                      </div>
-                  </li>
-                  <li class="nav-item d-sm-none">
-                      <a class="nav-link" href="#" data-action="search-show" data-target="#navbar-search-main">
-                          <i class="ni ni-zoom-split-in"></i>
-                      </a>
-                  </li>
-                
-              </ul>
-              <ul class="navbar-nav align-items-center  ml-auto ml-md-0 ">
-                  <li class="nav-item dropdown">
-                      <a class="nav-link pr-0" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                          <div class="media align-items-center">
-                              <span class="avatar avatar-sm rounded-circle">
-                                  <img alt="Image placeholder" src="/img/user.png">
-                              </span>
-                              <div class="media-body  ml-2  d-none d-lg-block">
-                                  <span class="mb-0 text-sm  font-weight-bold"><%= user %></span>
-                              </div>
-                          </div>
-                      </a>
-                      <div class="dropdown-menu dropdown-menu-right">
-                          <div class="dropdown-header noti-title">
-                              <h6 class="text-overflow m-0">Welcome!</h6>
-                          </div>
-                          <a href="#!" class="dropdown-item">
-                              <i class="fa fa-user"></i>
-                              <span>My profile</span>
-                          </a>
-                          <a href="#!" class="dropdown-item">
-                              <i class="fa fa-tools"></i>
-                              <span>Settings</span>
-                          </a>
-                          <a href="#!" class="dropdown-item">
-                              <i class="far fa-calendar"></i>
-                              <span>Activity</span>
-                          </a>
-                          <a href="#!" class="dropdown-item">
-                              <i class="fa fa-phone"></i>
-                              <span>Support</span>
-                          </a>
-                          <div class="dropdown-divider"></div>
-                          <a href="/users/logout" class="dropdown-item">
-                              <i class="fa fa-sign-out-alt"></i>
-                              <span>Logout</span>
-                          </a>
-                      </div>
-                  </li>
-              </ul>
-          </div>
-      </div>
-  </nav>
-     <%- body %>
-      </div>
-    <script src="https://rawcdn.githack.com/Loopple/loopple-public-assets/5cef8f62939eeb089fa26d4c53a49198de421e3d/argon-dashboard/js/vendor/jquery.min.js"></script>
-    <script src="https://rawcdn.githack.com/Loopple/loopple-public-assets/5cef8f62939eeb089fa26d4c53a49198de421e3d/argon-dashboard/js/vendor/bootstrap.bundle.min.js"></script>
-    <script src="https://rawcdn.githack.com/Loopple/loopple-public-assets/5cef8f62939eeb089fa26d4c53a49198de421e3d/argon-dashboard/js/vendor/js.cookie.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
-    <script src="https://rawcdn.githack.com/Loopple/loopple-public-assets/5cef8f62939eeb089fa26d4c53a49198de421e3d/argon-dashboard/js/vendor/chart.extension.js"></script>
-    <script src="https://rawcdn.githack.com/Loopple/loopple-public-assets/7bb803d2af2ab6d71d429b0cb459c24a4cd0fbb4/argon-dashboard/js/argon.min.js"></script>
-    <script src="/js/loopple/loopple.js"></script>
-    <script>
-function isCheckedJQuery(a,b) {
-    fetch('/edit-task-status',{
-			method: 'POST',
-			body: JSON.stringify({  
-                id:a,
-                status:b
-			}),
-			headers: {
-				'Content-type': 'application/json; charset=UTF-8'
-			},
-		})
-}
-
-
-var input = document.getElementById('searchInput');
-var table = document.getElementById('table');
-
-// Add event listener to input
-input.addEventListener('input', function() {
-  filterTableRows(input.value);
-});
-
-// Function to filter table rows
-function filterTableRows(filter) {
-  // Get all table rows from the tbody element
-  var rows = table.getElementsByTagName('tr');
-
-  // Loop through all rows, starting from index 1 (skip the header row)
-  for (var i = 1; i < rows.length; i++) {
-    var row = rows[i];
-    var shouldDisplay = false;
-
-    // Loop through all cells in the row
-    for (var j = 0; j < row.cells.length; j++) {
-      var cell = row.cells[j];
-      var cellText = cell.textContent || cell.innerText;
-
-      // Check if the cell text contains the filter value
-      if (cellText.toLowerCase().indexOf(filter.toLowerCase()) > -1) {
-        shouldDisplay = true;
-        break;
-      }
+  <meta charset="utf-8" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <title>ProLegal | Tasks</title>
+  <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" />
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" />
+  <link
+    rel="stylesheet"
+    href="https://rawcdn.githack.com/Loopple/loopple-public-assets/ad60f16c8a16d1dcad75e176c00d7f9e69320cd4/argon-dashboard/css/nucleo/css/nucleo.css" />
+  <link rel="stylesheet" href="/css/theme.css" />
+  <link rel="stylesheet" href="/css/loopple/loopple.css" />
+  <style>
+    .tabs {
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+    #tab-button {
+      display: table;
+      table-layout: fixed;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    #tab-button li {
+      display: table-cell;
+      width: 20%;
+    }
+    #tab-button li a {
+      display: block;
+      padding: 0.5em;
+      background: #eee;
+      border: 1px solid #ddd;
+      text-align: center;
+      color: #000;
+      text-decoration: none;
+    }
+    #tab-button li:not(:first-child) a {
+      border-left: none;
+    }
+    #tab-button li a:hover,
+    #tab-button .is-active a {
+      border-bottom-color: transparent;
+      background: #fff;
+    }
+    .tab-contents {
+      padding: 0.5em 2em 1em;
+      border: 1px solid #ddd;
     }
 
-    // Set the display style of the row based on the filter
-    row.style.display = shouldDisplay ? '' : 'none';
-  }
-}
-        function current_task(t){
-            fetch('/current_task',{
-			method: 'POST',
-			body: JSON.stringify({  
-                task_id:t,
-			}),
-			headers: {
-				'Content-type': 'application/json; charset=UTF-8'
-			},
-		})
+    .tab-button-outer {
+      display: none;
+    }
+    .tab-contents {
+      margin-top: 20px;
+    }
+    @media screen and (min-width: 768px) {
+      .tab-button-outer {
+        position: relative;
+        z-index: 2;
+        display: block;
+      }
+      .tab-select-outer {
+        display: none;
+      }
+      .tab-contents {
+        position: relative;
+        top: -1px;
+        margin-top: 0;
+      }
+    }
+    .check {
+      position: relative;
+      background: linear-gradient(90deg, #f19af3, #f099b5);
+      line-height: 0;
+      font-size: 25px;
+    }
+
+    .check input[type="checkbox"],
+    .check label,
+    .check label::before,
+    .check label::after {
+      appearance: none;
+      display: inline-block;
+      font-size: inherit;
+      border-radius: 1em;
+      border: 0;
+      transition: 0.35s ease-in-out;
+      box-sizing: border-box;
+      cursor: pointer;
+    }
+
+    .check {
+      appearance: none;
+      display: inline-block;
+      border-radius: 1em;
+      border: 0;
+      transition: 0.35s ease-in-out;
+      box-sizing: border-box;
+      cursor: pointer;
+    }
+
+    .check label {
+      width: 2.2em;
+      height: 1em;
+      background: #d7d7d7;
+      overflow: hidden;
+    }
+
+    .check input[type="checkbox"] {
+      position: absolute;
+      z-index: 1;
+      width: 0.8em;
+      height: 0.8em;
+      top: 0.1em;
+      left: 0.1em;
+      background: linear-gradient(45deg, #dedede, #ffffff);
+      box-shadow: 0 6px 7px rgba(0, 0, 0, 0.3);
+      outline: none;
+    }
+
+    .check input[type="checkbox"]:checked {
+      left: 1.3em;
+    }
+
+    .check input[type="checkbox"]:checked + label {
+      background: transparent;
+    }
+
+    .check label::before,
+    .check label::after {
+      content: "· ·";
+      position: absolute;
+      overflow: hidden;
+      left: 0.5em;
+      top: 0.5em;
+      height: 1em;
+      letter-spacing: -0.04em;
+      color: #9b9b9b;
+      font-family: "Times New Roman", serif;
+      z-index: 2;
+      font-size: 0.6em;
+      border-radius: 0;
+      transform-origin: 0 0 -0.5em;
+      backface-visibility: hidden;
+    }
+
+    .check label::after {
+      content: "?";
+      top: 0.65em;
+      left: 0.6em;
+      height: 0.1em;
+      width: 0.35em;
+      font-size: 0.2em;
+      transform-origin: 0 0 -0.4em;
+    }
+
+    .check input[type="checkbox"]:checked + label::before,
+    .check input[type="checkbox"]:checked + label::after {
+      left: 2.55em;
+      top: 0.4em;
+      line-height: 0.1em;
+      transform: rotateY(360deg);
+    }
+
+    .check input[type="checkbox"]:checked + label::after {
+      height: 0.16em;
+      top: 0.55em;
+      left: 2.6em;
+      font-size: 0.6em;
+      line-height: 0;
+    }
+  </style>
+</head>
+<body class="g-sidenav-show">
+  <nav
+    class="sidenav navbar navbar-vertical fixed-left navbar-expand-xs navbar-light bg-white loopple-fixed-start"
+    id="sidenav-main">
+    <div class="sidenav-header text-left">
+      <a href="/">
+        <img
+          src="/img/logo.png"
+          width="96"
+          style="display: block; margin: auto; padding: 20px"
+          alt="..." />
+      </a>
+    </div>
+    <div class="navbar-inner">
+      <div class="collapse navbar-collapse" id="sidenav-collapse-main">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link active" href="/">
+              <div
+                class="rounded-circle avatar-xs text-center bg-light py-2 px-1 mr-3 d-flex align-items-center justify-content-center">
+                <i class="fa fa-desktop text-primary"></i>
+              </div>
+              <span class="nav-link-text">Dashboard</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/lawfirms">
+              <div
+                class="rounded-circle avatar-xs text-center bg-light py-2 px-1 mr-3 d-flex align-items-center justify-content-center">
+                <i class="fa fa-building text-info"></i>
+              </div>
+              <span class="nav-link-text">Law Firms&nbsp;</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/budget">
+              <div
+                class="rounded-circle avatar-xs text-center bg-light py-2 px-1 mr-3 d-flex align-items-center justify-content-center">
+                <i class="fa fa-dollar-sign text-warning"></i>
+              </div>
+              <span class="nav-link-text">Budget&nbsp;</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/compliance">
+              <div
+                class="rounded-circle avatar-xs text-center bg-light py-2 px-1 mr-3 d-flex align-items-center justify-content-center">
+                <i class="fa fa-table text-dark"></i>
+              </div>
+              <span class="nav-link-text">Compliance</span>
+            </a>
+          </li>
+          <li class="nav-item dropdown">
+            <a
+              class="nav-link dropdown-toggle"
+              href="#"
+              id="contractsDropdown"
+              role="button"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false">
+              <div
+                class="rounded-circle avatar-xs text-center bg-light py-2 px-1 mr-3 d-flex align-items-center justify-content-center">
+                <i class="fa fa-file-contract text-danger"></i>
+              </div>
+              <span class="nav-link-text">Contracts</span>
+            </a>
+            <div class="dropdown-menu" aria-labelledby="contractsDropdown">
+              <a class="dropdown-item" href="/vendors">Vendors</a>
+              <a class="dropdown-item" href="/contracts">Contracts</a>
+            </div>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href="/cases">
+              <div
+                class="rounded-circle avatar-xs text-center bg-light py-2 px-1 mr-3 d-flex align-items-center justify-content-center">
+                <i class="fa fa-suitcase text-primary"></i>
+              </div>
+              <span class="nav-link-text">Cases</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/documents">
+              <div
+                class="rounded-circle avatar-xs text-center bg-light py-2 px-1 mr-3 d-flex align-items-center justify-content-center">
+                <i class="fa fa-paperclip text-success"></i>
+              </div>
+              <span class="nav-link-text">Documents</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link"
+              href="https://prolearn.soxfort.com/"
+              target="_blank">
+              <div
+                class="rounded-circle avatar-xs text-center bg-light py-2 px-1 mr-3 d-flex align-items-center justify-content-center">
+                <i class="fa fa-graduation-cap text-dark"></i>
+              </div>
+              <span class="nav-link-text">Learn</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/resources">
+              <div
+                class="rounded-circle avatar-xs text-center bg-light py-2 px-1 mr-3 d-flex align-items-center justify-content-center">
+                <i class="fa fa-balance-scale text-warning"></i>
+              </div>
+              <span class="nav-link-text">Legal Resources</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="/tasks">
+              <div
+                class="rounded-circle avatar-xs text-center bg-light py-2 px-1 mr-3 d-flex align-items-center justify-content-center">
+                <i class="fa fa-tasks text-primary"></i>
+              </div>
+              <span class="nav-link-text">Tasks</span>
+            </a>
+          </li>
+          <% if (user_role == 'Admin') { %>
+          <li class="nav-item dropdown">
+            <a
+              class="nav-link dropdown-toggle"
+              href="#"
+              id="contractsDropdown"
+              role="button"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false">
+              <div
+                class="rounded-circle avatar-xs text-center bg-light py-2 px-1 mr-3 d-flex align-items-center justify-content-center">
+                <i class="fa fa-cogs text-danger"></i>
+              </div>
+              <span class="nav-link-text">Settings</span>
+            </a>
+            <div class="dropdown-menu" aria-labelledby="contractsDropdown">
+              <a class="dropdown-item" href="/settings/users">Users</a>
+              <a class="dropdown-item" href="/settings/user-roles"
+                >Users Roles</a
+              >
+              <a class="dropdown-item" href="/settings/departments"
+                >Departments</a
+              >
+              <a class="dropdown-item" href="/settings/case-status"
+                >Case Status</a
+              >
+            </div>
+          </li>
+          <% } %>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <div class="main-content" id="panel">
+    <nav
+      class="navbar navbar-top navbar-expand navbar-dark bg-primary border-bottom"
+      id="navbarTop">
+      <div class="container-fluid">
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <form
+            class="navbar-search navbar-search-light form-inline mr-sm-3 mb-0"
+            id="navbar-search-main">
+            <button
+              type="button"
+              class="close"
+              data-action="search-close"
+              data-target="#navbar-search-main"
+              aria-label="Close">
+              <span aria-hidden="true">x</span>
+            </button>
+          </form>
+          <ul class="navbar-nav align-items-center ml-md-auto">
+            <li class="nav-item d-xl-none">
+              <div
+                class="pr-3 sidenav-toggler sidenav-toggler-dark active"
+                data-action="sidenav-pin"
+                data-target="#sidenav-main">
+                <div class="sidenav-toggler-inner">
+                  <i class="sidenav-toggler-line"></i>
+                  <i class="sidenav-toggler-line"></i>
+                  <i class="sidenav-toggler-line"></i>
+                </div>
+              </div>
+            </li>
+            <li class="nav-item d-sm-none">
+              <a
+                class="nav-link"
+                href="#"
+                data-action="search-show"
+                data-target="#navbar-search-main">
+                <i class="ni ni-zoom-split-in"></i>
+              </a>
+            </li>
+          </ul>
+          <ul class="navbar-nav align-items-center ml-auto ml-md-0">
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link pr-0"
+                href="#"
+                role="button"
+                data-toggle="dropdown"
+                aria-haspopup="true"
+                aria-expanded="false">
+                <div class="media align-items-center">
+                  <span class="avatar avatar-sm rounded-circle">
+                    <img alt="Image placeholder" src="/img/user.png" />
+                  </span>
+                  <div class="media-body ml-2 d-none d-lg-block">
+                    <span class="mb-0 text-sm font-weight-bold"
+                      ><%= user %></span
+                    >
+                  </div>
+                </div>
+              </a>
+              <div class="dropdown-menu dropdown-menu-right">
+                <div class="dropdown-header noti-title">
+                  <h6 class="text-overflow m-0">Welcome!</h6>
+                </div>
+                <a href="#!" class="dropdown-item">
+                  <i class="fa fa-user"></i>
+                  <span>My profile</span>
+                </a>
+                <a href="#!" class="dropdown-item">
+                  <i class="fa fa-tools"></i>
+                  <span>Settings</span>
+                </a>
+                <a href="#!" class="dropdown-item">
+                  <i class="far fa-calendar"></i>
+                  <span>Activity</span>
+                </a>
+                <a href="#!" class="dropdown-item">
+                  <i class="fa fa-phone"></i>
+                  <span>Support</span>
+                </a>
+                <div class="dropdown-divider"></div>
+                <a href="/users/logout" class="dropdown-item">
+                  <i class="fa fa-sign-out-alt"></i>
+                  <span>Logout</span>
+                </a>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <%- body %>
+  </div>
+  <script src="https://rawcdn.githack.com/Loopple/loopple-public-assets/5cef8f62939eeb089fa26d4c53a49198de421e3d/argon-dashboard/js/vendor/jquery.min.js"></script>
+  <script src="https://rawcdn.githack.com/Loopple/loopple-public-assets/5cef8f62939eeb089fa26d4c53a49198de421e3d/argon-dashboard/js/vendor/bootstrap.bundle.min.js"></script>
+  <script src="https://rawcdn.githack.com/Loopple/loopple-public-assets/5cef8f62939eeb089fa26d4c53a49198de421e3d/argon-dashboard/js/vendor/js.cookie.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+  <script src="https://rawcdn.githack.com/Loopple/loopple-public-assets/5cef8f62939eeb089fa26d4c53a49198de421e3d/argon-dashboard/js/vendor/chart.extension.js"></script>
+  <script src="https://rawcdn.githack.com/Loopple/loopple-public-assets/7bb803d2af2ab6d71d429b0cb459c24a4cd0fbb4/argon-dashboard/js/argon.min.js"></script>
+  <script src="/js/loopple/loopple.js"></script>
+  <script>
+    function isCheckedJQuery(a, b) {
+      fetch("/edit-task-status", {
+        method: "POST",
+        body: JSON.stringify({
+          id: a,
+          status: b,
+        }),
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+        },
+      });
+    }
+
+    var input = document.getElementById("searchInput");
+    var table = document.getElementById("table");
+
+    // Add event listener to input
+    input.addEventListener("input", function () {
+      filterTableRows(input.value);
+    });
+
+    // Function to filter table rows
+    function filterTableRows(filter) {
+      // Get all table rows from the tbody element
+      var rows = table.getElementsByTagName("tr");
+
+      // Loop through all rows, starting from index 1 (skip the header row)
+      for (var i = 1; i < rows.length; i++) {
+        var row = rows[i];
+        var shouldDisplay = false;
+
+        // Loop through all cells in the row
+        for (var j = 0; j < row.cells.length; j++) {
+          var cell = row.cells[j];
+          var cellText = cell.textContent || cell.innerText;
+
+          // Check if the cell text contains the filter value
+          if (cellText.toLowerCase().indexOf(filter.toLowerCase()) > -1) {
+            shouldDisplay = true;
+            break;
+          }
         }
-        
-        $(function() {
-  var $tabButtonItem = $('#tab-button li'),
-      $tabSelect = $('#tab-select'),
-      $tabContents = $('.tab-contents'),
-      activeClass = 'is-active';
 
-  $tabButtonItem.first().addClass(activeClass);
-  $tabContents.not(':first').hide();
+        // Set the display style of the row based on the filter
+        row.style.display = shouldDisplay ? "" : "none";
+      }
+    }
+    function current_task(t) {
+      fetch("/current_task", {
+        method: "POST",
+        body: JSON.stringify({
+          task_id: t,
+        }),
+        headers: {
+          "Content-type": "application/json; charset=UTF-8",
+        },
+      });
+    }
 
-  $tabButtonItem.find('a').on('click', function(e) {
-    var target = $(this).attr('href');
+    $(function () {
+      var $tabButtonItem = $("#tab-button li"),
+        $tabSelect = $("#tab-select"),
+        $tabContents = $(".tab-contents"),
+        activeClass = "is-active";
 
-    $tabButtonItem.removeClass(activeClass);
-    $(this).parent().addClass(activeClass);
-    $tabSelect.val(target);
-    $tabContents.hide();
-    $(target).show();
-    e.preventDefault();
-  });
+      $tabButtonItem.first().addClass(activeClass);
+      $tabContents.not(":first").hide();
 
-  $tabSelect.on('change', function() {
-    var target = $(this).val(),
-        targetSelectNum = $(this).prop('selectedIndex');
+      $tabButtonItem.find("a").on("click", function (e) {
+        var target = $(this).attr("href");
 
-    $tabButtonItem.removeClass(activeClass);
-    $tabButtonItem.eq(targetSelectNum).addClass(activeClass);
-    $tabContents.hide();
-    $(target).show();
-  });
-});
-function edit_task(params1,params2,params3,params4,params5,params6,params7,params8,params9) {
-    console.log("hh")
-    var modal = document.getElementById('exampleModal2');
-var modalTitle = modal.querySelector('.modal-title');
-var modalBody = modal.querySelector('.modal-body');
-  // Set the modal title and body content
-  modalTitle.textContent = `Edit Task`; // Replace with your desired title
-  modalBody.innerHTML = `
+        $tabButtonItem.removeClass(activeClass);
+        $(this).parent().addClass(activeClass);
+        $tabSelect.val(target);
+        $tabContents.hide();
+        $(target).show();
+        e.preventDefault();
+      });
+
+      $tabSelect.on("change", function () {
+        var target = $(this).val(),
+          targetSelectNum = $(this).prop("selectedIndex");
+
+        $tabButtonItem.removeClass(activeClass);
+        $tabButtonItem.eq(targetSelectNum).addClass(activeClass);
+        $tabContents.hide();
+        $(target).show();
+      });
+    });
+    function edit_task(
+      params1,
+      params2,
+      params3,
+      params4,
+      params5,
+      params6,
+      params7,
+      params8,
+      params9
+    ) {
+      console.log("hh");
+      var modal = document.getElementById("exampleModal2");
+      var modalTitle = modal.querySelector(".modal-title");
+      var modalBody = modal.querySelector(".modal-body");
+      // Set the modal title and body content
+      modalTitle.textContent = `Edit Task`; // Replace with your desired title
+      modalBody.innerHTML = `
    
                 <form action="/edit-task?id=${params1}" method="POST">     
             
@@ -546,14 +608,14 @@ var modalBody = modal.querySelector('.modal-body');
                 </div>
                 </form>
   `;
-            }
-            function delete_task(params1,params2) {
-    var modal = document.getElementById('exampleModal3');
-var modalTitle = modal.querySelector('.modal-title');
-var modalBody = modal.querySelector('.modal-body');
-  // Set the modal title and body content
-  modalTitle.textContent = `Are you sure you want to Delete Task:  ${params2} ?`; // Replace with your desired title
-  modalBody.innerHTML = `
+    }
+    function delete_task(params1, params2) {
+      var modal = document.getElementById("exampleModal3");
+      var modalTitle = modal.querySelector(".modal-title");
+      var modalBody = modal.querySelector(".modal-body");
+      // Set the modal title and body content
+      modalTitle.textContent = `Are you sure you want to Delete Task:  ${params2} ?`; // Replace with your desired title
+      modalBody.innerHTML = `
   <form  action="/delete-task?id=${params1}" method="POST">
     <div class="mb-3">
                          
@@ -563,7 +625,6 @@ var modalBody = modal.querySelector('.modal-body');
                     </div>
                 </form>             
   `;
-            }
-    </script>
-  </body>
-  
+    }
+  </script>
+</body>

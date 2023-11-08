@@ -1,106 +1,97 @@
 <section class="">
-    <div
-      class="page-header align-items-start min-vh-50 pt-5 pb-11 m-3 border-radius-lg"
-      style="background-image: url('/img/books.jpg')"
-    >
-      <span class="mask bg-gradient-dark opacity-6"></span>
-      <div class="container">
-        <div class="row justify-content-center">
-          <div class="col-lg-5 text-center mx-auto">
-            <h1 class="text-white mb-2 mt-5">Welcome!</h1>
-            <h4 class="text-lead text-white">
-              National University of Science and Technology.<br />
-              Prolegal Case Management Platform
-            </h4>
-                <% if (message.error) { %>
-                  <div class="alert alert-danger" role="alert">
-                    <%= message.error %>
-                  </div>
-                <% } %>
-                <% if(message.success){ %>
-                 <div class="alert alert-success" role="alert">
-                      <%= message.success %>
-                  </div>
-                  <% } %>
-          </div>
-        </div>
-      </div>
-    </div>
+  <div
+    class="page-header align-items-start min-vh-50 pt-5 pb-11 m-3 border-radius-lg"
+    style="background-image: url('/img/books.jpg')">
+    <span class="mask bg-gradient-dark opacity-6"></span>
     <div class="container">
-      <div class="row mt-lg-n10 mt-md-n12 mt-n11">
-        <div class="col-xl-4 col-lg-5 col-md-7 mx-auto">
-          <div class="card z-index-0">
-            <div class="card-header text-center pt-4"></div>
-            <div>
-              <img
-                src="/img/logo.png"
-                alt="NUST Logo"
-                width="96"
-                height="122"
-                style="display: block; margin: auto"
-              />
-            </div>
-            <div class="card-body">
-              <form action="/users/login" method="POST">
-                <div class="mb-3">
-                  <input
-                    type="email"
-                    name="email"
-                    class="form-control"
-                    placeholder="Email"
-                    aria-label="Email"
-                  />
-                  <div
-                    data-lastpass-icon-root="true"
-                    style="
-                      position: relative !important;
-                      height: 0px !important;
-                      width: 0px !important;
-                      float: left !important;
-                    "
-                  ></div>
-                  <div
-                    data-lastpass-icon-root="true"
-                    style="
-                      position: relative !important;
-                      height: 0px !important;
-                      width: 0px !important;
-                      float: left !important;
-                    "
-                  ></div>
-                  <div
-                    data-lastpass-icon-root="true"
-                    style="
-                      position: relative !important;
-                      height: 0px !important;
-                      width: 0px !important;
-                      float: left !important;
-                    "
-                  ></div>
-                </div>
-                <div class="mb-3">
-                  <input
-                    type="password"
-                    name="password"
-                    class="form-control"
-                    placeholder="Password"
-                    aria-label="Password"
-                  />
-                </div>
-                <a href="/forgot-password">Forgot password</a>
-                <div class="text-center">
-                  <button
-                    type="submit"
-                    class="btn bg-gradient-info w-100 my-4 mb-2"
-                  >
-                    Sign in
-                  </button>
-                </div>
-              </form>
-            </div>
+      <div class="row justify-content-center">
+        <div class="col-lg-5 text-center mx-auto">
+          <h1 class="text-white mb-2 mt-5">Welcome!</h1>
+          <h4 class="text-lead text-white">
+            <br />
+            Prolegal Case Management Platform
+          </h4>
+          <% if (message.error) { %>
+          <div class="alert alert-danger" role="alert">
+            <%= message.error %>
+          </div>
+          <% } %> <% if(message.success){ %>
+          <div class="alert alert-success" role="alert">
+            <%= message.success %>
+          </div>
+          <% } %>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="row mt-lg-n10 mt-md-n12 mt-n11">
+      <div class="col-xl-4 col-lg-5 col-md-7 mx-auto">
+        <div class="card z-index-0">
+          <div class="card-header text-center pt-4"></div>
+          <div>
+            <img
+              src="/img/logo.png"
+              alt="NUST Logo"
+              width="96"
+              height="122"
+              style="display: block; margin: auto" />
+          </div>
+          <div class="card-body">
+            <form action="/users/login" method="POST">
+              <div class="mb-3">
+                <input
+                  type="email"
+                  name="email"
+                  class="form-control"
+                  placeholder="Email"
+                  aria-label="Email" />
+                <div
+                  data-lastpass-icon-root="true"
+                  style="
+                    position: relative !important;
+                    height: 0px !important;
+                    width: 0px !important;
+                    float: left !important;
+                  "></div>
+                <div
+                  data-lastpass-icon-root="true"
+                  style="
+                    position: relative !important;
+                    height: 0px !important;
+                    width: 0px !important;
+                    float: left !important;
+                  "></div>
+                <div
+                  data-lastpass-icon-root="true"
+                  style="
+                    position: relative !important;
+                    height: 0px !important;
+                    width: 0px !important;
+                    float: left !important;
+                  "></div>
+              </div>
+              <div class="mb-3">
+                <input
+                  type="password"
+                  name="password"
+                  class="form-control"
+                  placeholder="Password"
+                  aria-label="Password" />
+              </div>
+              <a href="/forgot-password">Forgot password</a>
+              <div class="text-center">
+                <button
+                  type="submit"
+                  class="btn bg-gradient-info w-100 my-4 mb-2">
+                  Sign in
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       </div>
-      <br /><br />
     </div>
-  </section>
+    <br /><br />
+  </div>
+</section>
