@@ -3636,7 +3636,7 @@ app.post("/compliance-form-part-3", (req, res) => {
         subject:
           "Compliance Survey for the department of " + compliance_department, // Subject line
         text: message,
-        html: `<div>Greetings ${compliance_contact_name} , Please  click this link to complete Compliance Form  <br> <h1> http://localhost:8080/compliance-survey?id=${results1.rows[0].id} </h1> </div>`,
+        html: `<div>Greetings ${compliance_contact_name} , Please  click this link to complete Compliance Form  <br> <h1> https://prolegal-02d79a24b17b.herokuapp.com/compliance-survey?id=${results1.rows[0].id} </h1> </div>`,
       };
       // send mail with defined transport object and mail options
       SENDMAIL(options, (info) => {
@@ -4662,7 +4662,7 @@ app.post("/reset-password", async (req, res) => {
                 <p>Hi, <b>${results.rows[0].name}</b>,</p>
                 <p>We received a request to reset your password for your Prolegal Case Management account. If you did not request this, please disregard this email.</p>
                 <p>To reset your password, please click on the following link:</p>
-                <a href="http://196.220.119.16/set-password?email=${email}">RESET PASSWORD LINK</a>
+                <a href="https://prolegal-02d79a24b17b.herokuapp.com/set-password?email=${email}">RESET PASSWORD LINK</a>
                 <p>This link will only be valid for 24 hours.</p>
                 <p>If you are unable to click on the link, please copy and paste it into your browser.</p>
                 <p>Once you have clicked on the link, you will be taken to a page where you can enter a new password for your account. Please choose a strong password that is at least 8 characters long and includes a mix of upper and lowercase letters, numbers, and symbols.</p>
@@ -4946,7 +4946,7 @@ app.post("/new_user", (req, res) => {
         html: `<div>
                 <p>Hi <b>${user_name}</b>,</p>
         <p>Your account on the Prolegal Case Management System has been created successfully. To verify your account and set your password, please click on the following link:</p>
-        <a href="http://196.220.119.16/set-password?email=${email}">ACTIVATION LINK</a>
+        <a href="https://prolegal-02d79a24b17b.herokuapp.com/set-password?email=${email}">ACTIVATION LINK</a>
         <p>Once you have clicked on the link, you will be prompted to enter a new password for your account. Please choose a strong password that is at least 8 characters long and includes a mix of upper and lowercase letters, numbers, and symbols.</p>
         <p>After you have entered your new password, you will be able to log in to your account.</p>
         <p>If you have any questions, please do not hesitate to contact us.</p>
