@@ -101,7 +101,7 @@ let compliance_array = [];
 let scrapping_results = [];
 let budgetLineItems;
 let user_role = "";
-let task_owner = "";
+let export_compliance_id = "";
 let my_ts = [];
 const InvoiceGenerator = require("./pdf-generator");
 const InvoiceGenerator1 = require("./pdf-generator1");
@@ -3743,13 +3743,16 @@ app.get("/download", async (req, res) => {
 });
 app.get("/download1", async (req, res) => {
   let questions = [];
+  console.log(export_compliance_id);
   compliance_data.forEach((e) => {
-    questions.push(e.questions);
+    if (e.id == export_compliance_id) {
+      questions = e.questions;
+    }
   });
   let yourDate = new Date();
   date_created = formatDate(yourDate);
   let bliData = {
-    items: questions[0],
+    items: questions,
     date_created: date_created,
   };
   if (req.query.export_type == "pdf") {
@@ -5102,6 +5105,9 @@ app.post(
     res.redirect("/");
   }
 );
+app.post("/update-compliance-export", async (req, res) => {
+  export_compliance_id = req.body.id;
+});
 app.post("/update-contact-person-count", async (req, res) => {
   contact_person_count = req.body.count;
 });
