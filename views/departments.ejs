@@ -1,35 +1,28 @@
 <div class="container-fluid pt-3">
-  <%  for (let error of errors) { %>
-    <div class="alert alert-danger" role="alert">
-    <%= error.message %>
-   </div>
-     <% } %>
-     <% if(message.success){ %>
-       <div class="alert alert-success"  role="alert">
-           <%= message.success %>
-       </div>
-       <% } %>
-    <div class="row removable">
-      <div class="col-lg-4">
-        <button
-          type="button"
-          class="btn btn-primary"
-          data-toggle="modal"
-          data-target="#exampleModal"
-        >
-          Add Department
-        </button>
-        <div
-          class="modal fade"
-          id="exampleModal"
-          tabindex="-1"
-          role="dialog"
-          aria-labelledby="exampleModalLabel"
-          aria-hidden="true"
-        >
-          <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <form action="/department" method="POST">
+  <% for (let error of errors) { %>
+  <div class="alert alert-danger" role="alert"><%= error.message %></div>
+  <% } %> <% if(message.success){ %>
+  <div class="alert alert-success" role="alert"><%= message.success %></div>
+  <% } %>
+  <div class="row removable">
+    <div class="col-lg-4">
+      <button
+        type="button"
+        class="btn btn-primary"
+        data-toggle="modal"
+        data-target="#exampleModal">
+        Add Department
+      </button>
+      <div
+        class="modal fade"
+        id="exampleModal"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <form action="/department" method="POST">
               <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">
                   Add Department
@@ -38,162 +31,153 @@
                   type="button"
                   class="close"
                   data-dismiss="modal"
-                  aria-label="Close"
-                >
+                  aria-label="Close">
                   <span aria-hidden="true">X</span>
                 </button>
               </div>
               <div class="modal-body">
-                
-                  <div class="mb-3">
-                    <label for="taskName" class="form-label"
-                      >Department Name</label
-                    >
-                    <input
-                      type="text"
-                      class="form-control"
-                      id="department_name"
-                      name="department_name"
-                      required
-                    />
-                  </div>
-
-                  <div class="mb-3">
-                    <label for="departmentcontact" class="form-label"
-                      >Contact Person</label
-                    >
-                    <input
+                <div class="mb-3">
+                  <label for="taskName" class="form-label"
+                    >Department Name</label
+                  >
+                  <input
                     type="text"
-                      class="form-control"
-                      id="contact_person"
-                      name="contact_person"
-                      required
-                    />
-                  </div>
-                  <div class="mb-3">
-                    <label for="taskName" class="form-label"
-                      >Contact Email</label
-                    >
-                    <input
-                      type="email"
-                      class="form-control"
-                      id="contact_email"
-                      name="contact_email"
-                      required
-                    />
-                  </div>
-                
+                    class="form-control"
+                    id="department_name"
+                    name="department_name"
+                    required />
+                </div>
+
+                <div class="mb-3">
+                  <label for="departmentcontact" class="form-label"
+                    >Contact Person</label
+                  >
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="contact_person"
+                    name="contact_person"
+                    required />
+                </div>
+                <div class="mb-3">
+                  <label for="taskName" class="form-label">Contact Email</label>
+                  <input
+                    type="email"
+                    class="form-control"
+                    id="contact_email"
+                    name="contact_email"
+                    required />
+                </div>
               </div>
               <div class="modal-footer">
                 <button
                   type="button"
                   class="btn btn-secondary"
-                  data-dismiss="modal"
-                >
+                  data-dismiss="modal">
                   Close
                 </button>
                 <button type="submit" class="btn btn-primary">Submit</button>
               </div>
             </form>
-            </div>
           </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="row">
-        <div class="col">
-          <input
-            class="form-control mb-3"
-            id="searchInput"
-            type="text"
-            placeholder="Search"
-          />
-          <table class="table">
-            <thead>
-              <tr>
-                <th>Department Name</th>
-                <th>Contact Person</th>
-                <th>Contact Email</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              <!-- Sample data rows -->
-              <% if (data1.length > 0) { %>
-              <% for (let dat of data1) {  %>
-              <tr>
-                <td><%= dat.department_name %></td>
-                <td><%= dat.contact_person %></td>
-                <td><%= dat.contact_email %></td>
-                <td>
-                  <% if(user_role == 'Admin') { %>
-                  <button  data-toggle="modal"
-                    data-target="#exampleModal2" onclick="editDepartment('<%= dat.id %>','<%= dat.department_name %>','<%= dat.contact_person %>', '<%= dat.contact_email %>')" class="btn btn-primary btn-sm"> 
-                    <i class="fa fa-trash"></i> Edit
-                  </button>
-                  <button data-toggle="modal"
-                  data-target="#exampleModal3" onclick="deleteDepartment('<%= dat.id %>','<%= dat.department_name %>')" class="btn btn-primary btn-sm"> 
-                    <i class="fa fa-trash"></i> Delete 
-                  </button>
-                  <% } %>
-                </td>
-              </tr>
-              <% } %>
-              <% } %>
-              <!-- Add more rows as needed -->
-            </tbody>
-          </table>
         </div>
       </div>
     </div>
   </div>
-  <div
-          class="modal fade"
-          id="exampleModal2"
-          tabindex="-1"
-          role="dialog"
-          aria-labelledby="exampleModalLabel"
-          aria-hidden="true"
-        >
-          <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                  <h5 class="modal-title" id="exampleModalLabel">Update Department</h5>
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                      <span aria-hidden="true">X</span>
-                  </button>
-              </div>
-              <div class="modal-body">
-                 
-              </div>
-            
-          </div>
-          </div>
-        </div>
-        <div
-          class="modal fade"
-          id="exampleModal3"
-          tabindex="-1"
-          role="dialog"
-          aria-labelledby="exampleModalLabel"
-          aria-hidden="true"
-        >
-          <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                  <h5 class="modal-title" id="exampleModalLabel">Delete Budget Department</h5>
-                  <% if(user_role == 'Admin') { %>
-                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                      <span aria-hidden="true">X</span>
-                  </button>
-                  <% } %>
-              </div>
-              <div class="modal-body">
-                 
-              </div>
-            
-          </div>
-          </div>
-        </div>
+
+  <div class="card">
+    <div class="row">
+      <div class="col">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Department Name</th>
+              <th>Contact Person</th>
+              <th>Contact Email</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Sample data rows -->
+            <% if (data1.length > 0) { %> <% for (let dat of data1) { %>
+            <tr>
+              <td><%= dat.department_name %></td>
+              <td><%= dat.contact_person %></td>
+              <td><%= dat.contact_email %></td>
+              <td>
+                <% if(user_role == 'Admin') { %>
+                <button
+                  data-toggle="modal"
+                  data-target="#exampleModal2"
+                  onclick="editDepartment('<%= dat.id %>','<%= dat.department_name %>','<%= dat.contact_person %>', '<%= dat.contact_email %>')"
+                  class="btn btn-primary btn-sm">
+                  <i class="fa fa-trash"></i> Edit
+                </button>
+                <button
+                  data-toggle="modal"
+                  data-target="#exampleModal3"
+                  onclick="deleteDepartment('<%= dat.id %>','<%= dat.department_name %>')"
+                  class="btn btn-primary btn-sm">
+                  <i class="fa fa-trash"></i> Delete
+                </button>
+                <% } %>
+              </td>
+            </tr>
+            <% } %> <% } %>
+            <!-- Add more rows as needed -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<div
+  class="modal fade"
+  id="exampleModal2"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Update Department</h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close">
+          <span aria-hidden="true">X</span>
+        </button>
+      </div>
+      <div class="modal-body"></div>
+    </div>
+  </div>
+</div>
+<div
+  class="modal fade"
+  id="exampleModal3"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">
+          Delete Budget Department
+        </h5>
+        <% if(user_role == 'Admin') { %>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close">
+          <span aria-hidden="true">X</span>
+        </button>
+        <% } %>
+      </div>
+      <div class="modal-body"></div>
+    </div>
+  </div>
+</div>

@@ -1,3 +1,37 @@
+<style>
+  .form-container {
+  margin-top: 20px;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: white;
+}
+
+.form-input {
+  width: 60%;
+  padding: 8px;
+  margin-bottom: 15px;
+  box-sizing: border-box;
+}
+
+.form-buttons {
+  margin-top: 20px;
+}
+
+.cancel-button {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+.ok-button {
+  background-color: #28a745;
+  color: #fff;
+}
+
+</style>
 <div class="container-fluid pt-3">
   <%  for (let error of errors) { %>
     <div class="alert alert-danger" role="alert">
@@ -129,83 +163,217 @@
       <div class=""></div>
       <div class="card">
         <div class="card-header">
-          <h5 class="card-title">Calendar</h5>
          
         <div class="card-body " >
-   <link rel="stylesheet" href="/css/style.css"> 
-     <section class="ftco-section">
-            <div class="container">
-              <div class="row">
-                <div class="col-md-12">
-                  <div class="content w-100">
-                    <div class="calendar-container">
-                      <div class="calendar"> 
-                        <div class="year-header"> 
-                          <span class="left-button fa fa-chevron-left" id="prev"> </span> 
-                          <span class="year" id="label"></span> 
-                          <span class="right-button fa fa-chevron-right" id="next"> </span>
-                        </div> 
-                        <table class="months-table w-100"> 
-                          <tbody>
-                            <tr class="months-row">
-                              <td class="month">Jan</td> 
-                              <td class="month">Feb</td> 
-                              <td class="month">Mar</td> 
-                              <td class="month">Apr</td> 
-                              <td class="month">May</td> 
-                              <td class="month">Jun</td> 
-                              <td class="month">Jul</td>
-                              <td class="month">Aug</td> 
-                              <td class="month">Sep</td> 
-                              <td class="month">Oct</td>          
-                              <td class="month">Nov</td>
-                              <td class="month">Dec</td>
-                            </tr>
-                          </tbody>
-                        </table> 
-                        
-                        <table class="days-table w-100"> 
-                          <td class="day">Sun</td> 
-                          <td class="day">Mon</td> 
-                          <td class="day">Tue</td> 
-                          <td class="day">Wed</td> 
-                          <td class="day">Thu</td> 
-                          <td class="day">Fri</td> 
-                          <td class="day">Sat</td>
-                        </table> 
-                        <div class="frame"> 
-                          <table class="dates-table w-100"> 
-                            <tbody class="tbody">             
-                            </tbody> 
-                          </table>
-                        </div> 
-                        <button class="button " id="add-button">Add Event</button>
+          <div class="container-fluid pt-3">
+            <div class="row removable">
+              <div class="col-lg-12">
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  data-toggle="modal"
+                  data-target="#exampleModal">
+                  Add New
+                </button>
+                <br />
+                <div
+                  class="modal fade"
+                  id="exampleModal"
+                  tabindex="-1"
+                  role="dialog"
+                  aria-labelledby="exampleModalLabel"
+                  aria-hidden="true">
+                  <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Add</h5>
+                        <button
+                          type="button"
+                          class="close"
+                          data-dismiss="modal"
+                          aria-label="Close">
+                          <span aria-hidden="true">×</span>
+                        </button>
                       </div>
-                    </div>
-                    <div class="events-container navbar-dark bg-primary">
-                    </div>
-                    <div class="dialog" id="dialog">
-                        <h2 class="dialog-header"> Add New Task </h2>
-                        <form class="form" id="form">
-                          <div class="form-container" align="center">
-                            <label class="form-label" id="valueFromMyButton" for="name">Task name</label>
-                            <input class="input" type="text" id="name" maxlength="36">
-                            <label class="form-label" id="valueFromMyButton" for="count">Number of people to invite</label>
-                            <input class="input" type="time" id="count" name="appt"> 
-                            
-                            <input type="button" value="Cancel" class="button" id="cancel-button">
-                            <input type="button" value="OK" class="button button-white" id="ok-button">
+                      <div class="modal-body">
+                        <form>
+                          <div class="mb-3">
+                            <label for="description" class="form-label"
+                              >Description</label
+                            >
+                            <textarea
+                              class="form-control"
+                              id="description"
+                              name="description"
+                              rows="3"
+                              required></textarea>
+                          </div>
+      
+                          <div class="mb-3">
+                            <label for="status" class="form-label">Status</label>
+                            <select
+                              class="form-select"
+                              id="status"
+                              name="status"
+                              required>
+                              <option value="In Progress">In Progress</option>
+                              <option value="Pending">Pending</option>
+                              <option value="Completed">Completed</option>
+                              <option value="Renewed">Renewed</option>
+                            </select>
+                          </div>
+      
+                          <div class="mb-3">
+                            <label for="startDate" class="form-label"
+                              >Start Date</label
+                            >
+                            <input
+                              type="date"
+                              class="form-control"
+                              id="startDate"
+                              name="startDate"
+                              required />
+                          </div>
+      
+                          <div class="mb-3">
+                            <label for="dueDate" class="form-label">Due Date</label>
+                            <input
+                              type="date"
+                              class="form-control"
+                              id="dueDate"
+                              name="dueDate"
+                              required />
+                          </div>
+      
+                          <div class="mb-3">
+                            <label for="assignedTo" class="form-label"
+                              >Assigned To</label
+                            >
+                            <input
+                              type="text"
+                              class="form-control"
+                              id="assignedTo"
+                              name="assignedTo"
+                              required />
+                          </div>
+      
+                          <div class="mb-3">
+                            <label for="priority" class="form-label">Priority</label>
+                            <select
+                              class="form-select"
+                              id="priority"
+                              name="priority"
+                              required>
+                              <option value="High">High</option>
+                              <option value="Medium">Medium</option>
+                              <option value="Low">Low</option>
+                            </select>
                           </div>
                         </form>
                       </div>
+                      <div class="modal-footer">
+                        <button
+                          type="button"
+                          class="btn btn-secondary"
+                          data-dismiss="modal">
+                          Close
+                        </button>
+                        <button type="button" class="btn btn-primary">
+                          Save changes
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <br />
+                <div class="card">
+                  <div class="card-header border-0">
+                    <div class="row align-items-center">
+                      <div class="col">
+                        <div class="form-group mb-0">
+                          <div class="input-group">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text"
+                                ><i class="fas fa-search"></i
+                              ></span>
+                            </div>
+                            <input
+                              class="form-control"
+                              placeholder="Search"
+                              type="text" />
+                          </div>
+                        </div>
+                      </div>
+                      <div class="col text-right">
+                        <a href="#!" class="btn btn-sm btn-dark">See all</a>
+                      </div>
+                    </div>
+                  </div>
+      
+                  <div class="table-responsive">
+                    <table class="table align-items-center table-flush">
+                      <thead class="thead-light">
+                        <tr>
+                          <th scope="col">Description</th>
+                          <th scope="col">Status</th>
+                          <th scope="col">Start Date</th>
+                          <th scope="col">End Date</th>
+                          <th scope="col">Assigned To</th>
+                          <th scope="col">Priority</th>
+                          <th scope="col"></th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <th scope="row">
+                            <div class="d-flex align-items-center">
+                              <span class="ml-2">Zimra Tax Clearance</span>
+                            </div>
+                          </th>
+                          <td>
+                            <span>in Progress</span>
+                          </td>
+                          <td>
+                            <span>01/01/2024</span>
+                          </td>
+                          <td>
+                            <span>31/12/2024</span>
+                          </td>
+                          <td>
+                            <span>Morton Mabumbo</span>
+                          </td>
+                          <td>
+                            <div class="d-flex align-items-center">
+                              <span class="ml-2">High</span>
+                            </div>
+                          </td>
+                          <td class="table-actions">
+                            <a
+                              href="#!"
+                              class="table-action text-gray"
+                              data-toggle="tooltip"
+                              data-original-title="Edit Description">
+                              <i class="fas fa-pen"></i>
+                            </a>
+                            <a
+                              href="#!"
+                              class="table-action table-action-delete text-gray ml-2"
+                              data-toggle="tooltip"
+                              data-original-title="Delete Description">
+                              <i class="fas fa-trash"></i>
+                            </a>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
                   </div>
                 </div>
               </div>
             </div>
-          </section>
-          <script src="/js/jquery.min.js"></script>
-          <script src="/js/popper.js"></script>
-          <script src="/js/main.js"></script>
+            <div class="row removable">
+              <div class="col-lg-12"></div>
+            </div>
+          </div>
       </div>
     </div>
     </div>
@@ -235,11 +403,6 @@
                 <th scope="col">
                   <font style="vertical-align: inherit">
                     <font style="vertical-align: inherit">Status</font>
-                  </font>
-                </th>
-                <th scope="col">
-                  <font style="vertical-align: inherit">
-                    <font style="vertical-align: inherit">Completed?</font>
                   </font>
                 </th>
                 <th scope="col">
@@ -275,7 +438,7 @@
                   <div class="d-flex align-items-center">
                     
                     <span>
-                      <p class="car-title"><%= dat.name %></p>
+                      <a href="/tasks"> <p class="car-title"><%= dat.name %></p></a>
                     </span>
                   </div>
                   </td>
@@ -285,14 +448,6 @@
                       <font style="vertical-align: inherit"><%= dat.status %></font>
                     </font>
                   </span>
-                   </td>
-                   <td>
-                      <span>
-                      <label class="custom-toggle">
-                       <input id="check_status" type="checkbox" onclick="isCheckedJQuery('<%= dat.task_id %>','COMPLETED')" name="<%= dat.id %>" value="<%= dat.task_id %>">
-                        <span class="custom-toggle-slider rounded-circle" data-label-off="No" data-label-on="Yes"></span>
-                </label>
-                     </span>
                    </td>
                    <td>
                     <div class="d-flex align-items-center">
@@ -314,15 +469,7 @@
                       <span class="ml-2 car-title" ><%= dat.priority %></span>
                     </div>
                   </td>
-                <!---  <td class="table-actions">
-                    <button class="table-action btn btn-sm btn-block btn-neutral expandBtn"  onclick="delete_task('<%= dat.task_id %>','<%= dat.name %>')" data-toggle="modal" data-target="#exampleModal3" data-original-title="Edit product">
-                      <i class="fas fa-trash"></i>
-                  </button>
-               
-                  <button class="table-action btn btn-sm btn-block btn-neutral"  onclick="edit_task('<%= dat.task_id %>','<%= dat.name %>','<%= dat.start_date %>','<%= dat.due_date %>','<%= dat.priority %>','<%= dat.frequency %>','<%= dat.assigned_to %>','<%= dat.description %>','<%= dat.status %>')" data-toggle="modal" data-target="#exampleModal2" data-original-title="Edit product">
-                      <i class="fas fa-edit"></i>
-                  </button>
-              </td>-->
+             
                 </td>
                  
               </tr>
@@ -339,371 +486,7 @@
       </div>
     </div>
      </div>
-     <div class="row removable">
-      <div class="col-xl-12">
-        <div class=""></div>
-        <div class="card">
-          <div class="card-header">
-            
-            <div class="row align-items-center">
-              <div class="col">
-                <h5 class="card-title">Time Sheets</h5>
-              </div>
-              <div class="col text-right">
-                <button  data-toggle="modal" data-target="#exampleModal6" class="btn btn-sm btn-primary">Add Timesheet</button>
-                <button  data-toggle="modal" data-target="#exampleModalExport1" class="btn btn-sm btn-primary">Export Timesheets</button>
-
-              </div>
-            </div>
-           </div>
-          <div class="card-body" >
-            <div class="tabs">
-              <div class="tab-button-outer">
-                <ul id="tab-button">
-                  <li><a href="#tab01">MY TIMESHEETS</a></li>
-                  <li><a href="#tab02">ALL TIMESHEETS</a></li>
-                </ul>
-              </div>
-              <div class="tab-select-outer">
-                <select id="tab-select">
-                  <option value="#tab01">MY TIMESHEETS</option>
-                  <option value="#tab02">ALL TIMESHEETS</option>
-                </select>
-              </div>
-            
-              <div id="tab01" class="tab-contents">
-                <div  data-tab class="table-responsive tabcontent">
-                  
-                  <% if (my_timesheets.length > 0) { %>
-                  <table class="table align-items-center table-flush">
-                    <thead class="thead-light">
-                      <tr>
-                        <th scope="col">
-                          <font style="vertical-align: inherit">
-                            <font style="vertical-align: inherit"> User</font>
-                          </font>
-                        </th>
-                        <th scope="col">
-                          <font style="vertical-align: inherit">
-                            <font style="vertical-align: inherit"> Task Name</font>
-                          </font>
-                        </th>
-                        <th scope="col">
-                          <font style="vertical-align: inherit">
-                            <font style="vertical-align: inherit">From</font>
-                          </font>
-                        </th>
-                        <th scope="col">
-                          <font style="vertical-align: inherit">
-                            <font style="vertical-align: inherit">To</font>
-                          </font>
-                        </th>
-                        <th scope="col">
-                          <font style="vertical-align: inherit">
-                            <font style="vertical-align: inherit">Case</font>
-                          </font>
-                        </th>
-                        <th scope="col">
-                          <font style="vertical-align: inherit">
-                            <font style="vertical-align: inherit">Contract</font>
-                          </font>
-                        </th>
-                        <th scope="col">
-                          <font style="vertical-align: inherit">
-                            <font style="vertical-align: inherit">Task Description</font>
-                          </font>
-                        </th>
-                        <th scope="col">
-                          
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody id="resultsContainer">
-                        <% for (let dat of my_timesheets) { %>
-                      <tr class="car">
-                        <td scope="row">
-                          <div class="d-flex align-items-center">
-                            
-                            <span>
-                              <p class="car-title"><%= dat.timesheet_owner %></p>
-                            </span>
-                          </div>
-                          </td>
-                        <td scope="row">
-                          <div class="d-flex align-items-center">
-                            
-                            <span>
-                              <p class="car-title"><%= dat.task_name %></p>
-                            </span>
-                          </div>
-                          </td>
-                          <td>
-                            <div class="d-flex align-items-center">
-                            
-                              <span>
-                                <p class="car-title"><%=  moment(dat.start_date).format('YYYY-MM-DD HH:mm') %></p>
-                              </span>
-                            </div>
-                           </td>
-                           <td>
-                            <div class="d-flex align-items-center">
-                            
-                              <span>
-                                <p class="car-title"><%=  moment(dat.end_date).format('YYYY-MM-DD HH:mm') %></p>
-                              </span>
-                            </div>
-                           </td>
-                           <td>
-                            <span>
-                              <p class="car-title"><%= dat.case_name %></p>
-                            </span>
-                          </td>
-                          <td>
-                            <div class="d-flex align-items-center">
-                              <p class="car-title"><%= dat.contract_name %></p>
-                            </div>
-                          </td>
-                          <td>
-                            <div class="d-flex align-items-center">
-                              <p class="car-title" ><%= dat.task_description %></p>
-                            </div>
-                          </td>
-                          <td class="table-actions">
-                            <button data-toggle="modal" data-target="#exampleModal7" data-original-title="Edit product" class="table-action btn btn-sm btn-block btn-neutral" onclick="editTimesheet('<%= dat.task_name %>','<%= dat.start_date %>','<%= dat.end_date %>','<%= dat.case_name %>','<%= dat.contract_name %>','<%= dat.task_description %>', '<%= dat.timesheet_id %>')" >
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <button class="table-action btn btn-sm btn-block btn-neutral"   
-                              data-toggle="modal" data-target="#exampleModal8" data-original-title="Edit product" onclick="deleteTimesheet('<%= dat.task_name %>','<%= dat.timesheet_id %>')">
-                                 <i class="fas fa-trash"></i>
-                             </button>
-                        </td>
-                         
-                      </tr>
-                      <% } %>
-                    </tbody>
-                  </table>
-                  <% } else { %>
-                    <div style="padding: auto;margin:auto;position: relative;left:40%"><p>No  Timesheets to show!</p></div>
-                    
-                  <% } %> 
-                </div>        
-                <div class="row removable">
-                  <div class="col-lg-12">
-                      <div class="row removable">
-                          <div class="col-lg-12">
-                              <div class="row removable">
-                                  <div class="col-lg-4">
-                                      <div class="row removable">
-                                          <div class="col-lg-4">
-                                              <nav aria-label="..." class="">
-                                                  <ul class="pagination">
-                                                      <li class="page-item">
-                                          
-                                                          <% if (page > 1) { %>
-                                                            <a class="page-link" href="/my_timesheets?page=<%= page - 1 %>">
-                                                              <i class="fa fa-angle-left"></i>
-                                                              <span class="sr-only">Previous</span>
-                                                            </a>
-                                                        <% } %>
-                                                      </li>
-                                                      <li class="page-item">
-                                                         
-                                                          <% if (my_timesheets.length === 10) { %>
-                                                            <a class="page-link" href="/my_timesheets?page=<%= page + 1 %>">
-                                                              <i class="fa fa-angle-right"></i>
-                                                              <span class="sr-only">Next</span>
-                                                            </a>
-                                                        <% } %>
-                                                      </li>
-                                                      <li class="page-item">
-                                                          <a class="page-link" href="#"><%= page %></a>
-                                                          </li>
-                                                  </ul>
-                                              </nav>
-                                          </div>
-                                          <div class="col-lg-4"></div>
-                                          <div class="col-lg-4"></div>
-                                      </div>
-                                  </div>
-                                 
-                                  <div class="col-lg-4">
-                                      <div class="row removable">
-                                          <div class="col-lg-6"></div>
-                                          <div class="col-lg-6"></div>
-                                      </div>
-                                  </div>
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-              </div>
-              </div>
-              <% if (user_role == 'Admin') { %>
-              <div id="tab02" class="tab-contents">
-                <div  data-tab class="table-responsive tabcontent">
-                  <% if (all_timesheets.length > 0) { %>
-                   
-                  <table class="table align-items-center table-flush">
-                    <thead class="thead-light">
-                      <tr>
-                        <th scope="col">
-                          <font style="vertical-align: inherit">
-                            <font style="vertical-align: inherit"> User</font>
-                          </font>
-                        </th>
-                        <th scope="col">
-                          <font style="vertical-align: inherit">
-                            <font style="vertical-align: inherit"> Task Name</font>
-                          </font>
-                        </th>
-                        <th scope="col">
-                          <font style="vertical-align: inherit">
-                            <font style="vertical-align: inherit">From</font>
-                          </font>
-                        </th>
-                        <th scope="col">
-                          <font style="vertical-align: inherit">
-                            <font style="vertical-align: inherit">To</font>
-                          </font>
-                        </th>
-                        <th scope="col">
-                          <font style="vertical-align: inherit">
-                            <font style="vertical-align: inherit">Case</font>
-                          </font>
-                        </th>
-                        <th scope="col">
-                          <font style="vertical-align: inherit">
-                            <font style="vertical-align: inherit">Contract</font>
-                          </font>
-                        </th>
-                        <th scope="col">
-                          <font style="vertical-align: inherit">
-                            <font style="vertical-align: inherit">Task Description</font>
-                          </font>
-                        </th>
-                        <th scope="col">
-                          
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody id="resultsContainer">
-                     
-                        <% for (let dat of all_timesheets) { %>
-                          <tr class="car">
-                            <td scope="row">
-                              <div class="d-flex align-items-center">
-                                
-                                <span>
-                                  <p class="car-title"><%= dat.timesheet_owner %></p>
-                                </span>
-                              </div>
-                              </td>
-                            <td scope="row">
-                              <div class="d-flex align-items-center">
-                                
-                                <span>
-                                  <p class="car-title"><%= dat.task_name %></p>
-                                </span>
-                              </div>
-                              </td>
-                              <td>
-                                <div class="d-flex align-items-center">
-                                
-                                  <span>
-                                    <p class="car-title"><%=  moment(dat.start_date).format('YYYY-MM-DD HH:mm') %></p>
-                                  </span>
-                                </div>
-                               </td>
-                               <td>
-                                <div class="d-flex align-items-center">
-                                
-                                  <span>
-                                    <p class="car-title"><%=  moment(dat.end_date).format('YYYY-MM-DD HH:mm') %></p>
-                                  </span>
-                                </div>
-                               </td>
-                               <td>
-                                <span>
-                                  <p class="car-title"><%= dat.case_name %></p>
-                                </span>
-                              </td>
-                              <td>
-                                <div class="d-flex align-items-center">
-                                  <p class="car-title"><%= dat.contract_name %></p>
-                                </div>
-                              </td>
-                              <td>
-                                <div class="d-flex align-items-center">
-                                  <p class=" car-title" ><%= dat.task_description %></p>
-                                </div>
-                              </td>
-                             
-                          </tr>
-                      <% } %>
-                    </tbody>
-                  </table>
-                  <% } else { %>
-                    <div style="padding: auto;margin:auto;position: relative;left:40%"><p>No Timesheets to show!</p></div>
-                    
-                  <% } %> 
-                </div>   
-                <div class="row removable">
-                  <div class="col-lg-12">
-                      <div class="row removable">
-                          <div class="col-lg-12">
-                              <div class="row removable">
-                                  <div class="col-lg-4">
-                                      <div class="row removable">
-                                          <div class="col-lg-4">
-                                              <nav aria-label="..." class="">
-                                                  <ul class="pagination">
-                                                      <li class="page-item">
-                                          
-                                                          <% if (page1 > 1) { %>
-                                                            <a class="page-link" href="/all_timesheets?page1=<%= page1 - 1 %>">
-                                                              <i class="fa fa-angle-left"></i>
-                                                              <span class="sr-only">Previous</span>
-                                                            </a>
-                                                        <% } %>
-                                                      </li>
-                                                      <li class="page-item">
-                                                         
-                                                          <% if (all_timesheets.length === 10) { %>
-                                                            <a class="page-link" href="/all_timesheets?page1=<%= page1 + 1 %>">
-                                                              <i class="fa fa-angle-right"></i>
-                                                              <span class="sr-only">Next</span>
-                                                            </a>
-                                                        <% } %>
-                                                      </li>
-                                                      <li class="page-item">
-                                                          <a class="page-link" href="#"><%= page1 %></a>
-                                                          </li>
-                                                  </ul>
-                                              </nav>
-                                          </div>
-                                          <div class="col-lg-4"></div>
-                                          <div class="col-lg-4"></div>
-                                      </div>
-                                  </div>
-                                 
-                                  <div class="col-lg-4">
-                                      <div class="row removable">
-                                          <div class="col-lg-6"></div>
-                                          <div class="col-lg-6"></div>
-                                      </div>
-                                  </div>
-                              </div>
-                          </div>
-                      </div>
-                  </div>
-              </div>
-              </div>
-              <% } %>
-            </div>
-      </div>
-      </div>
-      </div>
-    </div>
+  
 <div class="modal fade" id="exampleModal2" style="z-index:45" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
@@ -763,30 +546,32 @@
             <div class="container">
               <form action="/add-timesheet" method="POST">
                 <div class="mb-3">
-                  <label for="taskName" class="form-label">Task Name</label>
+                  <label for="taskName" >Task Name</label>
                   <input type="text" class="form-control" id="taskName" name="taskName" required>
                 </div>
                 <div class="row mb-3">
                   <div class="col-md-6">
-                    <label for="fromDateTime" class="form-label">From</label>
+                    <label for="fromDateTime" >From</label>
                     <input type="datetime-local" class="form-control" id="fromDateTime" name="fromDateTime" required>
                   </div>
                   <div class="col-md-6">
-                    <label for="toDateTime" class="form-label">To</label>
+                    <label for="toDateTime" >To</label>
                     <input type="datetime-local" class="form-control" id="toDateTime" name="toDateTime" required>
                   </div>
                 </div>
                 <div class="mb-3">
-                    <label for="case" class="form-label">Case (Optional)</label>
+                    <label for="case" >Case (Optional)</label>
                     <select class="form-select" id="case" name="case_name">
+                      <option value=""></option>
                       <% for (let dat of cases) { %>
                       <option value="<%= dat.case_name %>"><%= dat.case_name %></option>
                       <% } %>
                     </select>
                   </div>
                   <div class="mb-3">
-                    <label for="contract" class="form-label">Contract (Optional)</label>
+                    <label for="contract" >Contract (Optional)</label>
                     <select class="form-select" id="contract" name="contract_name">
+                      <option value=""></option>
                       <% for (let dat of contracts) { %>
                         <option value="<%= dat.name %>"><%= dat.name %></option>
                         <% } %>
@@ -794,7 +579,7 @@
                     </select>
                 </div>
                 <div class="mb-3">
-                  <label for="taskDescription" class="form-label">Task Description</label>
+                  <label for="taskDescription" >Task Description</label>
                   <textarea class="form-control" id="taskDescription" rows="3" name="taskDescription"></textarea>
                 </div>
                 <button type="submit" class="btn btn-primary">Submit</button>

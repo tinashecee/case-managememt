@@ -273,7 +273,7 @@
                           <i class="fas fa-trash"></i>
                       </button>
                    
-                      <button class="table-action btn btn-sm btn-block btn-neutral"  onclick="edit_task('<%= dat.task_id %>','<%= dat.name %>','<%= dat.start_date %>','<%= dat.due_date %>','<%= dat.priority %>','<%= dat.frequency %>','<%= dat.assigned_to %>','<%= dat.description %>','<%= dat.status %>')" data-toggle="modal" data-target="#exampleModal2" data-original-title="Edit product">
+                      <button class="table-action btn btn-sm btn-block btn-neutral"  onclick="edit_task('<%= dat.task_id %>','<%= dat.name %>','<%=  moment(dat.start_date).format('Do MMMM, YYYY') %>','<%=  moment(dat.due_date).format('Do MMMM, YYYY') %>','<%= dat.priority %>','<%= dat.frequency %>','<%= dat.assigned_to %>','<%= dat.description %>','<%= dat.status %>')" data-toggle="modal" data-target="#exampleModal2" data-original-title="Edit product">
                           <i class="fas fa-edit"></i>
                       </button>
                       <% } %>

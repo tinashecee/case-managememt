@@ -13,11 +13,12 @@ const transporter = nodemailer.createTransport({
 });
 
 const SENDMAIL = async (mailDetails, callback) => {
-    try {
-      const info = await transporter.sendMail(mailDetails)
-      callback(info);
-    } catch (error) {
-      console.log(error);
-    } 
-  };
-module.exports =  SENDMAIL ;
+  try {
+    const info = await transporter.sendMail(mailDetails);
+    callback(info);
+    console.log(info);
+  } catch (error) {
+    console.log(error);
+  }
+};
+module.exports = SENDMAIL;

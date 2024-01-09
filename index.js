@@ -21,6 +21,9 @@ const CronJob = require("cron").CronJob;
 ("use strict");
 const SENDMAIL = require("./mailer.js");
 const moment = require("moment");
+const SENDCONTRACTEXPIRY = require("./contract-expiry-email.js");
+const SENDTASKEMAIL = require("./task-email.js");
+const SENDCASEEMAIL = require("./case-email.js");
 const app = express();
 initializePassport(passport);
 const PORT = process.env.PORT || 8080;
@@ -137,27 +140,16 @@ if (process.env.NODE_APP_INSTANCE === "0") {
                 errors.push({ message: err });
               }
               results2.rows.forEach((e) => {
-                const message = "Expiring Contract Alert";
-                const options = {
-                  from: "Prolegal <mochonam19@gmail.com>", // sender address
-                  to: e.email, // receiver email
-                  subject: "A contract is about to expire in a 3 month!", // Subject line
-                  text: message,
-                  html: `<p>Hi ${e.name},</p>
-                            <p>This is a reminder that the contract for ${results1.rows[0].vendor} is about to expire on ${results1.rows[0].end_date}.</p>
-                            <p>Please review the contract details below:</p>
-                            <ul>
-                            <li>Contract Name: ${results1.rows[0].name}</li>
-                            <li>Contract Description: ${results1.rows[0].notes}</li>
-                            <li>Contract Value: $ ${results1.rows[0].contract_value}</li>
-                            <li>Expiry Date: ${results1.rows[0].end_date}</li>
-                            </ul>
-                            <p>Please contact us if you have any questions or need to renew the contract.</p>
-                            <p>Thank you,</p>
-                            <p>Prolegal Team</p>`,
-                };
-                // send mail with defined transport object and mail options
-                SENDMAIL(options, (info) => {});
+                SENDCONTRACTEXPIRY(
+                  e.email,
+                  results1.rows[0].name,
+                  3,
+                  e.name,
+                  results1.rows[0].vendor,
+                  results1.rows[0].end_date,
+                  results1.rows[0].notes,
+                  results1.rows[0].contract_value
+                );
               });
             }
           );
@@ -183,27 +175,16 @@ if (process.env.NODE_APP_INSTANCE === "0") {
                 errors.push({ message: err });
               }
               results2.rows.forEach((e) => {
-                const message = "Expiring Contract Alert";
-                const options = {
-                  from: "Prolegal <mochonam19@gmail.com>", // sender address
-                  to: e.email, // receiver email
-                  subject: "A contract is about to expire in a 2 month!", // Subject line
-                  text: message,
-                  html: `<p>Hi ${e.name},</p>
-                                <p>This is a reminder that the contract for ${results1.rows[0].vendor} is about to expire on ${results1.rows[0].end_date}.</p>
-                                <p>Please review the contract details below:</p>
-                                <ul>
-                                <li>Contract Name: ${results1.rows[0].name}</li>
-                                <li>Contract Description: ${results1.rows[0].notes}</li>
-                                <li>Contract Value: $ ${results1.rows[0].contract_value}</li>
-                                <li>Expiry Date: ${results1.rows[0].end_date}</li>
-                                </ul>
-                                <p>Please contact us if you have any questions or need to renew the contract.</p>
-                                <p>Thank you,</p>
-                                <p>Prolegal Team</p>`,
-                };
-                // send mail with defined transport object and mail options
-                SENDMAIL(options, (info) => {});
+                SENDCONTRACTEXPIRY(
+                  e.email,
+                  results1.rows[0].name,
+                  2,
+                  e.name,
+                  results1.rows[0].vendor,
+                  results1.rows[0].end_date,
+                  results1.rows[0].notes,
+                  results1.rows[0].contract_value
+                );
               });
             }
           );
@@ -229,27 +210,16 @@ if (process.env.NODE_APP_INSTANCE === "0") {
                 errors.push({ message: err });
               }
               results2.rows.forEach((e) => {
-                const message = "Expiring Contract Alert";
-                const options = {
-                  from: "CASE MANAGEMENT SYSTEM <mochonam19@gmail.com>", // sender address
-                  to: e.email, // receiver email
-                  subject: "A contract is about to expire in a 1 month!", // Subject line
-                  text: message,
-                  html: `<p>Hi ${e.name},</p>
-                                    <p>This is a reminder that the contract for ${results1.rows[0].vendor} is about to expire on ${results1.rows[0].end_date}.</p>
-                                    <p>Please review the contract details below:</p>
-                                    <ul>
-                                    <li>Contract Name: ${results1.rows[0].name}</li>
-                                    <li>Contract Description: ${results1.rows[0].notes}</li>
-                                    <li>Contract Value: $ ${results1.rows[0].contract_value}</li>
-                                    <li>Expiry Date: ${results1.rows[0].end_date}</li>
-                                    </ul>
-                                    <p>Please contact us if you have any questions or need to renew the contract.</p>
-                                    <p>Thank you,</p>
-                                    <p>Prolegal Team</p>`,
-                };
-                // send mail with defined transport object and mail options
-                SENDMAIL(options, (info) => {});
+                SENDCONTRACTEXPIRY(
+                  e.email,
+                  results1.rows[0].name,
+                  1,
+                  e.name,
+                  results1.rows[0].vendor,
+                  results1.rows[0].end_date,
+                  results1.rows[0].notes,
+                  results1.rows[0].contract_value
+                );
               });
             }
           );
@@ -268,29 +238,8 @@ function sendEmail(a, b, c, d, e, f) {
       console.log(err);
       errors.push({ message: err });
     }
-    const message = "New Task Assignment";
-    const options = {
-      from: "Prolegal <mochonam19@gmail.com>", // sender address
-      to: results.rows[0].email, // receiver email
-      subject:
-        "A new task has been assigned to you by " + e + " with priority: " + f, // Subject line
-      text: message,
-      html: `<h2>New Task Assigned to You by ${e}</h2>
-        <p>Dear ${a},</p>
-        <p>A new task has been assigned to you in the ProLegal Case Management System. Please review the details below:</p>
-        <ul>
-            <li><strong>Task:</strong> ${b}</li>
-            <li><strong>Description:</strong> ${c}</li>
-            <li><strong>Due Date:</strong> ${d}</li>
-            <li><strong>Assigned By:</strong> ${e}</li>
-        </ul>
-        <p>Please log in to the system to access the task and view any associated files or instructions. Promptly complete the task within the specified deadline to ensure smooth case progress and effective collaboration.</p>
-        <p>If you have any questions, feel free to reach out to the assigner or our support team.</p>
-        <p>Thank you,</p>
-        <p>Prolegal Team<br>`,
-    };
-    // send mail with defined transport object and mail options
-    SENDMAIL(options, (info) => {});
+
+    SENDTASKEMAIL(results.rows[0].email, a, b, c, d, e, f);
   });
 }
 function sendEmail1(a, b, c, d, e, f) {
@@ -299,29 +248,8 @@ function sendEmail1(a, b, c, d, e, f) {
       console.log(err);
       errors.push({ message: err });
     }
-    const message = "New Case Assignment";
-    const options = {
-      from: "Prolegal <mochonam19@gmail.com>", // sender address
-      to: results.rows[0].email, // receiver email
-      subject: "A new task has been assigned to you", // Subject line
-      text: message,
-      html: `<h2>New Case Assigned to You</h2>
-        <p>Dear ${a},</p>
-        <p>A new task has been assigned to you in the ProLegal Case Management System. Please review the details below:</p>
-        <ul>
-            <li><strong>Case:</strong> ${b}</li>
-            <li><strong>Description:</strong> ${c}</li>
-            <li><strong>Start Date:</strong> ${d}</li>
-            <li><strong>End Date:</strong> ${e}</li>
-            <li><strong>Assigned By:</strong> ${f}</li>
-        </ul>
-        <p>Please log in to the system to access the task and view any associated files or instructions. Promptly complete the task within the specified deadline to ensure smooth case progress and effective collaboration.</p>
-        <p>If you have any questions, feel free to reach out to the assigner or our support team.</p>
-        <p>Thank you,</p>
-        <p>Prolegal Team<br>`,
-    };
-    // send mail with defined transport object and mail options
-    SENDMAIL(options, (info) => {});
+
+    SENDCASEEMAIL(email, a, b, c, d, e, f);
   });
 }
 app.post("/upload-case", async (req, res) => {
@@ -478,7 +406,7 @@ app.post("/upload-contract", async (req, res) => {
 });
 app.post("/contract-renewal-email", async (req, res) => {
   let department = req.query.department;
-  let expiry = req.query.expiry_date;
+  let expiry = formatDate(req.query.expiry_date);
   let contract_name = req.query.contract_name;
   let desc = req.query.desc;
   let contract_value = req.query.contract_value;
@@ -881,61 +809,68 @@ app.get("", checkNotAuthenticated, async (req, res) => {
                   console.log(err);
                   errors.push({ message: err });
                 }
-                let _all_timesheets = results5.rows;
-                pool.query(
-                  `SELECT * FROM timesheets WHERE timesheet_owner = $1`,
-                  [req.session.user],
-                  (err, results6) => {
-                    if (err) {
-                      console.log(err);
-                      errors.push({ message: err });
-                    }
-                    function compare(a, b) {
-                      if (a.start_date > b.start_date) {
-                        return -1;
-                      }
-                      if (a.start_date < b.start_date) {
-                        return 1;
-                      }
-                      return 0;
-                    }
-                    let _my_timesheets = results6.rows;
-                    my_ts = results6.rows;
-                    const page = parseInt(req.query.page) || 1; // Current page number
-                    const limit = 10; // Number of items per page
-                    const startIndex = (page - 1) * limit;
-                    const endIndex = page * limit;
-                    const all_timesheets = _all_timesheets
-                      .sort(compare)
-                      .slice(startIndex, endIndex);
-                    const page1 = parseInt(req.query.page1) || 1; // Current page number
-                    const startIndex1 = (page1 - 1) * limit;
-                    const endIndex1 = page1 * limit;
-                    const my_timesheets = _my_timesheets
-                      .sort(compare)
-                      .slice(startIndex1, endIndex1);
-                    res.render("index", {
-                      layout: "./layouts/index-layout",
-                      all_timesheets,
-                      my_timesheets,
-                      page,
-                      page1,
-                      errors,
-                      user_role,
-                      dollarUS: dollarUS,
-                      expiring_contracts: result3.rows,
-                      contracts_length: result2.rows.length,
-                      contracts: result2.rows,
-                      contract_expiring_length: result3.rows.length,
-                      cases_length: results1.rows.length,
-                      cases: results1.rows,
-                      tasks,
-                      authed: authed,
-                      user: req.session.user,
-                      users: results4.rows,
-                    });
+                pool.query(`SELECT * FROM events`, [], (err, results7) => {
+                  if (err) {
+                    console.log(err);
+                    errors.push({ message: err });
                   }
-                );
+                  let _all_timesheets = results5.rows;
+                  pool.query(
+                    `SELECT * FROM timesheets WHERE timesheet_owner = $1`,
+                    [req.session.user],
+                    (err, results6) => {
+                      if (err) {
+                        console.log(err);
+                        errors.push({ message: err });
+                      }
+                      function compare(a, b) {
+                        if (a.start_date > b.start_date) {
+                          return -1;
+                        }
+                        if (a.start_date < b.start_date) {
+                          return 1;
+                        }
+                        return 0;
+                      }
+                      let _my_timesheets = results6.rows;
+                      my_ts = results6.rows;
+                      const page = parseInt(req.query.page) || 1; // Current page number
+                      const limit = 10; // Number of items per page
+                      const startIndex = (page - 1) * limit;
+                      const endIndex = page * limit;
+                      const all_timesheets = _all_timesheets
+                        .sort(compare)
+                        .slice(startIndex, endIndex);
+                      const page1 = parseInt(req.query.page1) || 1; // Current page number
+                      const startIndex1 = (page1 - 1) * limit;
+                      const endIndex1 = page1 * limit;
+                      const my_timesheets = _my_timesheets
+                        .sort(compare)
+                        .slice(startIndex1, endIndex1);
+                      res.render("index", {
+                        layout: "./layouts/index-layout",
+                        all_timesheets,
+                        my_timesheets,
+                        page,
+                        page1,
+                        errors,
+                        user_role,
+                        dollarUS: dollarUS,
+                        expiring_contracts: result3.rows,
+                        contracts_length: result2.rows.length,
+                        contracts: result2.rows,
+                        contract_expiring_length: result3.rows.length,
+                        cases_length: results1.rows.length,
+                        cases: results1.rows,
+                        tasks,
+                        events: results7.rows,
+                        authed: authed,
+                        user: req.session.user,
+                        users: results4.rows,
+                      });
+                    }
+                  );
+                });
               });
             });
           }
@@ -943,6 +878,107 @@ app.get("", checkNotAuthenticated, async (req, res) => {
       });
     });
   });
+});
+app.post("/fetch-events", async (req, res) => {
+  pool.query(`SELECT * FROM events`, [], (err, results7) => {
+    if (err) {
+      console.log(err);
+      errors.push({ message: err });
+    }
+    let data = results7.rows;
+    res.send({ events: data });
+  });
+});
+// Add an event
+app.post("/addEvent", async (req, res) => {
+  const { occasion, venue, attendees, invited_count, year, month, day } =
+    req.body.event;
+  console.log(occasion, venue, attendees, invited_count, year, month, day);
+
+  if (attendees.length > 0) {
+    let emails = [];
+    pool.query(`SELECT * FROM users`, [], (err, results4) => {
+      if (err) {
+        console.log(err);
+        errors.push({ message: err });
+      }
+      let count = 0;
+      results4.rows.forEach((e) => {
+        if (e.name == attendees[count]) {
+          emails.push(e.email);
+        }
+        count += 1;
+      });
+      emails.forEach((e) => {
+        const message = "New Event";
+        const options = {
+          from: "Prolegal <mochonam19@gmail.com>", // sender address
+          to: e, // receiver email
+          subject:
+            occasion +
+            " on " +
+            invited_count +
+            " " +
+            day +
+            "" +
+            month +
+            "" +
+            year, // Subject line
+          text: message,
+          html: `<h2>New Event</h2>
+        <p>Dear User,</p>
+        <p>A new event has been created and you have been added to the attendees:</p>
+        <ul>
+            <li><strong>Event Name:</strong> ${occasion}</li>
+            <li><strong>Venue:</strong> ${venue}</li>
+            <li><strong>Time:</strong> ${invited_count}</li>
+            <li><strong>Date:</strong> ${day}-${month}-${year}</li>
+        </ul>
+        <p>Please log in to the system to view.</p>
+        <p>Thank you,</p>
+        <p>Prolegal Team<br>`,
+        };
+        // send mail with defined transport object and mail options
+        SENDMAIL(options, (info) => {});
+      });
+
+      try {
+        pool.query(
+          "INSERT INTO events (occasion, venue, attendees, invited_count, year, month, day) VALUES ($1, $2, $3, $4, $5, $6, $7)",
+          [occasion, venue, attendees, invited_count, year, month, day],
+          (err, results) => {
+            if (err) {
+              errors.push({ message: err });
+              console.log(err);
+            }
+            req.flash("success", "You have successfully added an event");
+            res.redirect("/");
+          }
+        );
+      } catch (error) {
+        console.error("Error adding event:", error);
+        res.status(500).send("Internal Server Error");
+      }
+    });
+  }
+});
+
+// Delete an event
+app.post("/deleteEvent", async (req, res) => {
+  const eventId = req.body.id;
+  console.log(eventId);
+
+  pool.query(
+    `DELETE from events WHERE occasion = $1`,
+    [eventId],
+    (err, results) => {
+      if (err) {
+        errors.push({ message: err });
+      }
+      req.flash("success", "You have successfully deleted a event");
+      res.redirect("/");
+    }
+  );
 });
 app.get("/assistant", async (req, res) => {
   res.render("assistant", { layout: "./layouts/assistant-layout" });
@@ -1136,7 +1172,7 @@ app.get("/compliance", checkNotAuthenticated, async (req, res) => {
         console.log(err);
         errors.push({ message: err });
       }
-
+      console.log(compliance_data);
       res.render("compliance", {
         layout: "./layouts/compliance-layout",
         user_role,
@@ -3070,7 +3106,7 @@ app.post("/add-contract", (req, res) => {
   let currency = req.body.currency;
   let payment_terms = req.body.payment_terms;
   let status = req.body.signed_status;
-  let contract_value = req.body.contract_value;
+  let contract_value = req.body.contract_value + 0;
   let notes = req.body.description1;
   let yourDate = new Date();
   date_created = formatDate(yourDate);
@@ -3185,6 +3221,7 @@ app.post("/add-vendor", (req, res) => {
     (err, results) => {
       if (err) {
         errors.push({ message: err });
+        console.log(err);
       }
       // console.log(results.row);
       req.flash("success", "You have successfully added a vendor");
@@ -3490,42 +3527,18 @@ app.post("/add-tasks", (req, res) => {
   );
 });
 app.post("/edit-task", (req, res) => {
-  // console.log(req.body)
-  let task_name = req.body.taskName;
-  let start_date = req.body.startDate;
-  let due_date = req.body.dueDate;
-  let priority = req.body.priority;
-  let frequency = req.body.frequency;
-  let assigness = req.body.assiigness;
-  let task_description = req.body.taskDescription;
   let statuss = req.body.status;
   let yourDate = new Date();
   date_created = formatDate(yourDate);
   pool.query(
-    `UPDATE tasks SET name = $1, start_date = $2, due_date = $3, priority = $4, frequency = $5, assigned_to = $6, description = $7, status = $8 WHERE task_id = $9`,
-    [
-      task_name,
-      start_date,
-      due_date,
-      priority,
-      frequency,
-      assigness,
-      task_description,
-      statuss,
-      req.query.id,
-    ],
+    `UPDATE tasks SET  status = $1 WHERE task_id = $2`,
+    [statuss, req.query.id],
     (err, results) => {
       if (err) {
         errors.push({ message: err });
+        console.log(err);
       }
-      sendEmail(
-        assigness,
-        task_name,
-        task_description,
-        due_date,
-        req.session.user,
-        priority
-      );
+
       req.flash("success", "You have successfully edited task");
       res.redirect("/tasks");
     }
@@ -3636,7 +3649,235 @@ app.post("/compliance-form-part-3", (req, res) => {
         subject:
           "Compliance Survey for the department of " + compliance_department, // Subject line
         text: message,
-        html: `<div>Greetings ${compliance_contact_name} , Please  click this link to complete Compliance Form  <br> <h1> https://prolegal-02d79a24b17b.herokuapp.com/compliance-survey?id=${results1.rows[0].id} </h1> </div>`,
+        html: `
+       
+      
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN""http://www.w3.org/TR/REC-html40/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0;">
+<link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+<base target="_blank">
+<title>Gravity Email Template</title>
+<style type="text/css">
+
+body *{font-family: 'Open Sans', Arial, sans-serif }
+
+div, p, a, li, td { -webkit-text-size-adjust:none; }
+
+*{-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;}
+td{word-break: break-word;}
+a{word-break: break-word; text-decoration: none; color: inherit;}
+
+body .ReadMsgBody
+{width: 100%; background-color: #ffffff;}
+body .ExternalClass
+{width: 100%; background-color: #ffffff;}
+body{width: 100%; height: 100%; background-color: #ffffff; margin:0; padding:0; -webkit-font-smoothing: antialiased;}
+html{ background-color:#ffffff; width: 100%;}   
+
+body p {padding: 0!important; margin-top: 0!important; margin-right: 0!important; margin-bottom: 0!important; margin-left: 0!important; }
+body img {user-drag: none; -moz-user-select: none; -webkit-user-drag: none;}
+body .hover:hover {opacity:0.85;filter:alpha(opacity=85);}
+body td img:hover {opacity:0.85;filter:alpha(opacity=85);}
+body .underline:hover {text-decoration: underline!important;}
+body .hoverGreen img {opacity: 1;transition: opacity .40s ease-in-out;-moz-transition: opacity .40s ease-in-out;-webkit-transition: opacity .40s ease-in-out;}
+body .hoverGreen img:hover {opacity:0.1;filter:alpha(opacity=10)transition: opacity .40s ease-in-out;-moz-transition: opacity .40s ease-in-out;-webkit-transition: opacity .40s ease-in-out;}
+body .jump:hover {opacity:0.75; filter:alpha(opacity=75); padding-top: 10px!important;}
+body a.rotator img {-webkit-transition: all 1s ease-in-out;-moz-transition: all 1s ease-in-out; -o-transition: all 1s ease-in-out; -ms-transition: all 1s ease-in-out; }
+body a.rotator img:hover { -webkit-transform: rotate(360deg); -moz-transform: rotate(360deg); -o-transform: rotate(360deg);-ms-transform: rotate(360deg); }
+
+body #logo img {width: 125px; height: auto;}
+body .logo125 img {width: 125px; height: auto;}
+body #icon12 img {width: 12px; height: auto;}
+body .icon75 img {width: 75px; height: auto;}
+body .icon24 img {width: 24px; height: auto;}
+body .icon36 img {width: 36px; height: auto;}
+body .icon40 img {width: 40px; height: auto;}
+body .image280 img {width: 280px; height: auto;}
+body .image245 img {width: 245px; height: auto;}
+body .image200 img {width: 200px; height: auto;}
+body .image275 img {width: 275px; height: auto;}
+body .image250 img {width: 250px; height: auto;}
+body .image230 img {width: 230px; height: auto;}
+body .image600 img {width: 600px; height: auto;}
+body .image135 img {width: 135px; height: auto; -webkit-border-radius: 4px; -moz-border-radius: 4px; border-radius: 4px;}
+body .avatar72 img {width: 72px; height: auto; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;}
+</style>
+
+<style type="text/css">@media only screen and (max-width: 640px){
+		body body{width:auto!important;}
+		body table[class=full] {width: 100%!important; clear: both; }
+		body table[class=mobile] {width: 100%!important; padding-left: 20px; padding-right: 20px; clear: both; }
+		body table[class=fullCenter] {width: 100%!important; text-align: center!important; clear: both; }
+		body td[class=fullCenter] {width: 100%!important; text-align: center!important; clear: both; }
+		body *[class=erase] {display: none;}
+		body *[class=buttonScale] {float: none!important; text-align: center!important; display: inline-block!important; clear: both;}
+		body .image600 img {width: 100%!important;}
+		body td[class=image230] {width: 230!important; text-align: center!important; clear: both; }
+		body .image298 img {width: 100%!important;}
+		table[class=image110] {text-align:center; float:none; width:70%!important;}
+		body td[class=pad30] {padding-left: 25px!important; padding-right: 25px!important; text-align: center!important; clear: both; }
+		body td[class=image298] img {width: 100%!important; text-align: center!important; clear: both; }
+		body .h30 {width: 100%!important; height: 30px!important;}
+		body .h15 {width: 100%!important; height: 15px!important;}
+		body table[class=sponsor] {text-align:center; float:none; width:80%!important;}
+		body .w10 {width: 8%!important; height: 10px!important;}
+		body .pad20 {padding-left: 20px!important; padding-right: 20px!important;}
+		body .h65 {width: 100%; height: 65px!important;}
+}</style>
+
+<style type="text/css">@media only screen and (max-width: 479px){
+		body body{width:auto!important;}
+		body table[class=full] {width: 100%!important; clear: both; }
+		body table[class=mobile] {width: 100%!important; padding-left: 20px; padding-right: 20px; clear: both; }
+		body table[class=fullCenter] {width: 100%!important; text-align: center!important; clear: both; }
+		body td[class=fullCenter] {width: 100%!important; text-align: center!important; clear: both; }
+		body *[class=erase] {display: none;}
+		body *[class=buttonScale] {float: none!important; text-align: center!important; display: inline-block!important; clear: both;}
+		body .eraseMob {display: none!important;}
+		body .font44 {font-size: 36px!important; line-height: 40px!important;}
+		body .image600 img {width: 100%!important;}
+		body td[class=image230] {width: 230!important; text-align: center!important; clear: both; }
+		body .image298 img {width: 100%!important;}
+		body .image280 img {width: 100%!important; text-align: center!important; clear: both; }
+		body .image275 img {width: 100%!important; text-align: center!important; clear: both; }
+		body table[class=image110] {text-align:center; float:none; width:100%!important;}
+		body td[class=pad30] {padding-left: 25px!important; padding-right: 25px!important; text-align: center!important; clear: both; }
+		body .break {display: block!important;}
+		body table[class=mcenter] {text-align:center; vertical-align:middle; clear:both!important; float:none; margin: 0px!important;}
+		body .h30 {width: 100%!important; height: 30px!important;}
+		body .h15 {width: 100%!important; height: 15px!important;}
+		body table[class=sponsor] {text-align:center; float:none; width:100%!important;}
+		body .w10 {width: 8%!important; height: 10px!important;}
+		body .pad20 {padding-left: 20px!important; padding-right: 20px!important;}
+		body .h65 {width: 100%; height: 65px!important;}
+}</style>
+
+</head>
+<body style='margin: 0; padding: 0;'>
+
+<table width="100%" border="0" cellpadding="0" cellspacing="0" align="center" class="full" bgcolor="#f6f6f6" style="background-color: rgb(246, 246, 246);">
+	<tbody><tr>
+		<td width="100%" valign="top" align="center">
+		
+			
+			<table width="100%" border="0" cellpadding="0" cellspacing="0" align="center" class="mobile">
+				<tbody><tr>
+					<td align="center">
+					
+						
+						<table width="100%" border="0" cellpadding="0" cellspacing="0" align="center" class="full">
+							<tbody><tr>
+								<td width="100%" height="65"></td>
+							</tr>
+						</tbody></table>
+						
+						
+						<table width="600" border="0" cellpadding="0" cellspacing="0" align="center" class="full">
+							<tbody><tr>
+								<td width="100%" align="center">
+								
+									<!-- Image 250px - 2 -->
+									<table width="250" border="0" cellpadding="0" cellspacing="0" align="left" style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt; text-align: center;" class="fullCenter">
+										<tbody><tr>
+											<td width="100%" align="center" class="image250">
+												<a href="#" style="text-decoration: none;">
+													<img src="images/165931700114952OzM2aJcQ.png" editable="true" width="250" alt="" border="0" class="hover toModifyImage" >
+												</a>
+											</td>
+										</tr>
+									</tbody></table>
+									
+									<table width="1" border="0" cellpadding="0" cellspacing="0" align="left" style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;" class="full">
+										<tbody><tr>
+											<td width="100%" height="65" style="font-size: 1px; line-height: 1px;">&nbsp;</td>
+										</tr>
+									</tbody></table> 
+									
+									<!-- Text Right -->
+									<table width="310" border="0" cellpadding="0" cellspacing="0" align="right" style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;" class="fullCenter">
+										<tbody><tr>
+											<td valign="middle" width="100%" style="text-align: left; font-family: Helvetica, Arial, sans-serif, 'Open Sans'; font-size: 22px; color: #27272b; line-height: 28px; font-weight: 700;" class="fullCenter">
+												Compliance Survey
+											</td>
+										</tr>
+										<tr>
+											<td width="100%" height="25"></td>
+										</tr>
+										<tr>
+											<td valign="middle" width="100%" style="text-align: left; font-family: Helvetica, Arial, sans-serif, 'Open Sans'; font-size: 14px; color: #828282; line-height: 22px; font-weight: 400;" class="fullCenter">
+												<span style="color: rgb(0, 0, 0);" >Dear ${compliance_contact_name},</span></p><p><br><span style="color: rgb(0, 0, 0);" >A compliance survey for your department, ${compliance_department}, has been created. This survey is designed to assess your department's compliance with Relevant Regulations or Standards.</span></p><p><br><span style="color: rgb(0, 0, 0);" >Please click on the following link to access the survey form.</span></p><p><br><span style="color: rgb(0, 0, 0);" >Regards,&nbsp;</span></p><p><br><span style="color: rgb(0, 0, 0);" >Legal Department</span>
+											</td>
+										</tr>
+										<tr>
+											<td width="100%" height="35"></td>
+										</tr>
+										<!-- Button Left, Scale Center -->
+										<tr>
+											<td class="buttonScale" width="auto" align="left">
+												
+												<table border="0" cellpadding="0" cellspacing="0" align="left" class="buttonScale">
+													<tbody><tr>
+														<td width="auto" align="center" height="37" bgcolor="#27272b" style="border-top-left-radius: 25px; border-top-right-radius: 25px; border-bottom-right-radius: 25px; border-bottom-left-radius: 25px; padding-left: 20px; padding-right: 20px; font-weight: 600; font-family: Helvetica, Arial, sans-serif, 'Open Sans'; color: #ffffff; text-transform: uppercase; background-color: #27272b; font-size: 12px;">
+															<multiline><a href="http://localhost:8080/compliance-survey?id=${results1.rows[0].id}" style="color: #ffffff; font-size: 12px; text-decoration: none; line-height: 34px; width: 100%;">complete survey</a></multiline>
+														</td>
+													</tr>
+												</tbody></table>
+											
+											</td>
+										</tr>
+										<!-- Button Left, Scale Center -->
+									</tbody></table>
+									
+								</td>
+							</tr>
+						</tbody></table>
+						
+						
+						<table width="100%" border="0" cellpadding="0" cellspacing="0" align="center" class="full">
+							<tbody><tr>
+								<td width="100%" height="65"></td>
+							</tr>
+						</tbody></table>
+						
+					</td>
+				</tr>
+			</tbody></table>
+		
+		</td>
+	</tr>
+<!--—EndModule--></tbody></table><table width="100%" border="0" cellpadding="0" cellspacing="0" align="center" class="full" bgcolor="#27272b" style="background-color: rgb(39, 39, 43);">
+	<tbody><tr>
+	  <td width="100%" valign="top" align="center"> 
+	      
+	      <table width="600" border="0" cellpadding="0" cellspacing="0" align="center" class="mobile">
+	        <tbody><tr>
+	          <td width="100%" align="center">
+	            
+	            <table width="100%" border="0" cellpadding="0" cellspacing="0" align="left" style="text-align: center;" class="fullCenter">
+	            <tbody><tr>
+	              <td width="100%" height="25"></td>
+	            </tr>
+	              <tr>
+	                <td width="100%" style="text-align: center; font-family: Helvetica, Arial, sans-serif, 'Open Sans'; font-size: 12px; color: #ffffff; font-weight: 400;" class="fullCenter">
+	                	© 2023 All rights Reserved - ProLegal Legal Management System | Powered by Soxfort Solutions&nbsp;
+	                  </td>
+	              </tr>
+	              <tr>
+	              <td width="100%" height="24"></td>
+	            </tr>
+	            <tr>
+	              <td width="100%" height="1" style="font-size: 1px; line-height: 1px;">&nbsp;</td>
+	            </tr>
+	            </tbody></table></td>
+	        </tr>
+	      </tbody></table>
+	      
+	    </td>
+	</tr>
+<!--—EndModule--></tbody></table>`,
       };
       // send mail with defined transport object and mail options
       SENDMAIL(options, (info) => {
@@ -4546,18 +4787,22 @@ app.post("/compliance_results", (req, res) => {
     if (responses[key] == false) {
       responses[key] = "no";
     }
+    let count = 0;
     compliance_survey_questions.forEach((e) => {
-      if (e.name == key) e.response = responses[key];
+      console.log(e.name, key);
+      if (e.name == key)
+        compliance_survey_questions[count].response = responses[key];
+      count += 1;
     });
   });
   let y = boolean_yes_count + "/" + boolean_count;
-  console.log(responses, y);
   pool.query(
     "UPDATE compliance_results SET responses = $1, date_completed = $2, questions = $3, score = $4 WHERE id = $5",
     [responses, date_created, compliance_survey_questions, y, id],
     (err, results) => {
       if (err) {
         errors.push({ message: err });
+        console.log(err);
       }
       const message = "Survey Completed";
       const options = {
@@ -4575,7 +4820,7 @@ app.post("/compliance_results", (req, res) => {
       };
       // send mail with defined transport object and mail options
       SENDMAIL(options, (info) => {});
-      res.redirect("/budget");
+      res.redirect("/compliance");
     }
   );
 });
@@ -4661,19 +4906,242 @@ app.post("/reset-password", async (req, res) => {
           to: email, // receiver email
           subject: "Prolegal Case Management System - Account Verification", // Subject line
           text: message,
-          html: `<div>
-                <p>Hi, <b>${results.rows[0].name}</b>,</p>
-                <p>We received a request to reset your password for your Prolegal Case Management account. If you did not request this, please disregard this email.</p>
-                <p>To reset your password, please click on the following link:</p>
-                <a href="https://prolegal-02d79a24b17b.herokuapp.com/set-password?email=${email}">RESET PASSWORD LINK</a>
-                <p>This link will only be valid for 24 hours.</p>
-                <p>If you are unable to click on the link, please copy and paste it into your browser.</p>
-                <p>Once you have clicked on the link, you will be taken to a page where you can enter a new password for your account. Please choose a strong password that is at least 8 characters long and includes a mix of upper and lowercase letters, numbers, and symbols.</p>
-                <p>After you have entered your new password, you will be able to log in to your account.</p>
-                <p>If you have any questions, please do not hesitate to contact us.</p>
-                <p>Thank you,</p>
-                <p>Prolegal Team</p>
-        </div>`,
+          html: `
+          <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN""http://www.w3.org/TR/REC-html40/loose.dtd">
+          <html>
+          <head>
+          <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+          <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0;">
+          <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+          <base target="_blank">
+          <title>Gravity Email Template</title>
+          <style type="text/css">
+          
+          body *{font-family: 'Open Sans', Arial, sans-serif }
+          
+          div, p, a, li, td { -webkit-text-size-adjust:none; }
+          
+          *{-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;}
+          td{word-break: break-word;}
+          a{word-break: break-word; text-decoration: none; color: inherit;}
+          
+          body .ReadMsgBody
+          {width: 100%; background-color: #ffffff;}
+          body .ExternalClass
+          {width: 100%; background-color: #ffffff;}
+          body{width: 100%; height: 100%; background-color: #ffffff; margin:0; padding:0; -webkit-font-smoothing: antialiased;}
+          html{ background-color:#ffffff; width: 100%;}   
+          
+          body p {padding: 0!important; margin-top: 0!important; margin-right: 0!important; margin-bottom: 0!important; margin-left: 0!important; }
+          body img {user-drag: none; -moz-user-select: none; -webkit-user-drag: none;}
+          body .hover:hover {opacity:0.85;filter:alpha(opacity=85);}
+          body td img:hover {opacity:0.85;filter:alpha(opacity=85);}
+          body .underline:hover {text-decoration: underline!important;}
+          body .hoverGreen img {opacity: 1;transition: opacity .40s ease-in-out;-moz-transition: opacity .40s ease-in-out;-webkit-transition: opacity .40s ease-in-out;}
+          body .hoverGreen img:hover {opacity:0.1;filter:alpha(opacity=10)transition: opacity .40s ease-in-out;-moz-transition: opacity .40s ease-in-out;-webkit-transition: opacity .40s ease-in-out;}
+          body .jump:hover {opacity:0.75; filter:alpha(opacity=75); padding-top: 10px!important;}
+          body a.rotator img {-webkit-transition: all 1s ease-in-out;-moz-transition: all 1s ease-in-out; -o-transition: all 1s ease-in-out; -ms-transition: all 1s ease-in-out; }
+          body a.rotator img:hover { -webkit-transform: rotate(360deg); -moz-transform: rotate(360deg); -o-transform: rotate(360deg);-ms-transform: rotate(360deg); }
+          
+          body #logo img {width: 125px; height: auto;}
+          body .logo125 img {width: 125px; height: auto;}
+          body #icon12 img {width: 12px; height: auto;}
+          body .icon75 img {width: 75px; height: auto;}
+          body .icon24 img {width: 24px; height: auto;}
+          body .icon36 img {width: 36px; height: auto;}
+          body .icon40 img {width: 40px; height: auto;}
+          body .image280 img {width: 280px; height: auto;}
+          body .image245 img {width: 245px; height: auto;}
+          body .image200 img {width: 200px; height: auto;}
+          body .image275 img {width: 275px; height: auto;}
+          body .image250 img {width: 250px; height: auto;}
+          body .image230 img {width: 230px; height: auto;}
+          body .image600 img {width: 600px; height: auto;}
+          body .image135 img {width: 135px; height: auto; -webkit-border-radius: 4px; -moz-border-radius: 4px; border-radius: 4px;}
+          body .avatar72 img {width: 72px; height: auto; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;}
+          </style>
+          
+          <style type="text/css">@media only screen and (max-width: 640px){
+              body body{width:auto!important;}
+              body table[class=full] {width: 100%!important; clear: both; }
+              body table[class=mobile] {width: 100%!important; padding-left: 20px; padding-right: 20px; clear: both; }
+              body table[class=fullCenter] {width: 100%!important; text-align: center!important; clear: both; }
+              body td[class=fullCenter] {width: 100%!important; text-align: center!important; clear: both; }
+              body *[class=erase] {display: none;}
+              body *[class=buttonScale] {float: none!important; text-align: center!important; display: inline-block!important; clear: both;}
+              body .image600 img {width: 100%!important;}
+              body td[class=image230] {width: 230!important; text-align: center!important; clear: both; }
+              body .image298 img {width: 100%!important;}
+              table[class=image110] {text-align:center; float:none; width:70%!important;}
+              body td[class=pad30] {padding-left: 25px!important; padding-right: 25px!important; text-align: center!important; clear: both; }
+              body td[class=image298] img {width: 100%!important; text-align: center!important; clear: both; }
+              body .h30 {width: 100%!important; height: 30px!important;}
+              body .h15 {width: 100%!important; height: 15px!important;}
+              body table[class=sponsor] {text-align:center; float:none; width:80%!important;}
+              body .w10 {width: 8%!important; height: 10px!important;}
+              body .pad20 {padding-left: 20px!important; padding-right: 20px!important;}
+              body .h65 {width: 100%; height: 65px!important;}
+          }</style>
+          
+          <style type="text/css">@media only screen and (max-width: 479px){
+              body body{width:auto!important;}
+              body table[class=full] {width: 100%!important; clear: both; }
+              body table[class=mobile] {width: 100%!important; padding-left: 20px; padding-right: 20px; clear: both; }
+              body table[class=fullCenter] {width: 100%!important; text-align: center!important; clear: both; }
+              body td[class=fullCenter] {width: 100%!important; text-align: center!important; clear: both; }
+              body *[class=erase] {display: none;}
+              body *[class=buttonScale] {float: none!important; text-align: center!important; display: inline-block!important; clear: both;}
+              body .eraseMob {display: none!important;}
+              body .font44 {font-size: 36px!important; line-height: 40px!important;}
+              body .image600 img {width: 100%!important;}
+              body td[class=image230] {width: 230!important; text-align: center!important; clear: both; }
+              body .image298 img {width: 100%!important;}
+              body .image280 img {width: 100%!important; text-align: center!important; clear: both; }
+              body .image275 img {width: 100%!important; text-align: center!important; clear: both; }
+              body table[class=image110] {text-align:center; float:none; width:100%!important;}
+              body td[class=pad30] {padding-left: 25px!important; padding-right: 25px!important; text-align: center!important; clear: both; }
+              body .break {display: block!important;}
+              body table[class=mcenter] {text-align:center; vertical-align:middle; clear:both!important; float:none; margin: 0px!important;}
+              body .h30 {width: 100%!important; height: 30px!important;}
+              body .h15 {width: 100%!important; height: 15px!important;}
+              body table[class=sponsor] {text-align:center; float:none; width:100%!important;}
+              body .w10 {width: 8%!important; height: 10px!important;}
+              body .pad20 {padding-left: 20px!important; padding-right: 20px!important;}
+              body .h65 {width: 100%; height: 65px!important;}
+          }</style>
+          
+          </head>
+          <body style='margin: 0; padding: 0;'>
+          
+          <table width="100%" border="0" cellpadding="0" cellspacing="0" align="center" class="full" bgcolor="#f6f6f6" style="background-color: rgb(246, 246, 246);">
+            <tbody><tr>
+              <td width="100%" valign="top" align="center">
+              
+                
+                <table width="100%" border="0" cellpadding="0" cellspacing="0" align="center" class="mobile">
+                  <tbody><tr>
+                    <td align="center">
+                    
+                      
+                      <table width="100%" border="0" cellpadding="0" cellspacing="0" align="center" class="full">
+                        <tbody><tr>
+                          <td width="100%" height="65"></td>
+                        </tr>
+                      </tbody></table>
+                      
+                      
+                      <table width="600" border="0" cellpadding="0" cellspacing="0" align="center" class="full">
+                        <tbody><tr>
+                          <td width="100%" align="center">
+                          
+                            <!-- Image 250px - 2 -->
+                            <table width="250" border="0" cellpadding="0" cellspacing="0" align="left" style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt; text-align: center;" class="fullCenter">
+                              <tbody><tr>
+                                <td width="100%" align="center" class="image250">
+                                  <a href="#" style="text-decoration: none;">
+                                    <img src="images/165931700114952OzM2aJcQ.png" editable="true" width="250" alt="" border="0" class="hover toModifyImage" >
+                                  </a>
+                                </td>
+                              </tr>
+                            </tbody></table>
+                            
+                            <table width="1" border="0" cellpadding="0" cellspacing="0" align="left" style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;" class="full">
+                              <tbody><tr>
+                                <td width="100%" height="65" style="font-size: 1px; line-height: 1px;">&nbsp;</td>
+                              </tr>
+                            </tbody></table> 
+                            
+                            <!-- Text Right -->
+                            <table width="310" border="0" cellpadding="0" cellspacing="0" align="right" style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;" class="fullCenter">
+                              <tbody><tr>
+                                <td valign="middle" width="100%" style="text-align: left; font-family: Helvetica, Arial, sans-serif, 'Open Sans'; font-size: 22px; color: #27272b; line-height: 28px; font-weight: 700;" class="fullCenter">
+                                  Prolegal Case Management System - Account Verification
+                                </td>
+                              </tr>
+                              <tr>
+                                <td width="100%" height="25"></td>
+                              </tr>
+                              <tr>
+                                <td valign="middle" width="100%" style="text-align: left; font-family: Helvetica, Arial, sans-serif, 'Open Sans'; font-size: 14px; color: #828282; line-height: 22px; font-weight: 400;" class="fullCenter">
+                                  <span style="color: rgb(0, 0, 0);" >Dear ${results.rows[0].name},</span></p><p><br><span style="color: rgb(0, 0, 0);" >  <p>We received a request to reset your password for your Prolegal Case Management account. If you did not request this, please disregard this email.</p>
+                                    <p>To reset your password, please click on the following link:</p>
+                                    <a href="https://prolegal-02d79a24b17b.herokuapp.com/set-password?email=${email}">RESET PASSWORD LINK</a>
+                                    <p>This link will only be valid for 24 hours.</p>
+                                    <p>If you are unable to click on the link, please copy and paste it into your browser.</p>
+                                    <p>Once you have clicked on the link, you will be taken to a page where you can enter a new password for your account. Please choose a strong password that is at least 8 characters long and includes a mix of upper and lowercase letters, numbers, and symbols.</p>
+                                    <p>After you have entered your new password, you will be able to log in to your account.</p>
+                                    <p>If you have any questions, please do not hesitate to contact us.</p>
+                                    <p>Thank you,</p>
+                                    <p>Prolegal Team</p></span>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td width="100%" height="35"></td>
+                              </tr>
+                              <!-- Button Left, Scale Center -->
+                              <tr>
+                                <td class="buttonScale" width="auto" align="left">
+                                  
+                                  <table border="0" cellpadding="0" cellspacing="0" align="left" class="buttonScale">
+                                    <tbody><tr>
+                                      <td width="auto" align="center" height="37" bgcolor="#27272b" style="border-top-left-radius: 25px; border-top-right-radius: 25px; border-bottom-right-radius: 25px; border-bottom-left-radius: 25px; padding-left: 20px; padding-right: 20px; font-weight: 600; font-family: Helvetica, Arial, sans-serif, 'Open Sans'; color: #ffffff; text-transform: uppercase; background-color: #27272b; font-size: 12px;">
+                                        <multiline><a href="https://prolegal-02d79a24b17b.herokuapp.com/compliance-survey?id=${results1.rows[0].id}" style="color: #ffffff; font-size: 12px; text-decoration: none; line-height: 34px; width: 100%;">complete survey</a></multiline>
+                                      </td>
+                                    </tr>
+                                  </tbody></table>
+                                
+                                </td>
+                              </tr>
+                              <!-- Button Left, Scale Center -->
+                            </tbody></table>
+                            
+                          </td>
+                        </tr>
+                      </tbody></table>
+                      
+                      
+                      <table width="100%" border="0" cellpadding="0" cellspacing="0" align="center" class="full">
+                        <tbody><tr>
+                          <td width="100%" height="65"></td>
+                        </tr>
+                      </tbody></table>
+                      
+                    </td>
+                  </tr>
+                </tbody></table>
+              
+              </td>
+            </tr>
+          <!--—EndModule--></tbody></table><table width="100%" border="0" cellpadding="0" cellspacing="0" align="center" class="full" bgcolor="#27272b" style="background-color: rgb(39, 39, 43);">
+            <tbody><tr>
+              <td width="100%" valign="top" align="center"> 
+                  
+                  <table width="600" border="0" cellpadding="0" cellspacing="0" align="center" class="mobile">
+                    <tbody><tr>
+                      <td width="100%" align="center">
+                        
+                        <table width="100%" border="0" cellpadding="0" cellspacing="0" align="left" style="text-align: center;" class="fullCenter">
+                        <tbody><tr>
+                          <td width="100%" height="25"></td>
+                        </tr>
+                          <tr>
+                            <td width="100%" style="text-align: center; font-family: Helvetica, Arial, sans-serif, 'Open Sans'; font-size: 12px; color: #ffffff; font-weight: 400;" class="fullCenter">
+                              © 2023 All rights Reserved - ProLegal Legal Management System | Powered by Soxfort Solutions&nbsp;
+                              </td>
+                          </tr>
+                          <tr>
+                          <td width="100%" height="24"></td>
+                        </tr>
+                        <tr>
+                          <td width="100%" height="1" style="font-size: 1px; line-height: 1px;">&nbsp;</td>
+                        </tr>
+                        </tbody></table></td>
+                    </tr>
+                  </tbody></table>
+                  
+                </td>
+            </tr>
+          <!--—EndModule--></tbody></table>`,
         };
         // send mail with defined transport object and mail options
         SENDMAIL(options, (info) => {
@@ -4946,16 +5414,239 @@ app.post("/new_user", (req, res) => {
         to: email, // receiver email
         subject: "Prolegal Case Management System - Account Verification", // Subject line
         text: message,
-        html: `<div>
-                <p>Hi <b>${user_name}</b>,</p>
-        <p>Your account on the Prolegal Case Management System has been created successfully. To verify your account and set your password, please click on the following link:</p>
-        <a href="https://prolegal-02d79a24b17b.herokuapp.com/set-password?email=${email}">ACTIVATION LINK</a>
-        <p>Once you have clicked on the link, you will be prompted to enter a new password for your account. Please choose a strong password that is at least 8 characters long and includes a mix of upper and lowercase letters, numbers, and symbols.</p>
-        <p>After you have entered your new password, you will be able to log in to your account.</p>
-        <p>If you have any questions, please do not hesitate to contact us.</p>
-        <p>Thank you,</p>
-        <p>Prolegal Case Management Team</p>
-        </div>`,
+        html: `
+        <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN""http://www.w3.org/TR/REC-html40/loose.dtd">
+        <html>
+        <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0;">
+        <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/css'>
+        <base target="_blank">
+        <title>Gravity Email Template</title>
+        <style type="text/css">
+        
+        body *{font-family: 'Open Sans', Arial, sans-serif }
+        
+        div, p, a, li, td { -webkit-text-size-adjust:none; }
+        
+        *{-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;}
+        td{word-break: break-word;}
+        a{word-break: break-word; text-decoration: none; color: inherit;}
+        
+        body .ReadMsgBody
+        {width: 100%; background-color: #ffffff;}
+        body .ExternalClass
+        {width: 100%; background-color: #ffffff;}
+        body{width: 100%; height: 100%; background-color: #ffffff; margin:0; padding:0; -webkit-font-smoothing: antialiased;}
+        html{ background-color:#ffffff; width: 100%;}   
+        
+        body p {padding: 0!important; margin-top: 0!important; margin-right: 0!important; margin-bottom: 0!important; margin-left: 0!important; }
+        body img {user-drag: none; -moz-user-select: none; -webkit-user-drag: none;}
+        body .hover:hover {opacity:0.85;filter:alpha(opacity=85);}
+        body td img:hover {opacity:0.85;filter:alpha(opacity=85);}
+        body .underline:hover {text-decoration: underline!important;}
+        body .hoverGreen img {opacity: 1;transition: opacity .40s ease-in-out;-moz-transition: opacity .40s ease-in-out;-webkit-transition: opacity .40s ease-in-out;}
+        body .hoverGreen img:hover {opacity:0.1;filter:alpha(opacity=10)transition: opacity .40s ease-in-out;-moz-transition: opacity .40s ease-in-out;-webkit-transition: opacity .40s ease-in-out;}
+        body .jump:hover {opacity:0.75; filter:alpha(opacity=75); padding-top: 10px!important;}
+        body a.rotator img {-webkit-transition: all 1s ease-in-out;-moz-transition: all 1s ease-in-out; -o-transition: all 1s ease-in-out; -ms-transition: all 1s ease-in-out; }
+        body a.rotator img:hover { -webkit-transform: rotate(360deg); -moz-transform: rotate(360deg); -o-transform: rotate(360deg);-ms-transform: rotate(360deg); }
+        
+        body #logo img {width: 125px; height: auto;}
+        body .logo125 img {width: 125px; height: auto;}
+        body #icon12 img {width: 12px; height: auto;}
+        body .icon75 img {width: 75px; height: auto;}
+        body .icon24 img {width: 24px; height: auto;}
+        body .icon36 img {width: 36px; height: auto;}
+        body .icon40 img {width: 40px; height: auto;}
+        body .image280 img {width: 280px; height: auto;}
+        body .image245 img {width: 245px; height: auto;}
+        body .image200 img {width: 200px; height: auto;}
+        body .image275 img {width: 275px; height: auto;}
+        body .image250 img {width: 250px; height: auto;}
+        body .image230 img {width: 230px; height: auto;}
+        body .image600 img {width: 600px; height: auto;}
+        body .image135 img {width: 135px; height: auto; -webkit-border-radius: 4px; -moz-border-radius: 4px; border-radius: 4px;}
+        body .avatar72 img {width: 72px; height: auto; -webkit-border-radius: 3px; -moz-border-radius: 3px; border-radius: 3px;}
+        </style>
+        
+        <style type="text/css">@media only screen and (max-width: 640px){
+            body body{width:auto!important;}
+            body table[class=full] {width: 100%!important; clear: both; }
+            body table[class=mobile] {width: 100%!important; padding-left: 20px; padding-right: 20px; clear: both; }
+            body table[class=fullCenter] {width: 100%!important; text-align: center!important; clear: both; }
+            body td[class=fullCenter] {width: 100%!important; text-align: center!important; clear: both; }
+            body *[class=erase] {display: none;}
+            body *[class=buttonScale] {float: none!important; text-align: center!important; display: inline-block!important; clear: both;}
+            body .image600 img {width: 100%!important;}
+            body td[class=image230] {width: 230!important; text-align: center!important; clear: both; }
+            body .image298 img {width: 100%!important;}
+            table[class=image110] {text-align:center; float:none; width:70%!important;}
+            body td[class=pad30] {padding-left: 25px!important; padding-right: 25px!important; text-align: center!important; clear: both; }
+            body td[class=image298] img {width: 100%!important; text-align: center!important; clear: both; }
+            body .h30 {width: 100%!important; height: 30px!important;}
+            body .h15 {width: 100%!important; height: 15px!important;}
+            body table[class=sponsor] {text-align:center; float:none; width:80%!important;}
+            body .w10 {width: 8%!important; height: 10px!important;}
+            body .pad20 {padding-left: 20px!important; padding-right: 20px!important;}
+            body .h65 {width: 100%; height: 65px!important;}
+        }</style>
+        
+        <style type="text/css">@media only screen and (max-width: 479px){
+            body body{width:auto!important;}
+            body table[class=full] {width: 100%!important; clear: both; }
+            body table[class=mobile] {width: 100%!important; padding-left: 20px; padding-right: 20px; clear: both; }
+            body table[class=fullCenter] {width: 100%!important; text-align: center!important; clear: both; }
+            body td[class=fullCenter] {width: 100%!important; text-align: center!important; clear: both; }
+            body *[class=erase] {display: none;}
+            body *[class=buttonScale] {float: none!important; text-align: center!important; display: inline-block!important; clear: both;}
+            body .eraseMob {display: none!important;}
+            body .font44 {font-size: 36px!important; line-height: 40px!important;}
+            body .image600 img {width: 100%!important;}
+            body td[class=image230] {width: 230!important; text-align: center!important; clear: both; }
+            body .image298 img {width: 100%!important;}
+            body .image280 img {width: 100%!important; text-align: center!important; clear: both; }
+            body .image275 img {width: 100%!important; text-align: center!important; clear: both; }
+            body table[class=image110] {text-align:center; float:none; width:100%!important;}
+            body td[class=pad30] {padding-left: 25px!important; padding-right: 25px!important; text-align: center!important; clear: both; }
+            body .break {display: block!important;}
+            body table[class=mcenter] {text-align:center; vertical-align:middle; clear:both!important; float:none; margin: 0px!important;}
+            body .h30 {width: 100%!important; height: 30px!important;}
+            body .h15 {width: 100%!important; height: 15px!important;}
+            body table[class=sponsor] {text-align:center; float:none; width:100%!important;}
+            body .w10 {width: 8%!important; height: 10px!important;}
+            body .pad20 {padding-left: 20px!important; padding-right: 20px!important;}
+            body .h65 {width: 100%; height: 65px!important;}
+        }</style>
+        
+        </head>
+        <body style='margin: 0; padding: 0;'>
+        
+        <table width="100%" border="0" cellpadding="0" cellspacing="0" align="center" class="full" bgcolor="#f6f6f6" style="background-color: rgb(246, 246, 246);">
+          <tbody><tr>
+            <td width="100%" valign="top" align="center">
+            
+              
+              <table width="100%" border="0" cellpadding="0" cellspacing="0" align="center" class="mobile">
+                <tbody><tr>
+                  <td align="center">
+                  
+                    
+                    <table width="100%" border="0" cellpadding="0" cellspacing="0" align="center" class="full">
+                      <tbody><tr>
+                        <td width="100%" height="65"></td>
+                      </tr>
+                    </tbody></table>
+                    
+                    
+                    <table width="600" border="0" cellpadding="0" cellspacing="0" align="center" class="full">
+                      <tbody><tr>
+                        <td width="100%" align="center">
+                        
+                          <!-- Image 250px - 2 -->
+                          <table width="250" border="0" cellpadding="0" cellspacing="0" align="left" style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt; text-align: center;" class="fullCenter">
+                            <tbody><tr>
+                              <td width="100%" align="center" class="image250">
+                                <a href="#" style="text-decoration: none;">
+                                  <img src="images/165931700114952OzM2aJcQ.png" editable="true" width="250" alt="" border="0" class="hover toModifyImage" >
+                                </a>
+                              </td>
+                            </tr>
+                          </tbody></table>
+                          
+                          <table width="1" border="0" cellpadding="0" cellspacing="0" align="left" style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;" class="full">
+                            <tbody><tr>
+                              <td width="100%" height="65" style="font-size: 1px; line-height: 1px;">&nbsp;</td>
+                            </tr>
+                          </tbody></table> 
+                          
+                          <!-- Text Right -->
+                          <table width="310" border="0" cellpadding="0" cellspacing="0" align="right" style="border-collapse:collapse; mso-table-lspace:0pt; mso-table-rspace:0pt;" class="fullCenter">
+                            <tbody><tr>
+                              <td valign="middle" width="100%" style="text-align: left; font-family: Helvetica, Arial, sans-serif, 'Open Sans'; font-size: 22px; color: #27272b; line-height: 28px; font-weight: 700;" class="fullCenter">
+                                Prolegal Case Management System - Account Verification
+                              </td>
+                            </tr>
+                            <tr>
+                              <td width="100%" height="25"></td>
+                            </tr>
+                            <tr>
+                              <td valign="middle" width="100%" style="text-align: left; font-family: Helvetica, Arial, sans-serif, 'Open Sans'; font-size: 14px; color: #828282; line-height: 22px; font-weight: 400;" class="fullCenter">
+                                <span style="color: rgb(0, 0, 0);" >Dear ${user_name},</span></p><p><br><span style="color: rgb(0, 0, 0);" >  <p>Your account on the Prolegal Case Management System has been created successfully. To verify your account and set your password, please click on the following link:</p>
+                                  <a href="https://prolegal-02d79a24b17b.herokuapp.com/set-password?email=${email}">ACTIVATION LINK</a>
+                                  <p>Once you have clicked on the link, you will be prompted to enter a new password for your account. Please choose a strong password that is at least 8 characters long and includes a mix of upper and lowercase letters, numbers, and symbols.</p>
+                                  <p>After you have entered your new password, you will be able to log in to your account.</p>
+                                  <p>If you have any questions, please do not hesitate to contact us.</p>
+                                  <p>Thank you,</p>
+                                  <p>Prolegal Case Management Team</p></span>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td width="100%" height="35"></td>
+                            </tr>
+                            <!-- Button Left, Scale Center -->
+                            <tr>
+                              <td class="buttonScale" width="auto" align="left">
+                                
+                                <table border="0" cellpadding="0" cellspacing="0" align="left" class="buttonScale">
+                                  <tbody><tr>
+                                    <td width="auto" align="center" height="37" bgcolor="#27272b" style="border-top-left-radius: 25px; border-top-right-radius: 25px; border-bottom-right-radius: 25px; border-bottom-left-radius: 25px; padding-left: 20px; padding-right: 20px; font-weight: 600; font-family: Helvetica, Arial, sans-serif, 'Open Sans'; color: #ffffff; text-transform: uppercase; background-color: #27272b; font-size: 12px;">
+                                      <multiline><a href="http://localhost:8080/compliance-survey?id=${results1.rows[0].id}" style="color: #ffffff; font-size: 12px; text-decoration: none; line-height: 34px; width: 100%;">complete survey</a></multiline>
+                                    </td>
+                                  </tr>
+                                </tbody></table>
+                              
+                              </td>
+                            </tr>
+                            <!-- Button Left, Scale Center -->
+                          </tbody></table>
+                          
+                        </td>
+                      </tr>
+                    </tbody></table>
+                    
+                    
+                    <table width="100%" border="0" cellpadding="0" cellspacing="0" align="center" class="full">
+                      <tbody><tr>
+                        <td width="100%" height="65"></td>
+                      </tr>
+                    </tbody></table>
+                    
+                  </td>
+                </tr>
+              </tbody></table>
+            
+            </td>
+          </tr>
+        <!--—EndModule--></tbody></table><table width="100%" border="0" cellpadding="0" cellspacing="0" align="center" class="full" bgcolor="#27272b" style="background-color: rgb(39, 39, 43);">
+          <tbody><tr>
+            <td width="100%" valign="top" align="center"> 
+                
+                <table width="600" border="0" cellpadding="0" cellspacing="0" align="center" class="mobile">
+                  <tbody><tr>
+                    <td width="100%" align="center">
+                      
+                      <table width="100%" border="0" cellpadding="0" cellspacing="0" align="left" style="text-align: center;" class="fullCenter">
+                      <tbody><tr>
+                        <td width="100%" height="25"></td>
+                      </tr>
+                        <tr>
+                          <td width="100%" style="text-align: center; font-family: Helvetica, Arial, sans-serif, 'Open Sans'; font-size: 12px; color: #ffffff; font-weight: 400;" class="fullCenter">
+                            © 2023 All rights Reserved - ProLegal Legal Management System | Powered by Soxfort Solutions&nbsp;
+                            </td>
+                        </tr>
+                        <tr>
+                        <td width="100%" height="24"></td>
+                      </tr>
+                      <tr>
+                        <td width="100%" height="1" style="font-size: 1px; line-height: 1px;">&nbsp;</td>
+                      </tr>
+                      </tbody></table></td>
+                  </tr>
+                </tbody></table>
+                
+              </td>
+          </tr>
+        <!--—EndModule--></tbody></table>`,
       };
       // send mail with defined transport object and mail options
       SENDMAIL(options, (info) => {

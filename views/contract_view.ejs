@@ -44,7 +44,7 @@
                         >
                           <div class="card-body px-0">
                             <p>
-                              <%= data[0].notes %>
+                              <%= data[0].description %>
                             </p>
                             <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#exampleModal5"><i class="fa fa-edit"></i
                               ></button>
@@ -132,12 +132,18 @@
               </div>
               <div class="card-body">
                 <div class="embed-responsive embed-responsive-16by9">
-                  <embed
-                    class="embed-responsive-item"
-                    id="embed-pdf"
-                    type="application/pdf"
-                  />
+                <!----  <iframe id="embed-pdf"
+                  src=""
+                  width="100%"
+                  height="400px"></iframe> -->
+                  <object id="embed-pdf" class="embed-responsive-item" data="" type="application/pdf">
+                    <!-- Fallback content for non-PDF formats -->
+                    <embed src="" type="application/pdf">
+                </object>
+
                 </div>
+             
+  
               </div>
             </div>
             <div class="row removable">
