@@ -3821,7 +3821,7 @@ body .avatar72 img {width: 72px; height: auto; -webkit-border-radius: 3px; -moz-
 												<table border="0" cellpadding="0" cellspacing="0" align="left" class="buttonScale">
 													<tbody><tr>
 														<td width="auto" align="center" height="37" bgcolor="#27272b" style="border-top-left-radius: 25px; border-top-right-radius: 25px; border-bottom-right-radius: 25px; border-bottom-left-radius: 25px; padding-left: 20px; padding-right: 20px; font-weight: 600; font-family: Helvetica, Arial, sans-serif, 'Open Sans'; color: #ffffff; text-transform: uppercase; background-color: #27272b; font-size: 12px;">
-															<multiline><a href="http://localhost:8080/compliance-survey?id=${results1.rows[0].id}" style="color: #ffffff; font-size: 12px; text-decoration: none; line-height: 34px; width: 100%;">complete survey</a></multiline>
+															<multiline><a href="https://prolegal-02d79a24b17b.herokuapp.com/compliance-survey?id=${results1.rows[0].id}" style="color: #ffffff; font-size: 12px; text-decoration: none; line-height: 34px; width: 100%;">complete survey</a></multiline>
 														</td>
 													</tr>
 												</tbody></table>
@@ -5590,7 +5590,7 @@ app.post("/new_user", (req, res) => {
                                 <table border="0" cellpadding="0" cellspacing="0" align="left" class="buttonScale">
                                   <tbody><tr>
                                     <td width="auto" align="center" height="37" bgcolor="#27272b" style="border-top-left-radius: 25px; border-top-right-radius: 25px; border-bottom-right-radius: 25px; border-bottom-left-radius: 25px; padding-left: 20px; padding-right: 20px; font-weight: 600; font-family: Helvetica, Arial, sans-serif, 'Open Sans'; color: #ffffff; text-transform: uppercase; background-color: #27272b; font-size: 12px;">
-                                      <multiline><a href="http://localhost:8080/compliance-survey?id=${results1.rows[0].id}" style="color: #ffffff; font-size: 12px; text-decoration: none; line-height: 34px; width: 100%;">complete survey</a></multiline>
+                                      <multiline><a href="https://prolegal-02d79a24b17b.herokuapp.com/compliance-survey?id=${results1.rows[0].id}" style="color: #ffffff; font-size: 12px; text-decoration: none; line-height: 34px; width: 100%;">complete survey</a></multiline>
                                     </td>
                                   </tr>
                                 </tbody></table>
