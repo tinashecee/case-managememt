@@ -1,37 +1,4 @@
-<style>
-  .form-container {
-  margin-top: 20px;
-}
 
-.form-label {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
-  color: white;
-}
-
-.form-input {
-  width: 60%;
-  padding: 8px;
-  margin-bottom: 15px;
-  box-sizing: border-box;
-}
-
-.form-buttons {
-  margin-top: 20px;
-}
-
-.cancel-button {
-  background-color: #dc3545;
-  color: #fff;
-}
-
-.ok-button {
-  background-color: #28a745;
-  color: #fff;
-}
-
-</style>
 <div class="container-fluid pt-3">
   <%  for (let error of errors) { %>
     <div class="alert alert-danger" role="alert">
@@ -160,9 +127,14 @@
   </div>
   <div class="row removable">
     <div class="col-xl-12">
-      <div class=""></div>
       <div class="card">
-        <div class="card-header">
+        <div class="card-header border-0">
+          <div class="row align-items-center">
+            <div class="col">
+              <h3 class="mb-0">My Records</h3>
+            </div>
+          </div>
+        </div>
          
         <div class="card-body " >
           <div class="container-fluid pt-3">
@@ -185,6 +157,7 @@
                   aria-hidden="true">
                   <div class="modal-dialog modal-dialog-centered" role="document">
                     <div class="modal-content">
+                      <form action="/add-misc" method="post">
                       <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalLabel">Add</h5>
                         <button
@@ -196,15 +169,15 @@
                         </button>
                       </div>
                       <div class="modal-body">
-                        <form>
+                       
                           <div class="mb-3">
-                            <label for="description" class="form-label"
+                            <label for="desc" class="form-label"
                               >Description</label
                             >
                             <textarea
                               class="form-control"
-                              id="description"
-                              name="description"
+                              id="desc"
+                              name="desc"
                               rows="3"
                               required></textarea>
                           </div>
@@ -249,12 +222,12 @@
                             <label for="assignedTo" class="form-label"
                               >Assigned To</label
                             >
-                            <input
-                              type="text"
-                              class="form-control"
-                              id="assignedTo"
-                              name="assignedTo"
-                              required />
+                              <select class="form-select" id="assignedTo"
+                              name="assignedTo" required="">
+                                <% for (let dat of users) { %>
+                                    <option value="<%= dat.name %>"><%= dat.name %></option>
+                                    <% } %>
+                            </select>
                           </div>
       
                           <div class="mb-3">
@@ -269,7 +242,7 @@
                               <option value="Low">Low</option>
                             </select>
                           </div>
-                        </form>
+                        
                       </div>
                       <div class="modal-footer">
                         <button
@@ -278,10 +251,11 @@
                           data-dismiss="modal">
                           Close
                         </button>
-                        <button type="button" class="btn btn-primary">
+                        <button type="submit" class="btn btn-primary">
                           Save changes
                         </button>
                       </div>
+                    </form>
                     </div>
                   </div>
                 </div>
@@ -291,6 +265,7 @@
                     <div class="row align-items-center">
                       <div class="col">
                         <div class="form-group mb-0">
+                          <% if (misc.length > 0) { %>
                           <div class="input-group">
                             <div class="input-group-prepend">
                               <span class="input-group-text"
@@ -302,15 +277,17 @@
                               placeholder="Search"
                               type="text" />
                           </div>
+                          <% } %>
                         </div>
                       </div>
                       <div class="col text-right">
-                        <a href="#!" class="btn btn-sm btn-dark">See all</a>
+                        <% if (misc.length > 0) { %> <a href="#!" class="btn btn-sm btn-dark">See all</a> <% } %>
                       </div>
                     </div>
                   </div>
-      
+ 
                   <div class="table-responsive">
+                    <% if (misc.length > 0) { %>
                     <table class="table align-items-center table-flush">
                       <thead class="thead-light">
                         <tr>
@@ -324,48 +301,55 @@
                         </tr>
                       </thead>
                       <tbody>
+                       
+                          <% for (let dat of misc) { %>
                         <tr>
                           <th scope="row">
                             <div class="d-flex align-items-center">
-                              <span class="ml-2">Zimra Tax Clearance</span>
+                              <span class="ml-2"><%= dat.description %></span>
                             </div>
                           </th>
                           <td>
-                            <span>in Progress</span>
+                            <span><%= dat.status %></span>
                           </td>
                           <td>
-                            <span>01/01/2024</span>
+                            <span><%= moment(dat.start_date).format('Do MMMM, YYYY') %></span>
                           </td>
                           <td>
-                            <span>31/12/2024</span>
+                            <span> <%= moment(dat.due_date).format('Do MMMM, YYYY') %></span>
                           </td>
                           <td>
-                            <span>Morton Mabumbo</span>
+                            <span><%= dat.assigned_to %></span>
                           </td>
                           <td>
                             <div class="d-flex align-items-center">
-                              <span class="ml-2">High</span>
+                              <span class="ml-2"><%= dat.priority %></span>
                             </div>
                           </td>
                           <td class="table-actions">
-                            <a
-                              href="#!"
-                              class="table-action text-gray"
+                            <button
+                            class="table-action btn btn-sm btn-block btn-neutral" 
                               data-toggle="tooltip"
                               data-original-title="Edit Description">
                               <i class="fas fa-pen"></i>
-                            </a>
-                            <a
-                              href="#!"
-                              class="table-action table-action-delete text-gray ml-2"
-                              data-toggle="tooltip"
-                              data-original-title="Delete Description">
+                          </button>
+                            <button
+                              onclick="deleteMisc('<%= dat.id %>', '<%= dat.description %>')"
+                              class="table-action btn btn-sm btn-block btn-neutral" 
+                              data-toggle="modal" data-target="#exampleModal9">
                               <i class="fas fa-trash"></i>
-                            </a>
+                            </button>
                           </td>
                         </tr>
+                        <% } %>
+                      
                       </tbody>
                     </table>
+                    <% } else { %>
+                      <div style="padding: auto;margin:auto;position: relative;left:40%"><p>No records to show!</p></div>
+                      
+                    <% } %>  
+
                   </div>
                 </div>
               </div>
@@ -375,7 +359,6 @@
             </div>
           </div>
       </div>
-    </div>
     </div>
     </div>
     </div>
@@ -609,6 +592,21 @@
       <div class="modal-content">
           <div class="modal-header">
               <h5 class="modal-title" id="exampleModalLabel">Timesheet</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">X</span>
+              </button>
+          </div>
+          <div class="modal-body">
+            
+      </div>
+</div>
+</div>
+</div>
+<div class="modal fade" id="exampleModal9" style="z-index:45" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" data-backdrop="false">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Record</h5>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                   <span aria-hidden="true">X</span>
               </button>

@@ -778,103 +778,110 @@ app.get("", checkNotAuthenticated, async (req, res) => {
           console.log(err);
           errors.push({ message: err });
         }
-        pool.query(
-          `SELECT *
+        pool.query(`SELECT * FROM misc`, [], (err, result2a) => {
+          if (err) {
+            console.log(err);
+            errors.push({ message: err });
+          }
+          pool.query(
+            `SELECT *
                                 FROM contracts
                                 WHERE end_date < CURRENT_DATE + INTERVAL '3 month' AND status != 'Completed'`,
-          [],
-          (err, result3) => {
-            if (err) {
-              console.log(err);
-              errors.push({ message: err });
-            }
-
-            let dollarUS = Intl.NumberFormat("en-US", {
-              style: "currency",
-              currency: "USD",
-            });
-            pool.query(`SELECT * FROM users`, [], (err, results4) => {
+            [],
+            (err, result3) => {
               if (err) {
                 console.log(err);
                 errors.push({ message: err });
               }
-              results4.rows.forEach((e) => {
-                if (e.name.toLowerCase() == req.session.user.toLowerCase()) {
-                  user_role = e.role;
-                }
+
+              let dollarUS = Intl.NumberFormat("en-US", {
+                style: "currency",
+                currency: "USD",
               });
-              array1 = results.rows;
-              pool.query(`SELECT * FROM timesheets`, [], (err, results5) => {
+              pool.query(`SELECT * FROM users`, [], (err, results4) => {
                 if (err) {
                   console.log(err);
                   errors.push({ message: err });
                 }
-                pool.query(`SELECT * FROM events`, [], (err, results7) => {
+                results4.rows.forEach((e) => {
+                  if (e.name.toLowerCase() == req.session.user.toLowerCase()) {
+                    user_role = e.role;
+                  }
+                });
+                array1 = results.rows;
+                pool.query(`SELECT * FROM timesheets`, [], (err, results5) => {
                   if (err) {
                     console.log(err);
                     errors.push({ message: err });
                   }
-                  let _all_timesheets = results5.rows;
-                  pool.query(
-                    `SELECT * FROM timesheets WHERE timesheet_owner = $1`,
-                    [req.session.user],
-                    (err, results6) => {
-                      if (err) {
-                        console.log(err);
-                        errors.push({ message: err });
-                      }
-                      function compare(a, b) {
-                        if (a.start_date > b.start_date) {
-                          return -1;
-                        }
-                        if (a.start_date < b.start_date) {
-                          return 1;
-                        }
-                        return 0;
-                      }
-                      let _my_timesheets = results6.rows;
-                      my_ts = results6.rows;
-                      const page = parseInt(req.query.page) || 1; // Current page number
-                      const limit = 10; // Number of items per page
-                      const startIndex = (page - 1) * limit;
-                      const endIndex = page * limit;
-                      const all_timesheets = _all_timesheets
-                        .sort(compare)
-                        .slice(startIndex, endIndex);
-                      const page1 = parseInt(req.query.page1) || 1; // Current page number
-                      const startIndex1 = (page1 - 1) * limit;
-                      const endIndex1 = page1 * limit;
-                      const my_timesheets = _my_timesheets
-                        .sort(compare)
-                        .slice(startIndex1, endIndex1);
-                      res.render("index", {
-                        layout: "./layouts/index-layout",
-                        all_timesheets,
-                        my_timesheets,
-                        page,
-                        page1,
-                        errors,
-                        user_role,
-                        dollarUS: dollarUS,
-                        expiring_contracts: result3.rows,
-                        contracts_length: result2.rows.length,
-                        contracts: result2.rows,
-                        contract_expiring_length: result3.rows.length,
-                        cases_length: results1.rows.length,
-                        cases: results1.rows,
-                        tasks,
-                        events: results7.rows,
-                        authed: authed,
-                        user: req.session.user,
-                        users: results4.rows,
-                      });
+                  pool.query(`SELECT * FROM events`, [], (err, results7) => {
+                    if (err) {
+                      console.log(err);
+                      errors.push({ message: err });
                     }
-                  );
+                    let _all_timesheets = results5.rows;
+                    pool.query(
+                      `SELECT * FROM timesheets WHERE timesheet_owner = $1`,
+                      [req.session.user],
+                      (err, results6) => {
+                        if (err) {
+                          console.log(err);
+                          errors.push({ message: err });
+                        }
+                        function compare(a, b) {
+                          if (a.start_date > b.start_date) {
+                            return -1;
+                          }
+                          if (a.start_date < b.start_date) {
+                            return 1;
+                          }
+                          return 0;
+                        }
+                        let _my_timesheets = results6.rows;
+                        my_ts = results6.rows;
+                        const page = parseInt(req.query.page) || 1; // Current page number
+                        const limit = 10; // Number of items per page
+                        const startIndex = (page - 1) * limit;
+                        const endIndex = page * limit;
+                        const all_timesheets = _all_timesheets
+                          .sort(compare)
+                          .slice(startIndex, endIndex);
+                        const page1 = parseInt(req.query.page1) || 1; // Current page number
+                        const startIndex1 = (page1 - 1) * limit;
+                        const endIndex1 = page1 * limit;
+                        const my_timesheets = _my_timesheets
+                          .sort(compare)
+                          .slice(startIndex1, endIndex1);
+                        res.render("index", {
+                          layout: "./layouts/index-layout",
+                          all_timesheets,
+                          my_timesheets,
+                          page,
+                          page1,
+                          errors,
+                          user_role,
+                          dollarUS: dollarUS,
+                          expiring_contracts: result3.rows,
+                          contracts_length: result2.rows.length,
+                          contracts: result2.rows,
+                          contract_expiring_length: result3.rows.length,
+                          cases_length: results1.rows.length,
+                          cases: results1.rows,
+                          tasks,
+                          misc: result2a.rows,
+                          events: results7.rows,
+                          authed: authed,
+                          user: req.session.user,
+                          users: results4.rows,
+                        });
+                      }
+                    );
+                  });
                 });
               });
-            });
-          }
-        );
+            }
+          );
+        });
       });
     });
   });
@@ -1786,6 +1793,40 @@ app.get("/documents-view", checkNotAuthenticated, async (req, res) => {
       });
     }
   );
+});
+app.post("/add-misc", async (req, res) => {
+  let start_date = req.body.startDate;
+  let due_date = req.body.dueDate;
+  let assigned_to = req.body.assignedTo;
+  let description = req.body.desc;
+  let status = req.body.status;
+  let priority = req.body.priority;
+  let yourDate = new Date();
+  date_created = formatDate(yourDate);
+  pool.query(
+    `INSERT INTO misc ( description, status, start_date, due_date, assigned_to, priority)
+        VALUES ($1, $2, $3, $4, $5, $6)`,
+    [description, status, start_date, due_date, assigned_to, priority],
+    (err, results) => {
+      if (err) {
+        errors.push({ message: err });
+        console.log(err);
+      }
+      req.flash("success", "You have successfully added a record");
+      res.redirect("/");
+    }
+  );
+});
+app.post("/delete-misc", async (req, res) => {
+  let id = req.query.id;
+  pool.query("DELETE FROM misc WHERE id = $1", [id], (err, resulto) => {
+    if (err) {
+      errors.push({ message: err });
+      console.log(err);
+    }
+    req.flash("success", "You have successfully deleted a record");
+    res.redirect("/");
+  });
 });
 app.post("/add-document", async (req, res) => {
   let name = req.body.document_name;
