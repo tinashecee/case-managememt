@@ -268,27 +268,22 @@
                           <% if (misc.length > 0) { %>
                           <div class="input-group">
                             <div class="input-group-prepend">
-                              <span class="input-group-text"
-                                ><i class="fas fa-search"></i
-                              ></span>
+                              <span class="input-group-text"><i class="fas fa-search"></i></span>
                             </div>
-                            <input
-                              class="form-control"
-                              placeholder="Search"
-                              type="text" />
+                            <input id="searchInput" class="form-control" placeholder="Search" type="text" onkeyup="filterTable()" />
                           </div>
                           <% } %>
                         </div>
                       </div>
                       <div class="col text-right">
-                        <% if (misc.length > 0) { %> <a href="#!" class="btn btn-sm btn-dark">See all</a> <% } %>
+                      
                       </div>
                     </div>
                   </div>
- 
+                
                   <div class="table-responsive">
                     <% if (misc.length > 0) { %>
-                    <table class="table align-items-center table-flush">
+                    <table id="dataTable" class="table align-items-center table-flush">
                       <thead class="thead-light">
                         <tr>
                           <th scope="col">Description</th>
@@ -301,56 +296,40 @@
                         </tr>
                       </thead>
                       <tbody>
-                       
-                          <% for (let dat of misc) { %>
+                        <% for (let i = 0; i < misc.length; i++) { %>
                         <tr>
                           <th scope="row">
                             <div class="d-flex align-items-center">
-                              <span class="ml-2"><%= dat.description %></span>
+                              <span class="ml-2"><%= misc[i].description %></span>
                             </div>
                           </th>
-                          <td>
-                            <span><%= dat.status %></span>
-                          </td>
-                          <td>
-                            <span><%= moment(dat.start_date).format('Do MMMM, YYYY') %></span>
-                          </td>
-                          <td>
-                            <span> <%= moment(dat.due_date).format('Do MMMM, YYYY') %></span>
-                          </td>
-                          <td>
-                            <span><%= dat.assigned_to %></span>
-                          </td>
+                          <td><span><%= misc[i].status %></span></td>
+                          <td><span><%= moment(misc[i].start_date).format('Do MMMM, YYYY') %></span></td>
+                          <td><span><%= moment(misc[i].due_date).format('Do MMMM, YYYY') %></span></td>
+                          <td><span><%= misc[i].assigned_to %></span></td>
                           <td>
                             <div class="d-flex align-items-center">
-                              <span class="ml-2"><%= dat.priority %></span>
+                              <span class="ml-2"><%= misc[i].priority %></span>
                             </div>
                           </td>
                           <td class="table-actions">
-                            <button
-                            class="table-action btn btn-sm btn-block btn-neutral" 
-                              data-toggle="tooltip"
-                              data-original-title="Edit Description">
-                              <i class="fas fa-pen"></i>
-                          </button>
-                            <button
-                              onclick="deleteMisc('<%= dat.id %>', '<%= dat.description %>')"
-                              class="table-action btn btn-sm btn-block btn-neutral" 
-                              data-toggle="modal" data-target="#exampleModal9">
+                            
+                            <button onclick="deleteMisc('<%= misc[i].id %>', '<%= misc[i].description %>')" class="table-action btn btn-sm btn-block btn-neutral" data-toggle="modal" data-target="#exampleModal9">
                               <i class="fas fa-trash"></i>
                             </button>
                           </td>
                         </tr>
                         <% } %>
-                      
                       </tbody>
                     </table>
-                    <% } else { %>
-                      <div style="padding: auto;margin:auto;position: relative;left:40%"><p>No records to show!</p></div>
-                      
-                    <% } %>  
-
+                    <% } %>
                   </div>
+                </div>
+                
+                <!-- Pagination -->
+                <div class="pagination">
+                  <a href="#" class="prev" onclick="prevPage()">&laquo;</a>
+                  <a href="#" class="next" onclick="nextPage()">&raquo;</a>
                 </div>
               </div>
             </div>
@@ -672,3 +651,47 @@
       </form>
   </div>
 </div>  
+<script>
+  let table = document.getElementById('dataTable');
+  let pagination = document.getElementsByClassName('pagination')[0];
+  let currentIndex = 1;
+  let itemsPerPage = 5;
+  let maxIndex = Math.ceil(table.rows.length / itemsPerPage);
+
+  function updateTable() {
+    for (let i = 1; i < table.rows.length; i++) {
+      if (Math.ceil(i / itemsPerPage) === currentIndex) {
+        table.rows[i].style.display = '';
+      } else {
+        table.rows[i].style.display = 'none';
+      }
+    }
+    pagination.style.display = maxIndex > 1 ? 'block' : 'none';
+  }
+
+  function nextPage() {
+    if (currentIndex < maxIndex) {
+      currentIndex++;
+      updateTable();
+    }
+  }
+
+  function prevPage() {
+    if (currentIndex > 1) {
+      currentIndex--;
+      updateTable();
+    }
+  }
+
+  function filterTable() {
+    let input = document.getElementById('searchInput');
+    let filter = input.value.toUpperCase();
+    for (let i = 1; i < table.rows.length; i++) {
+      let row = table.rows[i];
+      let text = row.textContent || row.innerText;
+      row.style.display = text.toUpperCase().indexOf(filter) > -1 ? '' : 'none';
+    }
+  }
+
+  updateTable();
+</script>
