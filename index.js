@@ -115,123 +115,122 @@ const InvoiceGenerator5 = require("./pdf-generator5");
 const InvoiceGenerator6 = require("./pdf-generator6");
 const InvoiceGenerator7 = require("./pdf-generator7");
 const InvoiceGenerator8 = require("./pdf-generator8");
-//cron job
-if (process.env.NODE_APP_INSTANCE === "0") {
-  const job = new CronJob(
-    "0 8 * * *",
-    function () {
-      pool.query(
-        `SELECT *
+//cron job mode
+const job = new CronJob(
+  "0 8 * * *",
+  function () {
+    pool.query(
+      `SELECT *
             FROM contracts
             WHERE end_date = CURRENT_DATE + INTERVAL '3 month'`,
-        [],
-        (err, results1) => {
-          if (err) {
-            console.log(err);
-            errors.push({ message: err });
-          }
-          pool.query(
-            `SELECT *
-                    FROM users`,
-            [],
-            (err, results2) => {
-              if (err) {
-                console.log(err);
-                errors.push({ message: err });
-              }
-              results2.rows.forEach((e) => {
-                SENDCONTRACTEXPIRY(
-                  e.email,
-                  results1.rows[0].name,
-                  3,
-                  e.name,
-                  results1.rows[0].vendor,
-                  results1.rows[0].end_date,
-                  results1.rows[0].notes,
-                  results1.rows[0].contract_value
-                );
-              });
-            }
-          );
+      [],
+      (err, results1) => {
+        if (err) {
+          console.log(err);
+          errors.push({ message: err });
         }
-      );
-      pool.query(
-        `SELECT *
+        pool.query(
+          `SELECT *
+                    FROM users`,
+          [],
+          (err, results2) => {
+            if (err) {
+              console.log(err);
+              errors.push({ message: err });
+            }
+            results2.rows.forEach((e) => {
+              SENDCONTRACTEXPIRY(
+                e.email,
+                results1.rows[0].name,
+                3,
+                e.name,
+                results1.rows[0].vendor,
+                results1.rows[0].end_date,
+                results1.rows[0].notes,
+                results1.rows[0].contract_value
+              );
+            });
+          }
+        );
+      }
+    );
+    pool.query(
+      `SELECT *
                 FROM contracts
                 WHERE end_date = CURRENT_DATE + INTERVAL '2 month'`,
-        [],
-        (err, results1) => {
-          if (err) {
-            console.log(err);
-            errors.push({ message: err });
-          }
-          pool.query(
-            `SELECT *
-                        FROM users`,
-            [],
-            (err, results2) => {
-              if (err) {
-                console.log(err);
-                errors.push({ message: err });
-              }
-              results2.rows.forEach((e) => {
-                SENDCONTRACTEXPIRY(
-                  e.email,
-                  results1.rows[0].name,
-                  2,
-                  e.name,
-                  results1.rows[0].vendor,
-                  results1.rows[0].end_date,
-                  results1.rows[0].notes,
-                  results1.rows[0].contract_value
-                );
-              });
-            }
-          );
+      [],
+      (err, results1) => {
+        if (err) {
+          console.log(err);
+          errors.push({ message: err });
         }
-      );
-      pool.query(
-        `SELECT *
+        pool.query(
+          `SELECT *
+                        FROM users`,
+          [],
+          (err, results2) => {
+            if (err) {
+              console.log(err);
+              errors.push({ message: err });
+            }
+            results2.rows.forEach((e) => {
+              SENDCONTRACTEXPIRY(
+                e.email,
+                results1.rows[0].name,
+                2,
+                e.name,
+                results1.rows[0].vendor,
+                results1.rows[0].end_date,
+                results1.rows[0].notes,
+                results1.rows[0].contract_value
+              );
+            });
+          }
+        );
+      }
+    );
+    pool.query(
+      `SELECT *
                     FROM contracts
                     WHERE end_date = CURRENT_DATE + INTERVAL '1 month'`,
-        [],
-        (err, results1) => {
-          if (err) {
-            console.log(err);
-            errors.push({ message: err });
-          }
-          pool.query(
-            `SELECT *
-                            FROM users`,
-            [],
-            (err, results2) => {
-              if (err) {
-                console.log(err);
-                errors.push({ message: err });
-              }
-              results2.rows.forEach((e) => {
-                SENDCONTRACTEXPIRY(
-                  e.email,
-                  results1.rows[0].name,
-                  1,
-                  e.name,
-                  results1.rows[0].vendor,
-                  results1.rows[0].end_date,
-                  results1.rows[0].notes,
-                  results1.rows[0].contract_value
-                );
-              });
-            }
-          );
+      [],
+      (err, results1) => {
+        if (err) {
+          console.log(err);
+          errors.push({ message: err });
         }
-      );
-    },
-    null,
-    true,
-    "Etc/UTC"
-  );
-  job.start();
-}
+        pool.query(
+          `SELECT *
+                            FROM users`,
+          [],
+          (err, results2) => {
+            if (err) {
+              console.log(err);
+              errors.push({ message: err });
+            }
+            results2.rows.forEach((e) => {
+              SENDCONTRACTEXPIRY(
+                e.email,
+                results1.rows[0].name,
+                1,
+                e.name,
+                results1.rows[0].vendor,
+                results1.rows[0].end_date,
+                results1.rows[0].notes,
+                results1.rows[0].contract_value
+              );
+            });
+          }
+        );
+      }
+    );
+  },
+  null,
+  true,
+  "Etc/UTC"
+);
+job.start();
+
 function sendEmail(a, b, c, d, e, f) {
   pool.query(`SELECT * FROM users WHERE name = $1`, [a], (err, results) => {
     if (err) {
